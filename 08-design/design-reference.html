@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lamplight — Design Reference</title>
+<style>
+  :root{
+    --canvas:#0F0F0E; --surface:#171714; --raised:#1F1F1B;
+    --hair:#2B2B26; --strong:#403F38;
+    --ink:#F2F0EA; --ink2:#A5A29A; --ink3:#8C897F;
+    --accent:#E9A94B; --danger:#F0736E; --good:#6FBF73;
+    --g0:#1E1E1A; --g1:#4A3517; --g2:#7A5620; --g3:#A8762A; --g4:#D19A3C; --g5:#F2C071;
+    color-scheme:dark;
+  }
+  html[data-theme="light"]{
+    --canvas:#FAF9F5; --surface:#FFFFFF; --raised:#F3F1EB;
+    --hair:#E6E3DA; --strong:#C4C0B2;
+    --ink:#1A1916; --ink2:#5B5950; --ink3:#6C6A60;
+    --accent:#9A6212; --danger:#B8332C; --good:#2C7531;
+    --g0:#EFEDE6; --g1:#EFCC92; --g2:#E3B267; --g3:#CE9032; --g4:#A16F26; --g5:#5F4010;
+    color-scheme:light;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--canvas); color:var(--ink);
+    font:400 16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    transition:background .25s ease, color .25s ease;
+    padding:0 0 80px;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+  header{padding:56px 0 40px;border-bottom:1px solid var(--hair)}
+  h1{font-size:34px;line-height:1.15;font-weight:400;letter-spacing:-.02em}
+  h1 em{font-style:normal;color:var(--accent)}
+  .sub{color:var(--ink2);font-size:16px;margin-top:10px;max-width:60ch}
+  h2{font-size:13px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;
+     color:var(--ink3);margin:56px 0 20px}
+  h3{font-size:17px;font-weight:600;margin:0 0 12px}
+  p.note{color:var(--ink2);font-size:14px;max-width:68ch;margin:10px 0 0}
+
+  /* toggle */
+  .toggle{position:fixed;top:20px;right:20px;z-index:99;display:flex;gap:2px;
+    background:var(--surface);border:1px solid var(--hair);border-radius:999px;padding:3px}
+  .toggle button{background:none;border:0;color:var(--ink3);font:inherit;font-size:13px;
+    padding:7px 15px;border-radius:999px;cursor:pointer;transition:.18s}
+  .toggle button[aria-pressed="true"]{background:var(--accent);color:var(--canvas);font-weight:600}
+  .toggle button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  /* swatches */
+  .sw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:12px}
+  .sw{border:1px solid var(--hair);border-radius:12px;overflow:hidden;background:var(--surface)}
+  .sw .chip{height:66px}
+  .sw .meta{padding:11px 13px}
+  .sw .nm{font-size:13px;font-weight:600}
+  .sw .hx{font-size:12px;color:var(--ink3);font-family:ui-monospace,monospace;margin-top:3px}
+  .badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.05em;
+    padding:2px 7px;border-radius:999px;margin-top:7px;
+    background:var(--raised);color:var(--ink2);border:1px solid var(--hair)}
+  .badge.aaa{color:var(--good);border-color:color-mix(in srgb,var(--good) 40%,transparent)}
+  .badge.aa{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 40%,transparent)}
+
+  /* phones */
+  .phones{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));gap:20px}
+  .phone{background:var(--canvas);border:1px solid var(--strong);border-radius:26px;
+    padding:20px 17px;min-height:448px;display:flex;flex-direction:column;position:relative;
+    box-shadow:0 0 0 6px color-mix(in srgb,var(--hair) 45%,transparent)}
+  .phone .cap{position:absolute;top:-11px;left:20px;background:var(--canvas);
+    padding:0 9px;font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--ink3);font-weight:600}
+  .date-h{font-size:26px;font-weight:400;letter-spacing:-.02em;margin-bottom:4px}
+  .onthis{font-size:12px;color:var(--accent);margin-bottom:22px}
+  .entry{border-left:2px solid color-mix(in srgb,var(--accent) 55%,transparent);
+    padding:0 0 0 13px;margin-bottom:20px}
+  .entry .t{font-size:12px;color:var(--ink2);font-weight:500;margin-bottom:5px}
+  .entry .b{font-size:14.5px;line-height:1.62}
+  .wave{display:flex;align-items:center;gap:9px;margin-top:3px}
+  .wave .bars{display:flex;gap:2.5px;align-items:flex-end;height:22px;flex:1}
+  .wave .bars i{width:2.5px;background:var(--accent);border-radius:2px;opacity:.75;display:block}
+  .wave .dur{font-size:12px;color:var(--ink2);font-variant-numeric:tabular-nums}
+  .ph-img{height:82px;border-radius:9px;margin-top:4px;
+    background:linear-gradient(135deg,var(--g2),var(--g4))}
+  .capbar{margin-top:auto;display:flex;justify-content:space-around;
+    background:var(--surface);border:1px solid var(--hair);border-radius:16px;padding:12px 4px}
+  .capbar span{width:44px;height:44px;display:grid;place-items:center;font-size:19px;
+    border-radius:11px;color:var(--ink2)}
+  .capbar span:first-child{color:var(--accent)}
+
+  /* lock */
+  .lock{align-items:center;justify-content:center;gap:26px;display:flex;flex-direction:column}
+  .mark{width:44px;height:44px;border:2px solid var(--accent);border-radius:12px;
+    display:grid;place-items:center}
+  .mark i{width:12px;height:12px;background:var(--accent);border-radius:3px;display:block}
+  .dots{display:flex;gap:13px}
+  .dots i{width:11px;height:11px;border-radius:50%;border:1.5px solid var(--ink3);display:block}
+  .dots i.on{background:var(--accent);border-color:var(--accent)}
+  .lock small{color:var(--ink3);font-size:12px}
+
+  /* explorer */
+  .row{display:flex;align-items:center;gap:11px;padding:12px 4px;font-size:14.5px;
+    border-bottom:1px solid var(--hair)}
+  .row .cnt{margin-left:auto;color:var(--ink2);font-size:12.5px;font-variant-numeric:tabular-nums}
+  .row .ic{color:var(--accent);opacity:.85;font-size:15px}
+  .row.i1{padding-left:22px}.row.i2{padding-left:40px}
+
+  /* recorder */
+  .rec{align-items:center;justify-content:center;gap:30px;display:flex;flex-direction:column}
+  .bigwave{display:flex;gap:3.5px;align-items:center;height:76px}
+  .bigwave i{width:3.5px;background:var(--accent);border-radius:3px;display:block}
+  .rectime{font-size:31px;font-variant-numeric:tabular-nums;letter-spacing:.01em;font-weight:300}
+  .recbtn{width:72px;height:72px;border-radius:999px;background:var(--accent);
+    display:grid;place-items:center}
+  .recbtn i{width:23px;height:23px;background:var(--canvas);border-radius:5px;display:block}
+  .reclabel{font-size:12px;color:var(--ink3);letter-spacing:.05em;text-transform:uppercase}
+
+  /* year grid */
+  .yg{display:flex;gap:3px;overflow-x:auto;padding:6px 0 12px}
+  .yg .col{display:flex;flex-direction:column;gap:3px}
+  .yg .cell{width:11px;height:11px;border-radius:2px;background:var(--g0);flex:none}
+  .legend{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink3);margin-top:6px}
+  .legend .cell{width:11px;height:11px;border-radius:2px;display:block}
+
+  /* ramp */
+  .ramp{display:flex;gap:0;border-radius:10px;overflow:hidden;border:1px solid var(--hair)}
+  .ramp div{flex:1;height:56px;display:flex;align-items:flex-end;justify-content:center;
+    padding-bottom:6px;font-size:10px;font-family:ui-monospace,monospace}
+
+  /* type */
+  .typerow{display:flex;align-items:baseline;gap:20px;padding:14px 0;border-bottom:1px solid var(--hair)}
+  .typerow .lbl{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);
+    width:110px;flex:none}
+  .typerow .val{font-size:11px;color:var(--ink3);font-family:ui-monospace,monospace;
+    margin-left:auto;flex:none}
+
+  /* space */
+  .spacers{display:flex;flex-direction:column;gap:9px}
+  .spc{display:flex;align-items:center;gap:14px;font-size:12.5px;color:var(--ink2)}
+  .spc b{background:var(--accent);height:11px;border-radius:2px;display:block;flex:none}
+  .spc code{font-family:ui-monospace,monospace;color:var(--ink3);width:78px;flex:none}
+
+  /* do / dont */
+  .dd{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+  .card{border:1px solid var(--hair);border-radius:13px;padding:18px 19px;background:var(--surface)}
+  .card h4{font-size:13px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:11px;font-weight:700}
+  .card.yes h4{color:var(--good)} .card.no h4{color:var(--danger)}
+  .card ul{list-style:none;font-size:14px;color:var(--ink2);line-height:1.75}
+  .card li{padding-left:17px;position:relative}
+  .card li::before{position:absolute;left:0;font-weight:700}
+  .card.yes li::before{content:"✓";color:var(--good)}
+  .card.no li::before{content:"✕";color:var(--danger)}
+  footer{margin-top:64px;padding-top:26px;border-top:1px solid var(--hair);
+    color:var(--ink3);font-size:13px}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<div class="toggle" role="group" aria-label="Theme">
+  <button id="bd" aria-pressed="true">Dark</button>
+  <button id="bl" aria-pressed="false">Light</button>
+</div>
+
+<div class="wrap">
+<header>
+  <h1><em>Lamplight</em> — design reference</h1>
+  <p class="sub">The palette, type, spacing and screens for the vault app. Every colour below
+  has been contrast-verified against both surfaces. Toggle the theme — light mode is a
+  separately chosen palette, not an inversion.</p>
+</header>
+
+<h2>Screens</h2>
+<div class="phones">
+
+  <div class="phone">
+    <span class="cap">Lock</span>
+    <div class="lock" style="flex:1">
+      <div class="mark"><i></i></div>
+      <div class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i></div>
+      <small>Nothing else. No preview, no counts.</small>
+    </div>
+  </div>
+
+  <div class="phone">
+    <span class="cap">Today</span>
+    <div class="date-h">Tuesday, 4 March</div>
+    <div class="onthis">4 March 2025 · the interview →</div>
+    <div class="entry"><div class="t">8:42</div>
+      <div class="b">Slept badly again. Third night.</div></div>
+    <div class="entry"><div class="t">9:15</div>
+      <div class="wave"><div class="bars" id="w1"></div><span class="dur">0:47</span></div></div>
+    <div class="entry"><div class="t">13:30</div><div class="ph-img"></div></div>
+    <div class="entry"><div class="t">21:04</div>
+      <div class="b">Called Ma. She sounded better than last week.</div></div>
+    <div class="capbar"><span>✎</span><span>🎙</span><span>📷</span><span>📎</span></div>
+  </div>
+
+  <div class="phone">
+    <span class="cap">Explorer</span>
+    <div class="date-h" style="font-size:21px;margin-bottom:16px">Vault</div>
+    <div class="row"><span class="ic">▸</span>People<span class="cnt">142</span></div>
+    <div class="row i1"><span class="ic">▾</span>Kavya<span class="cnt">38</span></div>
+    <div class="row i2"><span class="ic">▪</span>Letters I didn't send<span class="cnt">6</span></div>
+    <div class="row"><span class="ic">▸</span>Work<span class="cnt">91</span></div>
+    <div class="row i1"><span class="ic">▾</span>Experiments<span class="cnt">27</span></div>
+    <div class="row i2"><span class="ic">▪</span>Sleep<span class="cnt">19</span></div>
+    <div class="row i2"><span class="ic">▪</span>Cold showers<span class="cnt">8</span></div>
+    <div class="row" style="border:0"><span class="ic">▸</span>Health<span class="cnt">55</span></div>
+  </div>
+
+  <div class="phone">
+    <span class="cap">Recording</span>
+    <div class="rec" style="flex:1">
+      <div class="bigwave" id="w2"></div>
+      <div class="rectime">0:47</div>
+      <div class="recbtn"><i></i></div>
+      <div class="reclabel">Tap to stop</div>
+    </div>
+  </div>
+</div>
+
+<h2>The year — a sequential heatmap</h2>
+<div class="yg" id="yg" aria-label="Year grid, 365 days"></div>
+<div class="legend">Less
+  <span class="cell" style="background:var(--g0)"></span>
+  <span class="cell" style="background:var(--g1)"></span>
+  <span class="cell" style="background:var(--g2)"></span>
+  <span class="cell" style="background:var(--g3)"></span>
+  <span class="cell" style="background:var(--g4)"></span>
+  <span class="cell" style="background:var(--g5)"></span>
+  More</div>
+<p class="note">One hue, light→dark, neutral for empty — the heatmap rule. Every adjacent step
+is separated by ≥1.25× in luminance, so the ramp stays readable in greyscale and to a fully
+colour-blind viewer. Each cell also carries a text label, so colour is never the only channel.
+<strong>Gaps are neutral, never red</strong> — the grid shows what you did, never what you didn't.</p>
+
+<div style="margin-top:22px">
+  <div class="ramp">
+    <div style="background:var(--g0);color:var(--ink3)">empty</div>
+    <div style="background:var(--g1);color:var(--ink3)">1</div>
+    <div style="background:var(--g2);color:var(--canvas)">2</div>
+    <div style="background:var(--g3);color:var(--canvas)">3</div>
+    <div style="background:var(--g4);color:var(--canvas)">4</div>
+    <div style="background:var(--g5);color:var(--canvas)">5</div>
+  </div>
+</div>
+
+<h2>Palette</h2>
+<div class="sw-grid" id="sw"></div>
+<p class="note">One accent, used for at most three things: the recording state, the current
+day, the active selection. A single-accent palette has no colour <em>pairs</em> to confuse,
+which makes it inherently colour-blind safe — the meaning lives in lightness and position.</p>
+
+<h2>Type</h2>
+<div>
+  <div class="typerow"><span class="lbl">Display</span>
+    <span style="font-size:32px;line-height:38px;font-weight:400">Tuesday, 4 March</span>
+    <span class="val">32/38</span></div>
+  <div class="typerow"><span class="lbl">Title</span>
+    <span style="font-size:22px;line-height:28px;font-weight:500">Experiments</span>
+    <span class="val">22/28</span></div>
+  <div class="typerow"><span class="lbl">Body</span>
+    <span style="font-size:17px;line-height:26px">Called Ma. She sounded better than last week.</span>
+    <span class="val">17/26</span></div>
+  <div class="typerow"><span class="lbl">Caption</span>
+    <span style="font-size:13px;line-height:16px;font-weight:500;color:var(--ink2)">21:04</span>
+    <span class="val">13/16</span></div>
+  <div class="typerow"><span class="lbl">Label</span>
+    <span style="font-size:12px;line-height:16px;font-weight:500;letter-spacing:.06em;
+      text-transform:uppercase;color:var(--ink3)">Voice note</span>
+    <span class="val">12/16</span></div>
+</div>
+<p class="note"><strong>17/26 body is the single most important number here.</strong> The 26px
+line-height is what makes long text feel readable rather than cramped. Never let it be tightened.</p>
+
+<h2>Spacing — 8pt grid</h2>
+<div class="spacers" id="sp"></div>
+<p class="note">24pt screen margins, not 16. Sixteen is the framework default, and defaults look
+like defaults.</p>
+
+<h2>Principles</h2>
+<div class="dd">
+  <div class="card yes"><h4>Do</h4><ul>
+    <li>Content sits on the page — no cards, no shadows</li>
+    <li>One accent, three uses, nothing more</li>
+    <li>200ms motion, only to explain space</li>
+    <li>48×48dp minimum touch targets</li>
+    <li>Every colour state also has a shape or label</li>
+    <li>Dark by default; light is chosen, not inverted</li>
+    <li>Warm near-black and off-white, never #000 or #FFF</li>
+  </ul></div>
+  <div class="card no"><h4>Don't</h4><ul>
+    <li>Streaks, badges, guilt — gaps are never red</li>
+    <li>Gradients, glass, glow, confetti</li>
+    <li>Content previews on the lock screen</li>
+    <li>Colour as the only carrier of meaning</li>
+    <li>A formatting toolbar between you and your feelings</li>
+    <li>Illustrations, mascots, onboarding carousels</li>
+    <li>Any hex code written inside a widget</li>
+  </ul></div>
+</div>
+
+<footer>
+  Lamplight · design reference · 17 August 2026 · contrast verified WCAG 2.1 AA in both modes.
+  Full numbers in <code>08-design/CONTRAST-REPORT.md</code>.
+</footer>
+</div>
+
+<script>
+(function(){
+  var html=document.documentElement, bd=document.getElementById('bd'), bl=document.getElementById('bl');
+  function set(t){ html.setAttribute('data-theme',t);
+    bd.setAttribute('aria-pressed', t==='dark'); bl.setAttribute('aria-pressed', t==='light');
+    paint(); }
+  bd.onclick=function(){set('dark')}; bl.onclick=function(){set('light')};
+
+  // waveforms
+  function wave(el,n,min,max){ var h='';
+    for(var i=0;i<n;i++){ var v=min+Math.abs(Math.sin(i*0.9)*Math.cos(i*0.31))*(max-min);
+      h+='<i style="height:'+v.toFixed(0)+'px"></i>'; } el.innerHTML=h; }
+  wave(document.getElementById('w1'),26,4,22);
+  wave(document.getElementById('w2'),34,7,76);
+
+  // year grid — streaky pseudo-random, shaped like real journalling
+  var yg=document.getElementById('yg'), out='';
+  function rnd(n){ var s=Math.abs(Math.sin(n*12.9898)*43758.5453); return s-Math.floor(s); }
+  var mood=0;
+  for(var c=0;c<53;c++){ out+='<div class="col">';
+    mood = 0.72*mood + 0.28*(rnd(c*3.1)*2-1);          // slow drift: busy weeks, quiet weeks
+    for(var r=0;r<7;r++){ var d=c*7+r; if(d>=365){break;}
+      var s0=rnd(d)+mood*0.55;
+      var lvl = s0<0.42?0 : s0<0.60?1 : s0<0.74?2 : s0<0.86?3 : s0<0.95?4 : 5;
+      var lbl = lvl===0 ? 'no entries' : lvl+(lvl===1?' entry':' entries');
+      out+='<div class="cell" style="background:var(--g'+lvl+')" title="day '+(d+1)+', '+lbl+'"></div>'; }
+    out+='</div>'; }
+  yg.innerHTML=out;
+
+  // spacing bars
+  var sp=[['space.1',4],['space.2',8],['space.3',12],['space.4',16],
+          ['space.5',20],['space.6',24],['space.8',32],['space.10',40]], h='';
+  sp.forEach(function(s){ h+='<div class="spc"><code>'+s[0]+'</code>'+
+    '<b style="width:'+(s[1]*3)+'px"></b><span>'+s[1]+'px</span></div>'; });
+  document.getElementById('sp').innerHTML=h;
+
+  // swatches with live contrast
+  var TOKENS=[['ink.primary','--ink'],['ink.secondary','--ink2'],['ink.muted','--ink3'],
+              ['accent','--accent'],['danger','--danger'],['good','--good'],
+              ['bg.canvas','--canvas'],['bg.surface','--surface'],['bg.raised','--raised'],
+              ['border.hair','--hair'],['border.strong','--strong']];
+  function rgb(str){ var m=str.trim().match(/^#?([0-9a-f]{6})$/i);
+    if(m){var v=parseInt(m[1],16);return [(v>>16)&255,(v>>8)&255,v&255];}
+    var p=str.match(/\d+/g); return p?[+p[0],+p[1],+p[2]]:[0,0,0]; }
+  function lin(c){c/=255;return c<=0.04045?c/12.92:Math.pow((c+0.055)/1.055,2.4);}
+  function lum(s){var q=rgb(s);return 0.2126*lin(q[0])+0.7152*lin(q[1])+0.0722*lin(q[2]);}
+  function cr(a,b){var x=lum(a),y=lum(b);return (Math.max(x,y)+0.05)/(Math.min(x,y)+0.05);}
+
+  function paint(){
+    var cs=getComputedStyle(html), bg=cs.getPropertyValue('--canvas'), h='';
+    TOKENS.forEach(function(t){
+      var v=cs.getPropertyValue(t[1]).trim(), r=cr(v,bg);
+      var isBg = t[0].indexOf('bg.')===0 || t[0].indexOf('border')===0;
+      var cls = r>=7?'aaa':(r>=4.5?'aa':'');
+      var lab = isBg ? 'surface / decorative' : (r>=7?'AAA '+r.toFixed(2)+':1'
+                : r>=4.5?'AA '+r.toFixed(2)+':1' : r.toFixed(2)+':1');
+      h+='<div class="sw"><div class="chip" style="background:'+v+
+         (isBg?';border-bottom:1px solid var(--hair)':'')+'"></div>'+
+         '<div class="meta"><div class="nm">'+t[0]+'</div>'+
+         '<div class="hx">'+v.toUpperCase()+'</div>'+
+         '<span class="badge '+(isBg?'':cls)+'">'+lab+'</span></div></div>';
+    });
+    document.getElementById('sw').innerHTML=h;
+  }
+  paint();
+})();
+</script>
+</body>
+</html>

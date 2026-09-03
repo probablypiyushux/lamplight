@@ -1,0 +1,205 @@
+name: lamplight
+description: "A private notebook for your life. Encrypted on device, no account, no server."
+publish_to: 'none'
+version: 0.5.0+19
+
+environment:
+  sdk: ^3.13.0
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  Every package here can read all of the user's notes. 04-technical/TECH-STACK.md
+#  requires a written justification for each one, and treats a short list as a
+#  security property rather than a stylistic preference. Nothing is added to
+#  this file without a corresponding entry in that document.
+# ─────────────────────────────────────────────────────────────────────────────
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # libsodium. One audited C library covering Argon2id, XChaCha20-Poly1305,
+  # BLAKE2b and HMAC-SHA256 — see TECH-STACK.md "why libsodium and not
+  # cryptography". v4 builds the native library on demand through build hooks,
+  # so the old `sodium_libs` companion is gone — discontinued and folded in.
+  sodium: ^4.0.4
+
+  # The encrypted database. `sqlite3` 3.x bundles the native library itself and
+  # selects the SQLCipher build through the `hooks` block at the bottom of this
+  # file. It replaces sqlcipher_flutter_libs, which is end-of-life.
+  sqlite3: ^3.5.1
+  drift: ^2.34.3
+
+  # SHA-256, and only SHA-256. libsodium has it but the Dart binding does not
+  # expose it, and BIP-39's checksum is defined in terms of SHA-256 — using
+  # anything else would produce phrases no other tool could verify. Published
+  # by dart.dev (the Dart team), and its only dependency is typed_data.
+  crypto: ^3.0.7
+
+  # Locating the app's private storage directory. No plaintext ever goes there,
+  # but we still need to know where "there" is.
+  path_provider: ^2.1.5
+  path: ^1.9.1
+
+  # ── Localisation. See TECH-STACK.md "why these two and not a package" ──────
+  #
+  # Both ship with Flutter and the Dart team rather than being third-party, so
+  # rule 4's question — "what can this read, and does it need to exist?" — has
+  # an easy answer: they read ARB files at build time and a locale at run time,
+  # and they never see a note.
+  #
+  # `flutter_localizations` carries Material's own translated strings, which is
+  # the half nobody thinks about: without it a Spanish user gets a Spanish app
+  # with an English "Cancel" in every system dialog, and the date picker is in
+  # English regardless of what we do to our own copy.
+  flutter_localizations:
+    sdk: flutter
+  # Date, number and plural formatting per locale. `intl` is what
+  # `flutter_localizations` is built on, so it is already in the tree; naming it
+  # here is what lets our own code call `DateFormat`.
+  intl: any
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  drift_dev: ^2.34.3
+  build_runner: ^2.4.13
+
+# Deliberately NOT depended upon:
+#
+#   bip39  — unmaintained since 2021, and pulls in pointycastle, hex and crypto:
+#            four packages in the most security-critical path in the app. BIP-39
+#            is a frozen spec and an encoding rather than a cipher, so we
+#            implement it in lib/core/crypto/ and prove it against the official
+#            test vectors instead.
+#
+#   sqlcipher_flutter_libs, sqlite3_flutter_libs — both end-of-life. package:sqlite3
+#            carries the binaries now.
+#
+#   any HTTP client, any analytics, any crash reporter — see THREAT-MODEL.md.
+
+flutter:
+  uses-material-design: true
+  # Turns on the ARB → Dart step. See l10n.yaml for where it reads and writes.
+  generate: true
+
+  # The licence texts for every bundled face, shown in full inside the app at
+  # Settings → About → Fonts and licences. The SIL Open Font License requires
+  # the licence to travel with the software; shipping the files is how we do it.
+  assets:
+    - assets/licenses/
+    # ── Buy Me a Coffee's own mark. ROUND EIGHT, ISSUE 9 ──────────────
+    #
+    # `assets/brand/bmc_logo.png`, from their published brand pack. It is a
+    # trademark, so it is used as supplied and never recoloured — which is also
+    # why it is the one thing drawn in this app that does not come from
+    # `design/tokens.dart`.
+    #
+    # **ROUND NINE, ISSUE 9 — the transparent one.** *"Change the logo and use
+    # one which has no background!"*, and on the screenshot: *"A transparent
+    # logo — no Background."*
+    #
+    # Round eight used `bmc-logo-yellow.png`, the cup on their own yellow
+    # ground, and the note here argued the transparent one was unusable because
+    # its navy outline vanishes on this app's near-black. Composited against
+    # both palettes and looked at: it fades in dark mode, it does not vanish —
+    # the yellow cup body carries it and the navy reads as a darker silhouette.
+    # A hard-edged square of somebody else's yellow, in the quietest corner of
+    # the quietest screen, was the more expensive of the two mistakes, and it
+    # was visible in both palettes rather than one.
+    #
+    # The yellow variant is **deleted**, not merely unreferenced. An unused
+    # trademark in the APK is a claim the app is not making — the same reason
+    # Ko-fi's went in round eight.
+    #
+    # Trimmed to its own bounding box and resampled from their 1768-pixel
+    # original to 192, which is the 20-point icon at nearly 10x. The mark itself
+    # is not altered: same colours, same shape, same proportions.
+    #
+    # An asset rather than a package: rendering their SVG would mean adding
+    # `flutter_svg`, and `CLAUDE.md` rule 4 asks what a package is worth against
+    # the fact that every package can read all of the user's notes. A 10 KB PNG
+    # is worth more than that trade for one logo.
+    #
+    # Ko-fi's mark lived here from round three until round eight and has gone
+    # with it — an unused trademark sitting in the APK is a claim the app is no
+    # longer making.
+    - assets/brand/
+
+  # ───────────────────────────────────────────────────────────────────────────
+  #  The twelve faces the user can set their own writing in.
+  #
+  #  All SIL Open Font License 1.1, which permits bundling without a fee.
+  #  Static instances rather than variable files: Flutter's mapping from
+  #  `fontWeight` onto a variable font's `wght` axis is not something to bet a
+  #  release on, and two static cuts per family is 4.3 MB — which compresses to
+  #  well under three in the APK and is loaded lazily, one family at a time,
+  #  only when somebody actually selects it.
+  #
+  #  Nothing here is fetched at runtime. See lib/design/typefaces.dart.
+  # ───────────────────────────────────────────────────────────────────────────
+  fonts:
+    - family: NunitoSans
+      fonts:
+        - asset: assets/fonts/NunitoSans-400.ttf
+          weight: 400
+        - asset: assets/fonts/NunitoSans-600.ttf
+          weight: 600
+    - family: Manrope
+      fonts:
+        - asset: assets/fonts/Manrope-400.ttf
+          weight: 400
+        - asset: assets/fonts/Manrope-600.ttf
+          weight: 600
+    - family: EBGaramond
+      fonts:
+        - asset: assets/fonts/EBGaramond-400.ttf
+          weight: 400
+        - asset: assets/fonts/EBGaramond-600.ttf
+          weight: 600
+    - family: Fredoka
+      fonts:
+        - asset: assets/fonts/Fredoka-400.ttf
+          weight: 400
+        - asset: assets/fonts/Fredoka-600.ttf
+          weight: 600
+    - family: ComicNeue
+      fonts:
+        - asset: assets/fonts/ComicNeue-400.ttf
+          weight: 400
+        - asset: assets/fonts/ComicNeue-700.ttf
+          weight: 700
+    - family: Caveat
+      fonts:
+        - asset: assets/fonts/Caveat-400.ttf
+          weight: 400
+        - asset: assets/fonts/Caveat-600.ttf
+          weight: 600
+    - family: MedievalSharp
+      fonts:
+        - asset: assets/fonts/MedievalSharp-400.ttf
+          weight: 400
+    - family: JetBrainsMono
+      fonts:
+        - asset: assets/fonts/JetBrainsMono-400.ttf
+          weight: 400
+        - asset: assets/fonts/JetBrainsMono-600.ttf
+          weight: 600
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  Which native SQLite build gets bundled.
+#
+#  Plain "sqlite3" would give us an UNENCRYPTED database. "sqlcipher" selects
+#  the SQLCipher community build, which is what ADR-006 specifies: page-level
+#  AES-256 with a per-page HMAC, transparent to SQLite itself so indexes and
+#  FTS5 keep working.
+#
+#  If this line is ever removed or changed to `sqlite3`, the vault silently
+#  stops being encrypted and every test that checks for plaintext on disk must
+#  fail. That is the intended safety net.
+# ─────────────────────────────────────────────────────────────────────────────
+hooks:
+  user_defines:
+    sqlite3:
+      source: sqlcipher

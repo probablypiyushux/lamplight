@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    The one colour Android itself needs to know about.
+
+    Everything else in this app is a design token in lib/design/tokens.dart, and
+    CLAUDE.md rule 8 says a hex code inside a widget is a bug. The launch window
+    is the exception that proves it: it is painted by the operating system
+    before a single line of Dart has run, so there is no token layer available
+    to ask. Keep it in step with `LamplightColors.dark.canvas`.
+
+    It is the DARK canvas in both system themes, deliberately, because the app
+    itself defaults to dark whatever the phone is set to. Getting this wrong the
+    obvious way — leaving the template's white — means a full-screen white flash
+    before a near-black app, in an app people open in the evening. One dark
+    frame for someone who has chosen light mode is much the smaller cost.
+-->
+<resources>
+    <color name="lamplight_canvas">#0F0F0E</color>
+</resources>

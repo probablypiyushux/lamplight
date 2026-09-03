@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    The light icon's plate.
+
+    A flat fill rather than a second rasterised PNG at five densities: the
+    background layer of an adaptive icon is a plain colour in this design, and a
+    vector says that in nine lines instead of 40 KB of identical pixels.
+
+    The value is `LamplightColors.light.canvas` — the warm paper the app itself
+    uses in light mode, so the icon and the first screen behind it are the same
+    colour rather than nearly the same colour.
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#FAF9F5" />
+</shape>

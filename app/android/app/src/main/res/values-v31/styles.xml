@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    THE SPLASH, ON ANDROID 12 AND ABOVE. **ISSUE 24.**
+
+    > *"Why does the app keep sometimes showing me glimpses of the old app icon?
+    > When I open the app for just a millisecond I see the default app icon!"*
+
+    He is describing this file's absence.
+
+    ══ WHAT ANDROID 12 CHANGED, AND WHY THE OLD SETUP STOPPED WORKING ═════════
+
+    Up to Android 11, the window the system paints between the tap and Flutter's
+    first frame is `android:windowBackground` — which is `launch_background.xml`,
+    which is our own plate with our own mark centred on it. That is what
+    `values/styles.xml` sets up and it is correct there.
+
+    From Android 12 the system **ignores `windowBackground` for that window** and
+    draws its own splash screen instead: a solid colour, with an icon in the
+    middle. If the theme does not say which colour and which icon, it uses the
+    theme's `colorBackground` and the **application's** icon — that is,
+    `android:icon` on `<application>`, which is `@mipmap/ic_launcher`, the dark
+    amber tile, whatever theme or accent the person has chosen inside the app.
+
+    So on his phone, every cold start was: a system splash showing the amber
+    icon, then the app in whatever he had actually picked. A glimpse of the old
+    icon, for about a millisecond, exactly as reported. Nothing was wrong with
+    the icon; the launch window had simply stopped being ours.
+
+    ══ WHY THE ICON HERE IS THE ADAPTIVE FOREGROUND ═══════════════════════════
+
+    Android wants a 288dp drawable whose content sits inside the middle 192dp —
+    two thirds. `ic_launcher_foreground` is drawn at exactly `contentScale:
+    0.667` for the adaptive icon's own safe zone, which is the same proportion
+    for the same reason, so it fits without a second asset to keep in step.
+
+    `windowSplashScreenIconBackgroundColor` is deliberately **not** set. Setting
+    it puts a filled circle behind the mark, and the mark is a lamp casting
+    light — a disc behind it would cut the light off at its edge.
+
+    ══ AND WHY THIS IS THE DARK PLATE IN BOTH SYSTEM THEMES ═══════════════════
+
+    The same decision, for the same reason, as `values/colors.xml`: the app
+    itself defaults to dark whatever the phone is set to, and one dark frame for
+    somebody who has chosen light is a much smaller cost than a full-screen white
+    flash before a near-black app. `values-night-v31` repeats this file rather
+    than differing from it, because night-mode qualifiers outrank version
+    qualifiers — without that copy, a phone in dark mode would fall back to
+    `values-night/styles.xml` and get the system default again.
+-->
+<resources>
+    <style name="LaunchTheme" parent="@android:style/Theme.Black.NoTitleBar">
+        <!-- Still set, and still used: Android 11 and below reach this file too
+             on a phone whose API level is 31+ only in the qualifier's sense —
+             and it is what paints behind the splash while it fades out. -->
+        <item name="android:windowBackground">@drawable/launch_background</item>
+
+        <item name="android:windowSplashScreenBackground">@color/lamplight_canvas</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_foreground</item>
+    </style>
+
+    <style name="NormalTheme" parent="@android:style/Theme.Black.NoTitleBar">
+        <item name="android:windowBackground">?android:colorBackground</item>
+    </style>
+</resources>

@@ -1,0 +1,173 @@
+# Everything a machine can check about Lamplight, on every push.
+#
+# ══ WHY THIS EXISTS ═══════════════════════════════════════════════════════════
+#
+# `PLAN.md` §12 has asked for it since the repository was created, with a reason
+# that has already come true twice: *"cheap now that there is a remote, and it is
+# what would have caught the CRLF drift and the two stale schema pins."*
+#
+# The deeper argument is `THREAT-MODEL.md` adversary #4 — us. The app's central
+# claim is that a stranger can check it rather than trust it, and a check that
+# only ever runs on one laptop, when somebody remembers, is not a check a
+# stranger can rely on. Both release gates run here, against a **built release
+# APK**, so the claim is re-proved on every commit rather than on the days
+# somebody thought to look.
+#
+# ── WHAT THIS DELIBERATELY DOES NOT DO ───────────────────────────────────────
+#
+# **It does not sign anything.** No keystore, no `key.properties`, no secret of
+# any kind is available to this workflow. `CLAUDE.md` rule 9 is that the signing
+# key never leaves the machine it was made on, and a CI secret is a copy of it
+# on somebody else's computer. The APK built here is debug-signed on purpose and
+# is only ever read, never published.
+#
+# **It does not run the on-device tests.** `integration_test/` needs an emulator
+# with hardware acceleration; the free runners have none, and a green tick from
+# a test that silently skipped is worse than no tick. There is a job below that
+# is explicitly opt-in for when somebody wants to pay for that.
+
+name: verify
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  # So the badge can be refreshed and a release can be gated by hand.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# A push that lands while an older run is still going supersedes it. Nobody
+# needs to know whether the commit from four minutes ago was green.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Pinned rather than `stable`. A Flutter release that changes a lint or a
+  # default should be a commit somebody made on purpose, not a build that broke
+  # on a Tuesday for reasons nobody can reproduce locally.
+  FLUTTER_VERSION: '3.47.0'
+
+jobs:
+  # ───────────────────────────────────────────────────────────────────────────
+  analyse-and-test:
+    name: analyser and the suite
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: pub get
+        working-directory: app
+        run: flutter pub get
+
+      - name: The analyser, with nothing allowed through
+        working-directory: app
+        # `--fatal-infos`: this project has run at zero for its whole life, and
+        # the difference between zero and "a few infos" is the difference
+        # between a signal and a list.
+        run: flutter analyze --fatal-infos --fatal-warnings
+
+      - name: The suite
+        working-directory: app
+        run: flutter test --reporter=expanded
+
+  # ───────────────────────────────────────────────────────────────────────────
+  release-gates:
+    name: the two release gates, against a built APK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: pub get
+        working-directory: app
+        run: flutter pub get
+
+      # Debug-signed, deliberately — see the header. What is being checked is
+      # the *merged manifest* and the *native symbols*, and neither depends on
+      # who signed it.
+      - name: Build a release APK
+        working-directory: app
+        run: flutter build apk --release
+
+      - name: No network permission survived the manifest merge
+        # The check that matters most. A dependency — or a transitive one — can
+        # add INTERNET through its own manifest, and it will not appear in a
+        # diff of our source. This reads the built artifact.
+        run: bash tool/verify_no_internet.sh
+
+      - name: Nothing native can open a socket
+        # A permission check says nothing about native code, and a symbol check
+        # says nothing about the manifest. Both, or neither is worth much.
+        #
+        # `LAMPLIGHT_STRICT=1` turns the script's two "cannot check" paths into
+        # failures. Without it, a runner with no NDK — or a build that quietly
+        # stopped shipping the native library — produces a green tick that means
+        # "nothing was checked" while looking exactly like "nothing was found".
+        env:
+          LAMPLIGHT_STRICT: '1'
+        run: bash tool/verify_no_sockets.sh
+
+  # ───────────────────────────────────────────────────────────────────────────
+  on-device:
+    name: the plaintext scan (opt-in, needs an emulator)
+    # Off by default. A free runner has no hardware acceleration, so this takes
+    # 20+ minutes and is flaky — and a scan that silently skipped would be the
+    # worst possible outcome, because the tick would say the opposite of the
+    # truth. Run it by hand from the Actions tab before a release.
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: pub get
+        working-directory: app
+        run: flutter pub get
+
+      - name: Enable KVM, or this is unusably slow
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+            | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: integration_test/nothing_in_the_clear_test.dart
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          # arm64-v8a is the only ABI the release ships, but an x86_64 emulator
+          # is what a runner can do. The native whisper library is absent there,
+          # which this test does not touch.
+          api-level: 34
+          arch: x86_64
+          target: google_apis
+          profile: pixel_6
+          script: cd app && flutter test integration_test/nothing_in_the_clear_test.dart

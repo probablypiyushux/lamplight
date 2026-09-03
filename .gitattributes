@@ -1,0 +1,26 @@
+# Normalise line endings to LF inside the repository, whatever the machine.
+# This project is written on Windows, will be built by CI on Linux, and will
+# eventually be built on macOS for iOS. Without this, the same file looks
+# changed on every machine and diffs become unreadable.
+* text=auto eol=lf
+
+# Binary files must never be line-ending converted — doing so corrupts them.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.ttf binary
+*.otf binary
+*.jks binary
+*.keystore binary
+*.vault binary
+
+# His feedback documents, added 28 August 2026 when `Thought Process/` stopped
+# being ignored. `* text=auto eol=lf` above applies to everything, and while
+# Git's own heuristic would almost certainly classify both of these as binary
+# on content, "almost certainly" is not a good basis for the only copy of a
+# document that exists nowhere else. A `.docx` is a zip archive and a `.pdf`
+# has binary streams in it; one rewritten CRLF in either is a file that no
+# longer opens.
+*.pdf binary
+*.docx binary

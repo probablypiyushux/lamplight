@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    The one place the camera app is allowed to write.
+
+    `cache-path` with a single named subdirectory, not `external-path` and not
+    the whole cache. A FileProvider grants access to whatever these paths
+    describe, so describing more than one directory would hand the camera app —
+    and anything else we ever grant a URI to — a wider door than it needs.
+
+    Everything that lands here is plaintext for a few hundred milliseconds
+    before AttachmentImporter encrypts it and CapturedFile.scrub overwrites and
+    deletes it. It is app-private the whole time: no other app can list it, and
+    it is not in any shared media store, which is why no storage permission is
+    needed to write it.
+-->
+<paths>
+    <cache-path name="captures" path="captures/" />
+
+    <!--
+        ISSUE 4 and 13 - "open with", and the second reason this file has more
+        than one line in it.
+
+        The same reasoning as above applies and is worth restating rather than
+        assumed: one named subdirectory, not the whole cache. A file lent to
+        another app lives here for as long as somebody is reading it and is
+        overwritten with zeroes and deleted the moment Lamplight is in front
+        again - see HandOff.kt and lib/core/platform/hand_off.dart, which also
+        records the terms on which rule 2 was lifted for this path.
+
+        Still app-private, still not in any media store, still invisible to
+        every app that has not been handed a URI by the user's own choice in
+        the chooser.
+    -->
+    <cache-path name="handoff" path="handoff/" />
+</paths>

@@ -1,0 +1,15 @@
+# How the ARB files become Dart. See lib/l10n/README.md for the whole argument.
+arb-dir: lib/l10n
+template-arb-file: app_en.arb
+output-localization-file: app_localizations.dart
+output-class: L
+# Generated into the source tree rather than into .dart_tool, so the analyser,
+# the IDE and a reader of this repository all see the same thing — and so a
+# stranger auditing the app can read exactly what it says in every language
+# without running a build. That is the same argument as publishing the source.
+output-dir: lib/l10n/generated
+# A missing translation falls back to English rather than failing the build,
+# because nine languages will always be catching up with one and a half-finished
+# translation must never be the reason somebody cannot open their journal.
+untranslated-messages-file: lib/l10n/UNTRANSLATED.txt
+nullable-getter: false

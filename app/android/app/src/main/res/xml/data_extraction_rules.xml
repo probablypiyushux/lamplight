@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Android 12 (API 31) and above.
+
+    Two separate channels can copy an app's private data off the device, and
+    android:allowBackup="false" only closes the first of them:
+
+      cloud-backup    Google's automatic backup to the user's Drive.
+      device-transfer Phone-to-phone migration when someone sets up a new device.
+
+    Device transfer is NOT governed by allowBackup, which is exactly why
+    02-security/THREAT-MODEL.md rule 5 asks for explicit rules rather than
+    trusting the one flag. Both channels are refused here, for every domain.
+
+    Note what this means: Lamplight's data does not move to a new phone by
+    itself. That is deliberate. Restoring is the .vault file's job, because
+    that file is encrypted with a key the user holds and we do not — whereas
+    a device transfer would hand the encrypted database to a channel we do
+    not control and cannot audit.
+-->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="root" />
+        <exclude domain="file" />
+        <exclude domain="database" />
+        <exclude domain="sharedpref" />
+        <exclude domain="external" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="root" />
+        <exclude domain="file" />
+        <exclude domain="database" />
+        <exclude domain="sharedpref" />
+        <exclude domain="external" />
+    </device-transfer>
+</data-extraction-rules>

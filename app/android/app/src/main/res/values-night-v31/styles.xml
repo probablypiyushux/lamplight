@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    The same as `values-v31/styles.xml`, and this copy is load-bearing.
+
+    Android resolves qualifiers in a fixed order of precedence, and **night mode
+    outranks platform version**. So on an Android 13 phone with the system in
+    dark mode, `values-night/styles.xml` wins over `values-v31/styles.xml` — and
+    that file says nothing about the splash screen, so the system falls back to
+    its own: the application icon, `@mipmap/ic_launcher`, on a plain background,
+    which is the whole of **ISSUE 24**'s "glimpses of the old app icon".
+
+    Duplicating four lines is the price of that rule. The alternative — one file
+    that varies — does not exist, because there is no qualifier for "31 or above,
+    regardless of night".
+
+    The values are identical to the day file on purpose, not by oversight. The
+    reasoning is written out there and in `values/colors.xml`: the app defaults
+    to dark whatever the phone is set to, so the launch window is dark in both.
+-->
+<resources>
+    <style name="LaunchTheme" parent="@android:style/Theme.Black.NoTitleBar">
+        <item name="android:windowBackground">@drawable/launch_background</item>
+        <item name="android:windowSplashScreenBackground">@color/lamplight_canvas</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_foreground</item>
+    </style>
+
+    <style name="NormalTheme" parent="@android:style/Theme.Black.NoTitleBar">
+        <item name="android:windowBackground">?android:colorBackground</item>
+    </style>
+</resources>

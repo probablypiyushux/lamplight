@@ -1,0 +1,20 @@
+# GitHub Pages exists here for exactly one reason: Google will not publish an
+# app without a privacy-policy URL a reviewer can open in a browser.
+#
+# The trap this file avoids: Jekyll only converts a Markdown file that carries
+# front matter. Without it the policy is served as raw text, which reads as
+# broken and is a common store rejection. PRIVACY-POLICY.md carries front
+# matter and a permalink; this gives it something to render into.
+title: Lamplight
+description: A private, offline-first journal for Android. No account, no server, no internet permission.
+theme: jekyll-theme-minimal
+
+# Everything here is documentation for people, not a website. Only the policy
+# is meant to be browsed, so nothing else is built.
+include:
+  - 05-shipping
+exclude:
+  - app
+  - tool
+  - bmcbrand
+  - .github

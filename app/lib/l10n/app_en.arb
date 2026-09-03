@@ -1,0 +1,1716 @@
+{
+  "@@locale": "en",
+  "appName": "Lamplight",
+  "@appName": {
+    "description": "The name of the app. A proper noun — it is NOT translated in any locale, and ADR-010 calls it permanent."
+  },
+  "lockTypePasscode": "Type your passcode.",
+  "@lockTypePasscode": {
+    "description": "The whole instruction on the lock screen. A statement, not a demand — no 'please', no exclamation."
+  },
+  "lockWrongPasscode": "That did not open the vault.",
+  "@lockWrongPasscode": {
+    "description": "Shown after a failed unlock. Deliberately says what happened rather than 'incorrect password' — it does not accuse the person of being wrong."
+  },
+  "lockCheckAndRetry": "Check the passcode and try again.",
+  "lockForgot": "I forgot my passcode",
+  "lockTypeTwelveWords": "Type your twelve words.",
+  "lockUsePasscodeInstead": "Use my passcode instead",
+  "lockUseFingerprint": "Use your fingerprint",
+  "lockFingerprintFailed": "Fingerprint unlock did not work.",
+  "lockFingerprintUnavailable": "Fingerprint unlock is not available.",
+  "lockOpening": "Opening…",
+  "lockNothingDeleted": "Nothing has been deleted, and nothing will be.",
+  "@lockNothingDeleted": {
+    "description": "Reassurance after repeated failures. A promise the user is owed — it must survive translation intact."
+  },
+  "lockTryAgainSeconds": "{count, plural, one{Try again in one second.} other{Try again in {count} seconds.}}",
+  "@lockTryAgainSeconds": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "lockTryAgainMinutes": "{count, plural, one{Try again in one minute.} other{Try again in {count} minutes.}}",
+  "@lockTryAgainMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dayToday": "TODAY",
+  "@dayToday": {
+    "description": "Shown under the date when the day on screen is today. Upper case in English; some scripts have no case, and that is fine — do not fake it."
+  },
+  "dayPrevious": "The day before",
+  "dayNext": "The day after",
+  "daySearch": "Search",
+  "daySettings": "Settings",
+  "dayChooseDate": "Choose a different date.",
+  "dayEmptyToday": "Anything you want to keep?",
+  "@dayEmptyToday": {
+    "description": "The empty day, on today. A QUESTION, never an instruction — ETHICAL-DESIGN.md forbids anything that implies the user owes the app writing. 'Write something today!' would be wrong in every language."
+  },
+  "dayEmptyPast": "Nothing on this day.",
+  "@dayEmptyPast": {
+    "description": "The empty day, in the past. A plain statement of fact. Not sad, not an invitation — there is nothing to start on a day that is over."
+  },
+  "dayWriteSomething": "Write something for today",
+  "dayLineAsk": "What was this day?",
+  "@dayLineAsk": {
+    "description": "Invitation to name a day, shown only once the day has something on it. A question again, for the same reason as dayEmptyToday."
+  },
+  "dayLineHint": "What was this day?",
+  "dayLineSemantic": "Say what this day was, in one line",
+  "dayLineChange": "This day: {note}. Change it.",
+  "@dayLineChange": {
+    "placeholders": {
+      "note": {
+        "type": "String"
+      }
+    }
+  },
+  "dayEndOfDay": "The end of the day",
+  "dayStartOfDay": "The start of the day",
+  "firstPageTitle": "This is empty because you have not written in it yet.",
+  "@firstPageTitle": {
+    "description": "The first line a brand-new vault ever shows. About the person, not about the app — deliberately NOT 'Welcome to Lamplight'."
+  },
+  "firstPageShelves": "Days are the shelves. Anything you keep lands on the day it happened, and stays there.",
+  "@firstPageShelves": {
+    "description": "The one sentence explaining the whole organising idea."
+  },
+  "firstPageWayWrite": "Tap this page to write.",
+  "firstPageWayVoice": "Hold the microphone to say it instead.",
+  "firstPageWayAttach": "Add a photograph, a video or a document.",
+  "firstPagePromise": "None of it leaves this phone.",
+  "@firstPagePromise": {
+    "description": "The single promise on the first page. This is a factual claim about the app and must stay exactly as strong and exactly as narrow in every language — not 'your data is safe', not 'we protect your privacy'."
+  },
+  "firstPageSemantic": "Write the first thing in your journal",
+  "captureVoice": "Record a voice note",
+  "capturePhoto": "Take or choose a photo",
+  "captureFile": "Attach a file",
+  "backupNeverMade": "Nothing here is backed up. If this app is removed, your notes go with it.",
+  "@backupNeverMade": {
+    "description": "Shown once the vault holds enough to be worth losing. It states a consequence rather than urging — the fact is the argument, and it must not become 'Back up now!' in any language."
+  },
+  "backupStale": "It is a while since the last backup.",
+  "backupOutOfDate": "Your backup still opens with your old passcode.",
+  "backupAction": "Back up",
+  "folderAlsoIn": "Also in {name}. Open the folder.",
+  "@folderAlsoIn": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    },
+    "description": "A folder chip under a filed entry. 'Also' is load-bearing: a folder is a second place to find something, never a move. If the translation implies the entry was moved out of its day, the whole model is misrepresented."
+  },
+  "folderStaysHere": "It stays where it is. A folder is a second place to find it.",
+  "folderAddTo": "Add to a folder",
+  "folderNew": "New folder",
+  "folderNoneYet": "No folders yet. One per person, or per phase — whatever you keep coming back to.",
+  "folderLesson": "Still on {day}. Also in {folder}.",
+  "@folderLesson": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "folder": {
+        "type": "String"
+      }
+    },
+    "description": "Shown once, the first time anything is filed. It teaches the single non-obvious thing about folders here."
+  },
+  "actionDone": "Done",
+  "actionCancel": "Cancel",
+  "actionDelete": "Delete",
+  "actionSave": "Save",
+  "actionEdit": "Edit",
+  "actionUndo": "Undo",
+  "actionOpen": "Open",
+  "actionRemove": "Remove",
+  "actionNotNow": "Not now",
+  "settingsTitle": "Settings",
+  "settingsAppearance": "Appearance",
+  "settingsSecurity": "Locking and security",
+  "settingsYourNotes": "Your notes",
+  "settingsBackup": "Backup",
+  "settingsAbout": "About",
+  "settingsLanguage": "Language",
+  "@settingsLanguage": {
+    "description": "The row that opens the language picker. Always shown in the CURRENT language."
+  },
+  "settingsLanguageNote": "The words the app uses. What you write is yours, in any language, whatever this is set to.",
+  "@settingsLanguageNote": {
+    "description": "Under the language row. It says the thing people actually worry about: changing the interface language does not change what they can type."
+  },
+  "settingsLanguageSystem": "Follow the phone",
+  "@settingsLanguageSystem": {
+    "description": "The default: use whatever language the phone is set to."
+  },
+  "entryMattered": "This one mattered",
+  "entryMarked": "Marked as one that mattered.",
+  "entryMarkRemoved": "Mark removed.",
+  "entryDeleted": "Deleted.",
+  "entryEarlierVersions": "{count,plural, =1{One earlier version} other{{count} earlier versions}}",
+  "entryKeepsWords": "Keeps the words",
+  "entryKindInTrash": "The {kind} is in the trash.",
+  "entryKindInTrashWords": "The {kind} is in the trash. The words are still here.",
+  "trashConfirmBody": "{count,plural, =1{One entry, and every earlier version of it. This cannot be undone.} other{{count} entries, and every earlier version of them. This cannot be undone.}}",
+  "trashEmptyEntry": "Empty entry",
+  "kindPhoto": "Photo",
+  "kindVideo": "Video",
+  "kindRecording": "Recording",
+  "kindFile": "File",
+  "entryNoLongerMarked": "No longer marked",
+  "entryFindAgain": "Find it again from the search screen",
+  "searchGoTo": "Go to",
+  "searchFolders": "Folders",
+  "searchEntriesOne": "1 entry",
+  "searchEntriesMany": "{count} entries",
+  "@searchEntriesMany": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "searchNothingFound": "Nothing matched that.",
+  "searchEverythingInstead": "Search everything instead",
+  "onboardNoAccount": "There is no account.",
+  "@onboardNoAccount": {
+    "description": "The first thing a stranger ever reads in this app. A statement of fact about the software, not a boast. The ABSENCE of a signup screen is the pitch, so this must not be softened into a welcome."
+  },
+  "onboardPromiseBody": "Your notes stay on this phone.\nWe have no server. We cannot read them.\nWe cannot recover them either.",
+  "@onboardPromiseBody": {
+    "description": "Three factual claims, unsoftened. The third — that recovery is impossible — must NOT be softened or dropped in translation. It is the cost of the other two, and hiding it would be the exact dark pattern ETHICAL-DESIGN.md forbids."
+  },
+  "onboardBegin": "Begin",
+  "onboardHaveBackup": "I have a backup",
+  "onboardSetPasscode": "Set a passcode",
+  "onboardPasscodeBody": "This is the only thing that opens your notes. A phrase you can remember is stronger than four digits.",
+  "@onboardPasscodeBody": {
+    "description": "Advice, not a rule. 'Stronger than' is a comparison, not a requirement — do not translate it into an instruction or a minimum."
+  },
+  "onboardPasscodeLabel": "Passcode",
+  "onboardPasscodeAgain": "Type it again",
+  "onboardSettingUp": "Setting up…",
+  "onboardContinue": "Continue",
+  "onboardPasscodesDiffer": "Those two do not match.",
+  "@onboardPasscodesDiffer": {
+    "description": "Shown when the two fields differ. States what is true of the two entries; it does not tell the person they are wrong. Same principle as lockWrongPasscode."
+  },
+  "onboardVaultFailed": "Your vault could not be created.",
+  "onboardVaultFailedThen": "Nothing was saved. Try once more.",
+  "onboardWriteWords": "Write these twelve words\non paper",
+  "onboardWordsBody": "We do not have a copy. We cannot send them to you. There is no support email that can help you.\n\nNot a screenshot — paper. A screenshot sits in your gallery, which is the first place anyone looks.",
+  "@onboardWordsBody": {
+    "description": "The most important paragraph in onboarding. 'There is no support email that can help you' is literal and stays literal. 'Not a screenshot — paper' is the instruction that actually matters, and the reason given for it is the one that persuades."
+  },
+  "onboardWrittenDown": "I've written them down",
+  "onboardCopyWords": "Copy the twelve words",
+  "onboardClipboardNote": "The clipboard clears itself after a minute. Other apps can read it until it does.",
+  "@onboardClipboardNote": {
+    "description": "The honest cost of the convenience directly above it. ETHICAL-DESIGN.md cuts both ways: offering the copy as though it were free would be a dark pattern, and frightening somebody out of their own password manager would be another."
+  },
+  "onboardCopied": "Copied. It clears itself in a minute — paste it somewhere safe now.",
+  "onboardCopyFailed": "That could not be copied. Writing them down is safer anyway.",
+  "onboardCheckThree": "Check three of them",
+  "onboardCheckBody": "So we know the paper is right, not the screen.",
+  "@onboardCheckBody": {
+    "description": "Why the quiz exists, in one line. UX-FLOWS.md flow 1 screen 3: the point is proof they actually wrote the words down, not that they can read a screen."
+  },
+  "onboardWordNumber": "Word {number}",
+  "@onboardWordNumber": {
+    "description": "Field label in the three-word check. {number} is 1-12, already offset for humans.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardWordWrong": "Word {number} is not right. Check what you wrote down.",
+  "@onboardWordWrong": {
+    "description": "Shown when a checked word does not match. Points at the paper, not at the person.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardShowWords": "Show me the words again",
+  "onboardFingerprintTitle": "Open it with your fingerprint?",
+  "@onboardFingerprintTitle": {
+    "description": "A QUESTION, and the screen is skippable with the skip at the same size as the button — ETHICAL-DESIGN.md forbids making the safe answer the hard one. There is a real reason to say no here: a fingerprint is easier to compel than a passphrase."
+  },
+  "onboardFingerprintBody": "So you do not have to type that passphrase every time.",
+  "onboardFingerprintExplain": "Your passphrase is still the key. The fingerprint only opens this vault, only on this phone, and Android switches it off by itself if the fingerprints on the phone ever change — so nobody can add theirs and get in. It is never part of a backup.",
+  "@onboardFingerprintExplain": {
+    "description": "Four factual claims about scope. Deliberately the same promise the Settings row makes, word for word — two different descriptions of one security feature is how somebody ends up trusting neither."
+  },
+  "onboardFingerprintWaiting": "Waiting for your finger…",
+  "onboardFingerprintUse": "Use my fingerprint",
+  "onboardFingerprintFailed": "That did not work.",
+  "onboardOneLastThing": "One last thing",
+  "onboardNameBody": "What should Lamplight call you? It stays on this phone, and you can change it or leave it out.",
+  "@onboardNameBody": {
+    "description": "A question, and genuinely optional. 'Lamplight' is a proper noun and is NOT translated in any locale — ADR-010."
+  },
+  "onboardFingerprintOn": "Your fingerprint will open Lamplight from now on.",
+  "@onboardFingerprintOn": {
+    "description": "Confirms that the system prompt just answered actually did something. 'Lamplight' is NOT translated — ADR-010."
+  },
+  "onboardYourName": "Your name",
+  "onboardStartWriting": "Start writing",
+  "onboardSkip": "Skip",
+  "settingsGroupLook": "How it looks and speaks",
+  "@settingsGroupLook": {
+    "description": "Settings group heading. Covers the theme, the typeface and the app's own language — everything about presentation. Upper-cased by LampGroup in English; scripts without case are left alone."
+  },
+  "settingsGroupWhoCanOpen": "Who can open it",
+  "@settingsGroupWhoCanOpen": {
+    "description": "Settings group heading for the lock, the passcode and the fingerprint. Phrased as what it protects rather than as 'Security', which names the machinery instead of the concern."
+  },
+  "settingsGroupKeeping": "Keeping it, and moving it",
+  "@settingsGroupKeeping": {
+    "description": "Settings group heading covering backup, the readable export and the importer — everything about a copy of the journal existing somewhere else, or arriving from somewhere else."
+  },
+  "settingsAppearanceNote": "Theme, font, colour, page",
+  "settingsFolders": "Folders",
+  "settingsFoldersNote": "People, places, phases",
+  "@settingsFoldersNote": {
+    "description": "Subtitle for Folders. Three examples rather than a definition, because a folder in this app is whatever the person keeps coming back to. Not an exhaustive list — pick three natural ones in your language."
+  },
+  "settingsMedia": "Media",
+  "settingsMediaNote": "Photos, video, sound and documents",
+  "mediaGroupDocuments": "Documents",
+  "mediaDocumentsKept": "Kept exactly as they arrived",
+  "mediaDocumentsFooter": "A PDF or a Word file is already compressed inside, so squeezing one again saves about five per cent. Making a real difference would mean re-encoding the pictures in it, and that permanently blurs the small text in a scan — which you would find out years later, on the day you needed to read it.",
+  "@mediaGroupDocuments": {
+    "description": "Heading for the documents group on the Media settings screen."
+  },
+  "@mediaDocumentsKept": {
+    "description": "States that documents are stored byte for byte as imported."
+  },
+  "@mediaDocumentsFooter": {
+    "description": "Why there is no size control for documents: measured on real files, lossless compression gains 3.7-7.1% on PDFs and DOCX, and lossy compression destroys small text in a scan."
+  },
+  "@settingsMediaNote": {
+    "description": "Subtitle for the Photos, video and sound row. Names the two things on that screen: how much a file is compressed, and transcription."
+  },
+  "settingsTrash": "Trash",
+  "settingsTrashNote": "Deleted entries, kept for 30 days",
+  "@settingsTrashNote": {
+    "description": "Subtitle for Trash. A plain statement of the retention period, not a warning."
+  },
+  "settingsReadableCopy": "Readable copy",
+  "settingsReadableCopyNote": "Markdown and your files, in a folder you choose",
+  "@settingsReadableCopyNote": {
+    "description": "Subtitle for the readable export. 'Markdown' stays as the word Markdown — it is a format name, not a description."
+  },
+  "settingsBringIn": "Bring in an old journal",
+  "settingsBringInNote": "Text files from another app, filed by their date",
+  "@settingsBringInNote": {
+    "description": "Subtitle for the importer. Says what it accepts and what it does with it."
+  },
+  "settingsKeepingFooter": "A backup is locked with your passcode, exactly like the vault. A readable copy is not locked at all — it is plain files in a folder you choose.",
+  "@settingsKeepingFooter": {
+    "description": "Footer under the backup/export/import group. The contrast between the two is the entire point: a backup is locked, a readable copy is not. Do not soften the second half — somebody needs to know what they are making before they leave it in a folder."
+  },
+  "backupNever": "Never backed up",
+  "backupToday": "Backed up today",
+  "backupYesterday": "Backed up yesterday",
+  "backupDaysAgo": "{count, plural, other{Backed up {count} days ago}}",
+  "@backupDaysAgo": {
+    "description": "How long since the last backup. {count} is the number of days, always 2 or more — today and yesterday have their own strings because most languages say those differently.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mediaGroupIncoming": "On the way in",
+  "mediaGroupVoice": "Voice notes",
+  "mediaIncomingFooter": "Lamplight never keeps a second, smaller copy — what you choose here is what is stored, and the original is not kept anywhere else.",
+  "@mediaIncomingFooter": {
+    "description": "Footer under the photo and video size rows. The point is that there is no second copy: what you choose is what is stored, and the original is not kept anywhere."
+  },
+  "mediaVoiceFooter": "Transcribing happens on this phone, by the recogniser Android already has. Nothing said into Lamplight is sent anywhere, and the app has no permission to send it.",
+  "@mediaVoiceFooter": {
+    "description": "Footer under the transcription rows. A factual claim about the software and it must stay exactly that strong and that narrow — the recogniser is the phone's own, and the app has no permission to send anything anywhere. Not 'your data is safe'."
+  },
+  "mediaPhotoSize": "Photo size",
+  "mediaVideoSize": "Video size",
+  "mediaAskEachTime": "Ask each time",
+  "accentAmber": "Amber",
+  "accentAmberNote": "A lamp at night. The default.",
+  "@accentAmberNote": {
+    "description": "The default accent. Evokes a lamp burning at night, which is the whole image the app is named for — keep that picture rather than the literal words if your language has a better one for it."
+  },
+  "accentRose": "Rose",
+  "accentRoseNote": "Warm pink. Softer than the amber.",
+  "accentSage": "Sage",
+  "accentSageNote": "Quiet green. The calmest of the six.",
+  "@accentSageNote": {
+    "description": "'The calmest of the six' — a comparison among the accents, not a claim about the colour in general."
+  },
+  "accentSlate": "Slate",
+  "accentSlateNote": "Cool blue-grey. The most neutral.",
+  "accentPlum": "Plum",
+  "accentPlumNote": "Deep purple.",
+  "accentEmber": "Ember",
+  "accentEmberNote": "Burnt orange. The warmest.",
+  "surfacePlain": "Plain",
+  "surfacePlainNote": "A flat page.",
+  "surfacePaper": "Paper",
+  "surfacePaperNote": "A soft grain, so the page reads as a surface. The default.",
+  "@surfacePaperNote": {
+    "description": "'Reads as a surface' means the eye takes it for a material rather than for an empty background. The contrast being drawn is with surfacePlain."
+  },
+  "surfaceLamplit": "Lamplit",
+  "surfaceLamplitNote": "Paper, with the lamp on.",
+  "surfaceStarMap": "Star map",
+  "surfaceStarMapNote": "One sky, turning with the clock. Never the same twice in a day.",
+  "@surfaceStarMapNote": {
+    "description": "One sky, rotating at the real sidereal rate. 'Never the same twice in a day' is literally true and is the point — it is a sky, not a screensaver."
+  },
+  "rulingNone": "None",
+  "rulingNoneNote": "Nothing printed on the page.",
+  "rulingLines": "Lines",
+  "rulingLinesNote": "Ruled like a notebook.",
+  "rulingIsometric": "Isometric",
+  "rulingIsometricNote": "Drafting paper, for thinking in three dimensions.",
+  "rulingTriangle": "Triangle",
+  "rulingTriangleNote": "A field of equilateral triangles.",
+  "rulingDots": "Dot grid",
+  "rulingDotsNote": "A dot at each crossing. The quietest of the four.",
+  "@rulingDotsNote": {
+    "description": "'The quietest of the four' compares it with the other rulings, not with a blank page."
+  },
+  "faceSystem": "System",
+  "faceSystemNote": "Whatever the rest of your phone uses.",
+  "@faceSystemNote": {
+    "description": "The platform's own font. Not a Lamplight typeface at all."
+  },
+  "faceSerif": "System Serif",
+  "faceSerifNote": "Your phone’s own serif.",
+  "faceCalmNote": "Soft edges, wide letters.",
+  "faceModernNote": "Tight and current.",
+  "faceOldStyleNote": "A book face from the 1500s.",
+  "facePlayfulNote": "Round and cheerful.",
+  "faceChildlikeNote": "An exercise book.",
+  "faceHandwrittenNote": "Handwriting, still readable at length.",
+  "@faceHandwrittenNote": {
+    "description": "The point is the qualification: it looks handwritten AND you can still read a page of it. Both halves matter."
+  },
+  "faceMedievalNote": "A scribe’s hand. One weight only.",
+  "@faceMedievalNote": {
+    "description": "A scribe's hand. 'One weight only' means there is no bold — a real limitation, said plainly."
+  },
+  "faceMonoNote": "Every letter the same width.",
+  "qualityOriginal": "Keep the original",
+  "@qualityOriginal": {
+    "description": "Shared by the photo and the video size settings. The two have different notes but the same three choices."
+  },
+  "qualityBalanced": "Balanced",
+  "qualitySmaller": "Smaller",
+  "photoOriginalNote": "Kept exactly as your camera made it. The largest files — and they keep the place the photo was taken, which Lamplight otherwise removes.",
+  "@photoOriginalNote": {
+    "description": "The second sentence is the one that matters and must not be dropped: keeping the original also keeps the GPS location, which Lamplight otherwise strips. Somebody choosing this should know they are choosing that too."
+  },
+  "photoBalancedNote": "Much smaller, and hard to tell apart from the original. The default.",
+  "photoSmallerNote": "Half the size again. You may notice it if you crop right in.",
+  "videoOriginalNote": "Kept exactly as your camera recorded it. The largest files by a long way.",
+  "videoBalancedNote": "Much smaller, and hard to tell apart from the original. The default.",
+  "@videoBalancedNote": {
+    "description": "'The default.' is a fragment on purpose in English — a short label after the sentence. Use whatever is natural rather than forcing the fragment."
+  },
+  "videoSmallerNote": "Half the size again. You may notice it on a big screen.",
+  "appearanceTitle": "Appearance",
+  "appearanceTheme": "Theme",
+  "appearanceThemeDark": "Dark",
+  "appearanceThemeLight": "Light",
+  "appearanceThemeAuto": "Auto",
+  "@appearanceThemeAuto": {
+    "description": "The third theme choice: follow the phone. One word on a small chip beside Dark and Light, so it must stay short — if your language has no short word for this, prefer something like 'System' over a phrase that will not fit."
+  },
+  "appearanceThemeAutoNote": "Follows your phone’s light and dark setting.",
+  "@appearanceThemeAutoNote": {
+    "description": "Shown under the chips when Auto is chosen. Says what 'Auto' actually follows, because the word alone does not."
+  },
+  "appearanceFont": "Font",
+  "appearanceSize": "Size",
+  "@appearanceSize": {
+    "description": "Heading for the text-size slider. The value beside it is shown as a percentage, which is the only honest label — 'Larger' told nobody how much larger."
+  },
+  "appearanceColour": "Colour",
+  "appearancePage": "Page",
+  "appearanceRuling": "Ruling",
+  "@appearanceRuling": {
+    "description": "Heading for what is printed on the page: lines, isometric, triangles, dots, or nothing. The word for a notebook's ruling, not for a rule or a regulation."
+  },
+  "daySavedToToday": "Saved to today.",
+  "@daySavedToToday": {
+    "description": "Shown after something is captured while a past day is on screen. It went to *today*, not to the day being looked at — that is the whole information in the sentence."
+  },
+  "dayAddedToToday": "Added to today.",
+  "entryEditWords": "Edit the words",
+  "@entryEditWords": {
+    "description": "Menu item on an entry that has both an attachment and a caption. Edits the words, not the attachment."
+  },
+  "entryDeleteBlock": "Delete the whole block",
+  "@entryDeleteBlock": {
+    "description": "Menu item on an album — several photographs sharing one entry. 'The whole block' warns that it is not just the one tile being looked at."
+  },
+  "entrySavedAs": "Saved as {name}.",
+  "@entrySavedAs": {
+    "description": "{name} is the filename the copy was written as. Shown after 'Save a copy' finishes.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "entryAddedToFolder": "Also in {name}.",
+  "@entryAddedToFolder": {
+    "description": "{name} is the folder's name. Confirms the entry is *also* in that folder — it has not moved off its day. See folderAlsoIn for the same idea in a different place.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "entrySaveCopy": "Save a copy",
+  "entrySaveCopyNote": "Somewhere you choose, outside Lamplight",
+  "@entrySaveCopyNote": {
+    "description": "Subtitle under 'Save a copy'. Says the copy leaves Lamplight, which is the thing to be clear about — it will not be encrypted where it lands."
+  },
+  "capturePhotoTake": "Take a photo",
+  "capturePhotoChoose": "Choose from your photos",
+  "composerHintToday": "Write about today…",
+  "@composerHintToday": {
+    "description": "Placeholder in the writing box on today. An invitation, never an instruction — ETHICAL-DESIGN.md forbids anything implying the user owes the app writing."
+  },
+  "composerHintPast": "Write about this day…",
+  "@composerHintPast": {
+    "description": "The same placeholder on a day that is not today."
+  },
+  "composerNewBlock": "New block",
+  "@composerNewBlock": {
+    "description": "Starts a second block of writing on the same day, so a morning and an evening can be separate entries."
+  },
+  "voiceShowTranscript": "Show what was said",
+  "voiceHideTranscript": "Hide what was said",
+  "voiceTranscriptTitle": "What was said",
+  "@voiceTranscriptTitle": {
+    "description": "Heading over the text of what was said in a voice note. Not 'Transcript' — that names the machinery."
+  },
+  "entryEdited": ", edited",
+  "@entryEdited": {
+    "description": "Appended after a time, as in '14:20, edited'. Keep the leading comma and space if your language uses them."
+  },
+  "photoSemantic": "Photo at {time}. Double tap to view.",
+  "@photoSemantic": {
+    "description": "Read aloud by a screen reader for a photograph in the day. {time} is when it was added.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "sizeThisPhoto": "this photo",
+  "sizeThesePhotos": "these photos",
+  "sizeThisVideo": "this video",
+  "sizeTheseVideos": "these videos",
+  "sizeQuestion": "How big should {what} be kept?",
+  "@sizeQuestion": {
+    "description": "Asked when importing, if 'Ask each time' is on. {what} is one of the four strings above — 'this photo', 'these videos' and so on — so it has to fit a sentence in your language. Rephrase the sentence if the grammar needs it.",
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "trashNote": "Deleted entries stay here for 30 days, then go for good.",
+  "@trashNote": {
+    "description": "Under the Trash heading. A plain statement of what happens, not a warning — nothing here is urgent."
+  },
+  "trashConfirm": "Delete these for good?",
+  "@trashConfirm": {
+    "description": "Asked before emptying the trash. The one destructive confirmation in the app that cannot be undone, so it asks rather than telling."
+  },
+  "trashKeep": "Keep them",
+  "@trashKeep": {
+    "description": "The safe answer, and it is listed first everywhere this pattern appears. ETHICAL-DESIGN.md: never make the safe choice the harder one."
+  },
+  "trashDeleteForGood": "Delete for good",
+  "trashPutBack": "Put back",
+  "trashPutBackOn": "Put back on {day}.",
+  "@trashPutBackOn": {
+    "description": "{day} is the date the entry came from. It goes back where it was, not to today — that is the reassurance.",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "trashEmpty": "Empty trash",
+  "folderMakeFirst": "Make the first one",
+  "folderDeleteAsk": "Delete “{name}”?",
+  "@folderDeleteAsk": {
+    "description": "{name} is the folder's name, already in typographic quotes in English. Use whatever quotation marks your language uses.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "folderKeepIt": "Keep it",
+  "folderDeleteIt": "Delete the folder",
+  "folderRename": "Rename",
+  "folderDeleteThis": "Delete this folder",
+  "folderTakenOut": "Taken out of {name}. It is still on its day.",
+  "@folderTakenOut": {
+    "description": "{name} is the folder. The second sentence carries the whole folder model: an entry lives on its day and a folder is only a second place to find it, so removing it from a folder loses nothing.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "searchHint": "Words, a date, a name…",
+  "@searchHint": {
+    "description": "Placeholder in the search box. Three examples rather than an instruction, because the box accepts all three and nobody would guess the second."
+  },
+  "searchBack": "Back",
+  "searchClear": "Clear",
+  "searchNothingMatches": "Nothing matches “{query}”.",
+  "@searchNothingMatches": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "searchWhatMattered": "WHAT MATTERED",
+  "@searchWhatMattered": {
+    "description": "Heading over entries the person marked. Upper case in English; scripts without case are left as they are."
+  },
+  "searchADate": "A date",
+  "searchDateExample": "16 March 2006 · march 2006 · yesterday",
+  "searchWhatYouCanType": "What you can look for",
+  "searchTryDate": "yesterday",
+  "@searchDateExample": {
+    "description": "Examples of date searches that work, separated by middots. Translate the words — 'yesterday' — and leave the numeric date in a form your language would type."
+  },
+  "searchSaidOutLoud": "said out loud",
+  "@searchSaidOutLoud": {
+    "description": "Appended to a voice note in results, as in 'said out loud'. Marks that the match came from the transcript rather than from typed words."
+  },
+  "searchAPhotograph": "A photograph",
+  "searchAVideo": "A video",
+  "securityWhileOpen": "While the app is open",
+  "@securityWhileOpen": {
+    "description": "Group heading for the idle timeout — how long the app waits before locking itself while it is still open."
+  },
+  "securityLockFooter": "Lamplight always locks the moment it goes into the background. This is only about how long it waits while you are still in it.",
+  "@securityLockFooter": {
+    "description": "Says the one thing that is not configurable, so nobody looks for a switch for it. Locking on background is non-negotiable and this is where that is stated."
+  },
+  "securityLockAfter": "Lock after",
+  "securityOneHour": "1 hour",
+  "securityYourPasscode": "Your passcode",
+  "securityPasscodeFooter": "Your passcode is the key. It is not stored anywhere — not on this phone and nowhere else — so nobody can be made to hand it over, and nobody can recover it for you.",
+  "@securityPasscodeFooter": {
+    "description": "The central claim of the whole app, and it must stay exactly this strong and this narrow. Not 'your data is safe' — the specific fact that the passcode is not stored, and what follows from that."
+  },
+  "securityChangePasscode": "Change passcode",
+  "securityScreenshots": "Screenshots",
+  "securityScreenshotsFooter": "Lamplight blocks screen capture so that whoever picks up your phone cannot photograph your notes, and so they never appear in the recent-apps preview. You can turn that off for your own phone.",
+  "@securityScreenshotsFooter": {
+    "description": "Explains what the app does by default and what the switch below gives up. It is the user's phone and their choice; the footer must not sound like a warning against it."
+  },
+  "securityAllowScreenshots": "Allow screenshots",
+  "securityScreenshotsOn": "Your notes will show in recent apps",
+  "securityScreenshotsOff": "Recent apps shows a blank page",
+  "securityCouldNotChange": "That could not be changed.",
+  "securityNothingChanged": "Nothing about your locking has changed.",
+  "securityPromptAutomatic": "The prompt appears by itself",
+  "securityPromptOnTap": "Tap the fingerprint when you want it",
+  "mediaAskEachTimeOn": "You are asked how big to keep photos and videos as you add them.",
+  "mediaAskEachTimeOff": "Off. The two sizes above are used without asking.",
+  "passcodeNew": "New passcode",
+  "securityFingerprint": "Fingerprint",
+  "securityFingerprintFooter": "Your passcode is still the key. The fingerprint only opens this vault, only on this phone, and Android switches it off by itself if the fingerprints on the phone ever change — so nobody can add theirs and get in. It is never part of a backup.",
+  "@securityFingerprintFooter": {
+    "description": "Word for word the same promise onboarding makes, deliberately — two descriptions of one security feature is how somebody ends up trusting neither. Keep it identical to onboardFingerprintExplain."
+  },
+  "securityUnlockWithFingerprint": "Unlock with my fingerprint",
+  "securityAskOnOpen": "Ask as soon as Lamplight opens",
+  "@securityAskOnOpen": {
+    "description": "Whether the fingerprint prompt appears by itself the moment Lamplight opens, rather than waiting to be asked for."
+  },
+  "durationSeconds": "{count, plural, one{1 second} other{{count} seconds}}",
+  "@durationSeconds": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "durationMinutes": "{count, plural, one{1 minute} other{{count} minutes}}",
+  "@durationMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "durationHours": "{count, plural, one{1 hour} other{{count} hours}}",
+  "@durationHours": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "durationNever": "Never",
+  "@durationNever": {
+    "description": "The idle timeout turned off. It does NOT mean the app never locks — securityNeverNote says what still happens, and the two are always shown together."
+  },
+  "securityDefaultNote": "The default.",
+  "securityHourNote": "For an afternoon of reading back.",
+  "securityNeverNote": "It still locks the second you leave the app.",
+  "@securityNeverNote": {
+    "description": "Sits under 'Never'. The reassurance that matters: locking on background is not a setting and is still in force."
+  },
+  "calendarGoToDate": "Go to a date",
+  "dayHasWriting": "writing",
+  "dayHasPhoto": "a photo",
+  "dayHasVideo": "a video",
+  "dayHasVoice": "a voice note",
+  "dayHasFile": "a file",
+  "dayEntriesAndKinds": "{count}, {kinds}",
+  "listSeparator": ", ",
+  "listAnd": "{most} and {last}",
+  "integrityNothingUnusual": "Nothing unusual about this phone. Lamplight is running the way it is meant to.",
+  "calendarPreviousYear": "Previous year",
+  "calendarPreviousMonth": "Previous month",
+  "calendarNextYear": "Next year",
+  "calendarNextMonth": "Next month",
+  "calendarBackToMonth": "Back to the month",
+  "calendarWholeYear": "The whole year",
+  "calendarBackToThisMonth": "Back to this month",
+  "calendarNothingThisYear": "Nothing on this year yet.",
+  "calendarYearSummary": "{entries} on {days}.",
+  "folderNothingInIt": "Nothing in it yet",
+  "onThisDayOneYear": "A year ago today",
+  "onThisDayYears": "{years} years ago today",
+  "wheelYear": "Year {year}",
+  "calendarBackToBrowsing": "Back to browsing",
+  "calendarToday": "Today",
+  "calendarFirstEntry": "Your first entry",
+  "@calendarFirstEntry": {
+    "description": "A shortcut in the date picker that jumps to the earliest thing in the vault."
+  },
+  "calendarGoToThisDay": "Go to this day",
+  "calendarDensityNote": "Colour shows how much is on a day, from nothing to a lot.",
+  "@calendarDensityNote": {
+    "description": "Explains the colour ramp on the year grid. Colour is never the only channel in this app, so this sentence is what carries the meaning for anybody who cannot see it."
+  },
+  "calendarLess": "Less",
+  "@calendarLess": {
+    "description": "One end of the year grid's colour scale. A single word beside a row of swatches, so keep it short."
+  },
+  "calendarMore": "More",
+  "calendarGoToToday": "Go to today",
+  "backupTitle": "Backup",
+  "vaultNothingToBackUp": "There is nothing in this vault to back up yet.",
+  "vaultChangedWhileBackingUp": "Something changed while the backup was being made ({name}). Try again.",
+  "vaultTooSmall": "This file is too small to be a Lamplight backup.",
+  "vaultNotALamplightFile": "This is not a Lamplight backup file.",
+  "vaultDamaged": "This file is damaged and cannot be opened.",
+  "vaultKeyringNewerVersion": "This vault was made by a newer version of Lamplight. Update the app to open it.",
+  "vaultKeyringDamaged": "The vault key file is damaged and cannot be read. If you have a backup file, restore from it.",
+  "vaultDatabaseNewerVersion": "This vault was made by a newer version of Lamplight. Update the app to open it — your notes are safe and nothing has been changed.",
+  "phraseWrongLength": "A recovery phrase is 12 words. This one has {count}.",
+  "phraseNotARecoveryWord": "\"{word}\" is not one of the recovery words.",
+  "phraseDoesNotCheckOut": "Those words are not a valid recovery phrase. Check for a mistyped or swapped word.",
+  "vaultNewerVersion": "This backup was made with a newer version of Lamplight. Update the app, then try again.",
+  "vaultUnknownCompression": "This backup uses a compression this version does not know how to read.",
+  "vaultDamagedTryOlder": "This file is damaged and cannot be opened. If you have an older backup, try that one.",
+  "vaultBeforeRecoveryPhrases": "This backup was made before recovery phrases could open backup files. Its passcode is the only way in.",
+  "vaultWordsDoNotOpenIt": "Those words do not open this file. They may belong to a different vault.",
+  "vaultWrongPasscode": "That passcode does not open this file.",
+  "vaultMissingPart": "This backup is missing part of itself ({name}).",
+  "vaultPartWrongSize": "This backup is damaged ({name} is the wrong size).",
+  "vaultPartDoesNotMatch": "This backup is damaged ({name} does not match).",
+  "vaultNoVaultInside": "This backup does not contain a vault. It may have been made by a different app.",
+  "vaultOutOfOrder": "This file is damaged: its contents are out of order.",
+  "vaultEndsPartWay": "This file is damaged: it ends part-way through.",
+  "vaultIncomplete": "This file is incomplete — it has {parts} of its parts.",
+  "vaultWillNotOpen": "This backup contains something Lamplight will not open ({name}).",
+  "countEntries": "{count,plural, =1{1 entry} other{{count} entries}}",
+  "countDays": "{count,plural, =1{1 day} other{{count} days}}",
+  "backupCheckingItOpens": "Checking it opens…",
+  "backupCouldNotSave": "The backup could not be saved.",
+  "backupNothingLost": "Nothing was lost, and your notes are untouched. Try again in a moment.",
+  "backupLast": "Last backup",
+  "backupInTheVault": "In the vault",
+  "restoreCheckingFile": "Checking the file…",
+  "restoreCouldNotOpen": "That file could not be opened.",
+  "restoreCheckItIsTheOne": "Check it is the backup you meant, and try again.",
+  "restorePuttingInPlace": "Putting it in place…",
+  "restorePuttingBack": "Putting your old notes back…",
+  "restoreCouldNotFinish": "The restore could not be finished.",
+  "restoreBackAsTheyWere": "Your notes are back as they were.",
+  "restoreUsePasscodeInstead": "Use the passcode instead",
+  "restoreUseWordsInstead": "I have the twelve words instead",
+  "backupCreateFile": "Create backup file",
+  "backupCreatedChecked": "Backup created and checked.",
+  "backupMakeAnother": "Make another",
+  "backupRestoreHeading": "Restore",
+  "backupRestoreFrom": "Restore from a backup file",
+  "backupProgress": "{stage} {percent} per cent",
+  "@backupProgress": {
+    "description": "Read aloud while a backup runs. {stage} is already a sentence like 'Reading your notes…' and {percent} is a whole number.",
+    "placeholders": {
+      "stage": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreTitle": "Restore",
+  "restoreChooseFile": "Choose a file",
+  "restorePhraseHint": "remember story industry…",
+  "@restorePhraseHint": {
+    "description": "Placeholder in the recovery-phrase box. Three words of an example phrase — keep them as example words in your language, or leave the English ones if your language has no wordlist. They are only a shape."
+  },
+  "restoreAction": "Restore",
+  "restoreChooseDifferent": "Choose a different file",
+  "importChooseFolder": "Choose a folder",
+  "importChooseFiles": "Choose the files instead",
+  "importChooseFilesNote": "If Android refuses your folder — it will not give any app Downloads, or the top of your storage — pick the files themselves. Nothing refuses that.",
+  "importLooking": "Looking through the folder…",
+  "importNoTextFiles": "There are no text files in that folder.",
+  "importChooseDifferentFolder": "Choose a different folder",
+  "importUseFileDate": "Use the file’s own date for these",
+  "@importUseFileDate": {
+    "description": "A switch shown when filenames carry no date. Falls back to when the file was last changed."
+  },
+  "importUseFileDateNote": "Puts them on the day the file was last changed. That is often not the day it is about.",
+  "@importUseFileDateNote": {
+    "description": "The honest caveat: a file's modification date is often not the day it was written about, so this is offered rather than assumed."
+  },
+  "importBringIn": "{count, plural, one{Bring in 1 note} other{Bring in {count} notes}}",
+  "@importBringIn": {
+    "description": "The button that starts the import. {count} is how many notes were found.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "importProgress": "Importing, {percent} per cent",
+  "@importProgress": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "exportChooseFolder": "Choose a folder and export",
+  "exportWritten": "Your copy is written.",
+  "exportAgain": "Export again",
+  "exportWhichOne": "Which one do I want?",
+  "@exportWhichOne": {
+    "description": "Heading above the two paragraphs comparing a backup with a readable copy, for somebody who does not know which they want."
+  },
+  "exportNotLocked": "This copy is not locked",
+  "@exportNotLocked": {
+    "description": "The one thing somebody must understand before making a readable copy. It is plain files: anyone who opens that folder can read them. Must not be softened."
+  },
+  "dayAddedThings": "{count, plural, other{Added {count} things to today.}}",
+  "@dayAddedThings": {
+    "description": "Shown when several files are shared into Lamplight from another app at once. They go to today, whichever day is on screen.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "entryAddNote": "Add a note to this",
+  "@entryAddNote": {
+    "description": "Menu item on an attachment that has no caption yet. 'This' is the photograph or file being looked at."
+  },
+  "importAdded": "{count, plural, one{Added.} other{Added {count}.}}",
+  "importFolderUnreadable": "That folder could not be read.",
+  "importNothingBrought": "Nothing was brought in.",
+  "importStoppedPartWay": "Bringing the journal in stopped part way.",
+  "importWhatArrivedKept": "Everything that arrived before it stopped was kept.",
+  "importNoReadableDates": "None of those files have a date Lamplight can read.",
+  "importReadyToBring": "{count,plural, =1{1 note ready to bring in.} other{{count} notes ready to bring in.}}",
+  "importNothingNew": "Nothing new to bring in.",
+  "importBroughtIn": "{count,plural, =1{1 note brought in.} other{{count} notes brought in.}}",
+  "importAlreadyHere": "{count} were already here, so they were left alone.",
+  "importNoDateSkipped": "{count} had no date to read, and were skipped.",
+  "importCouldNotRead": "{count} could not be read: {names}",
+  "exportStarting": "Starting…",
+  "exportCouldNotFinish": "The readable copy could not be finished.",
+  "exportNothingChanged": "Nothing in Lamplight was changed.",
+  "importVideoAlreadySmall": "One video was already about as small as it gets, so it was kept as it is.",
+  "importVideoCouldNotShrink": "One video could not be made smaller on this phone, so it was kept whole.",
+  "@importAdded": {
+    "description": "Confirms an import. The one-item form says only 'Added.' because the photograph is already visible on the day — repeating the count would be noise.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "importOneFailed": "One did not work: {reason}",
+  "@importOneFailed": {
+    "description": "Follows importAdded in the same sentence, as in 'Added 4. One did not work: …'. {reason} is already a plain sentence.",
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "importAbandoned": "{count, plural, one{One did not finish before Lamplight locked.} other{{count} did not finish before Lamplight locked.}}",
+  "@importAbandoned": {
+    "description": "The app locked while files were still being brought in. Not an error and not a loss of anything that was already saved — see importNothingLeft, which always follows it when nothing at all got through.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "importNothingLeft": "Nothing was left on the phone.",
+  "@importNothingLeft": {
+    "description": "The reassurance after importAbandoned. Nothing decrypted was left behind on the phone — CLAUDE.md rule 2. It is a promise the user is owed, so it must not be softened or dropped."
+  },
+  "nameCardAsk": "What should this say?",
+  "@nameCardAsk": {
+    "description": "Asked when somebody taps their own name at the top of Settings. Not 'Edit name' — the row can say anything they like, so the question is about the words rather than about a field."
+  },
+  "nameCardHint": "Your name, or anything",
+  "reminderGroup": "A nudge, if you want one",
+  "@reminderGroup": {
+    "description": "Group heading for the daily writing reminder. 'If you want one' is the whole tone: it is off, and it is an offer."
+  },
+  "reminderFooter": "Off unless you turn it on. It never mentions what is in your notes — it cannot, because it runs while the vault is locked. No streaks, no counts, nothing about days you missed.",
+  "@reminderFooter": {
+    "description": "What the reminder will and will not do. The middle clause is a fact about the software, not a promise of discretion — it cannot mention what is in the notes because it runs while the vault is locked. And the last sentence rules out streaks and counts, which ETHICAL-DESIGN.md forbids outright."
+  },
+  "reminderTitle": "Remind me to write",
+  "reminderWhen": "When",
+  "reminderProblemNotAllowed": "Lamplight is not allowed to send notifications.",
+  "@reminderProblemNotAllowed": {
+    "description": "The Android 13+ runtime permission is refused. First of the four gates, reported before any other because nothing else matters without it."
+  },
+  "reminderProblemNotificationsOff": "This phone’s settings have Lamplight’s notifications switched off.",
+  "@reminderProblemNotificationsOff": {
+    "description": "Every notification from this app is switched off in the system settings."
+  },
+  "reminderProblemRemindersOff": "Reminders from Lamplight are switched off in this phone’s notification settings.",
+  "@reminderProblemRemindersOff": {
+    "description": "This one notification channel is silenced on its own, which from inside the app looks identical to everything being fine. ISSUE 10: the sentence names the settings screen and must never say the word channel, which is Android's word for Android's own bookkeeping."
+  },
+  "reminderProblemBatterySaving": "This phone is saving battery by holding Lamplight back. That is the usual reason a reminder is late or never arrives.",
+  "@reminderProblemBatterySaving": {
+    "description": "Vendor battery management is holding this app's background alarms. The usual cause, and the one the app cannot fix from inside - so it says what is happening to the person's phone and opens the list, rather than explaining its own limits at somebody."
+  },
+  "reminderMayNotArrive": "The reminder may not arrive",
+  "backupAutomatic": "Back up automatically",
+  "backupAutomaticDidNotFinish": "The automatic backup did not finish.",
+  "backupNothingYet": "Nothing to back up yet.",
+  "backupInProgress": "Backing up…",
+  "backupStartsAtUnlock": "Starts at your next unlock.",
+  "backupDoneAutomatically": "Backed up automatically.",
+  "backupLastOneFailed": "The last automatic backup did not finish. It will try again next time you open Lamplight.",
+  "importNthOf": "{index} of {total}",
+  "importWaiting": "{count,plural, =1{1 waiting} other{{count} waiting}}",
+  "aboutCopied": "Copied",
+  "failureGeneric": "That did not work.",
+  "failureNothingLost": "Nothing was lost — try again.",
+  "calendarNothingOnDay": "nothing",
+  "backupChangeFolder": "Change folder",
+  "backupSavedTo": "Saved to {place}",
+  "@backupSavedTo": {
+    "description": "Where automatic backups are written. {place} is a folder path such as Documents/Lamplight and is never translated.",
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "backupUseDefaultFolder": "Use the usual folder",
+  "@backupUseDefaultFolder": {
+    "description": "Returns automatic backups to Documents/Lamplight after the user had picked a folder of their own."
+  },
+  "backupChooseFolder": "Choose a folder to keep copies in",
+  "folderAndroidRestriction": "Android will not let any app be given Downloads, or the whole of internal storage. Documents, or a folder inside it, works.",
+  "@folderAndroidRestriction": {
+    "description": "Shown when the folder picker comes back with nothing. Android 11+ refuses to hand any app the root of internal storage, the root of an SD card, or the Download directory, and says so inside its own picker with a message we did not write - so from in here it looks like nothing happened. This is a fact about the phone, not an error and not a scolding: it names the place that does work. Note that making a new folder inside Downloads does not help, because the picker's button offers the directory you are standing in rather than the one you just made."
+  },
+  "folderNotWritable": "Nothing can be saved into that folder. Try another one.",
+  "folderRefused": "That folder could not be used.",
+  "folderTryAnother": "Try choosing a different one.",
+  "aboutHowKept": "How your notes are kept",
+  "aboutFonts": "Fonts and licences",
+  "aboutVersion": "Version",
+  "aboutNoBrowser": "No app on this phone can open links.",
+  "aboutMadeBy": "Made by",
+  "aboutMadeBySemantic": "Made by ProbablyPiyush. Opens LinkedIn in your browser.",
+  "@aboutMadeBySemantic": {
+    "description": "Read aloud for the maker's name. Says where the link goes before it is followed, which every link in this app does."
+  },
+  "aboutCoffee": "Buy me a coffee",
+  "aboutCoffeeSemantic": "Buy me a coffee. Opens a page in your browser.",
+  "aboutCopyDetails": "Copy the details",
+  "settingsNameSemantic": "{name}. Tap to change.",
+  "settingsAddName": "Add your name",
+  "settingsNameOnlyHere": "Only on this phone",
+  "settingsNameOptional": "Optional. Only ever on this phone.",
+  "reminderTurnedOffByAndroid": "Android has notifications switched off for Lamplight. You can turn them on in the phone’s settings, under Apps.",
+  "reminderOnceADay": "Once a day",
+  "reminderTodayAt": "today at {time}",
+  "reminderYesterdayAt": "yesterday at {time}",
+  "reminderOnDateAt": "{date} at {time}",
+  "reminderNoneYet": "Nothing has arrived yet",
+  "reminderLastArrived": "Last one arrived {when}",
+  "reminderNextDue": "The next is due {when}",
+  "aboutHide": "Hide",
+  "aboutCheckReal": "Check this is the real Lamplight",
+  "entryRevisionsNote": "What this said before you changed it",
+  "entryStaysOnDay": "It stays on this day as well",
+  "@entryStaysOnDay": {
+    "description": "Subtitle under 'Add to a folder'. The folder model in one line: a folder is a second place to find something, never a move."
+  },
+  "entryDeleteKind": "Delete the {kind}",
+  "@entryDeleteKind": {
+    "description": "{kind} is the sort of thing — a photo, a video, a voice note, a document — already in the reader's language.",
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
+  "shareCouldNotAdd": "That could not be added. Try saving it and using the picture button instead.",
+  "@shareCouldNotAdd": {
+    "description": "Shown when something shared from another app could not be taken in. Offers the way that does work rather than only reporting the failure."
+  },
+  "openNothingCanOpen": "Nothing on this phone can open that kind of file.",
+  "viewerMore": "More",
+  "docLeavesLamplight": "This leaves Lamplight",
+  "docKeepItHere": "Keep it here",
+  "docOpenWith": "Open with…",
+  "docCannotShow": "Lamplight can show PDFs, pictures and text without ever putting them on your phone unencrypted. A {kind} file needs another app — Lamplight can hand it to one for as long as you are reading it, and take it back afterwards.",
+  "@docCannotShow": {
+    "description": "Explains why a file cannot be shown inside Lamplight. {kind} is the file's extension. The first sentence is the promise being kept — nothing is written to the phone unencrypted — and the second is the offer that follows from it.",
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
+  "menuOpenWithNote": "Another app, without keeping a copy",
+  "@menuOpenWithNote": {
+    "description": "Under 'Open with…'. The reassurance: the file is lent to another app for as long as it is being read and taken back afterwards, not copied out."
+  },
+  "menuSaveKind": "Save {kind}",
+  "@menuSaveKind": {
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
+  "menuTrashNote": "Kept for 30 days, then gone",
+  "videoBackTen": "Back ten seconds",
+  "videoForwardTen": "Forward ten seconds",
+  "photoPlayVideo": "Play this video",
+  "lockPhraseHint": "Your twelve words, spaces between",
+  "@lockPhraseHint": {
+    "description": "Placeholder for the twelve recovery words on the lock screen. Says the shape expected — words with spaces — not an instruction."
+  },
+  "lockUnlock": "Unlock",
+  "errorScreenDidNotOpen": "That screen did not open. Nothing was lost.",
+  "@errorScreenDidNotOpen": {
+    "description": "The whole of what the error screen says out loud. Two facts and no apology: something did not open, and nothing was lost. It must not name the machinery."
+  },
+  "errorGoBack": "Go back",
+  "recordingCannot": "This phone will not {what} a recording. It is still recording.",
+  "@recordingCannot": {
+    "description": "{what} is 'pause' or 'resume'. The second sentence is the one that matters — the recording did not stop, so nothing is being lost while this is on screen.",
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "recordingClose": "Close",
+  "recordingElapsed": "{count, plural, other{Recording, {count} seconds}}",
+  "@recordingElapsed": {
+    "description": "Read aloud while recording, so somebody who cannot see the timer knows it is still running.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recordingStopKeep": "Stop and keep this recording",
+  "recordingDiscard": "Discard",
+  "recordingCouldNotStart": "Recording could not start.",
+  "recordingCheckMicrophone": "Check that Lamplight is allowed to use the microphone.",
+  "recordingStartAgain": "start again",
+  "recordingCouldNotSave": "That recording could not be saved.",
+  "recordingStillHere": "It is still here — try stopping it again.",
+  "recordingCarryOnSemantic": "Carry on recording",
+  "recordingPauseSemantic": "Pause this recording",
+  "recordingCarryOn": "Carry on",
+  "recordingPause": "Pause",
+  "sizeAdd": "Add",
+  "@sizeAdd": {
+    "description": "The button that finishes the size question and brings the file in."
+  },
+  "transcribeTitle": "Write down what is said",
+  "transcribeOn": "Voice notes become searchable. Nothing is sent anywhere.",
+  "@transcribeOn": {
+    "description": "Subtitle when transcription is on. Two facts: what it gains, and the limit of where the sound goes. The second half is a claim about the software and must stay exactly that narrow."
+  },
+  "transcribeOff": "Off. Voice notes can only be found by their day.",
+  "transcribeLanguage": "Spoken language",
+  "transcribeLanguageNote": "The language you speak in your recordings. One at a time — a sentence that switches between two comes back as whichever half matches this.",
+  "transcribeNotDownloaded": "Not downloaded on this phone yet — tap to get it.",
+  "transcribeGetBetter": "Get the better model for {name}",
+  "@transcribeGetBetter": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "transcribeGetBetterNote": "Transcripts are noticeably more accurate with it. The download is from your phone, not from Lamplight, and it happens once.",
+  "transcribeNoLanguages": "This phone has not offered any languages yet.",
+  "transcribeNeedsDownloading": "Needs downloading",
+  "folderStill": "Still on {day}. Also in {folder}.",
+  "@folderStill": {
+    "description": "Shown once, the first time somebody files an entry. {day} is the date it is on and {folder} is where it was added. The whole folder model in one line: it did not move.",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "folder": {
+        "type": "String"
+      }
+    }
+  },
+  "folderRenameTitle": "Rename folder",
+  "folderNameHint": "A person, a place, a phase",
+  "voicePlay": "Play this voice note",
+  "voiceForwardThirty": "Forward thirty seconds",
+  "voiceSpeed": "Playback speed, currently {speed} times",
+  "@voiceSpeed": {
+    "placeholders": {
+      "speed": {
+        "type": "String"
+      }
+    }
+  },
+  "voiceLengthUnknown": "voice note, length not known until it plays",
+  "@voiceLengthUnknown": {
+    "description": "Appended to a voice note whose duration has not been read yet. Says why the number is missing rather than showing a wrong one."
+  },
+  "voicePosition": "Position in the recording",
+  "voiceOpening": "Opening the recording",
+  "voiceNoWords": "No words came back — try again",
+  "@voiceNoWords": {
+    "description": "The recogniser returned nothing. It does NOT say the recording was silent — the app cannot tell a quiet room from an engine that failed, and asserting the first would be claiming to know something it does not about somebody's recording of their own life."
+  },
+  "voiceWriteThis": "Write this down",
+  "voiceCannotWrite": "This phone cannot write voice notes down.",
+  "voiceLanguageMissing": "This phone has not downloaded that language yet.",
+  "voiceWriting": "Writing this down…",
+  "voiceWaiting": "Waiting to be written down.",
+  "voiceWritten": "Written down on this phone.",
+  "errorPartNotShown": "This part could not be shown.",
+  "errorScreenShort": "That screen did not open.",
+  "errorNothingLost": "Nothing was lost. Everything you have written is still in the vault, exactly as it was.",
+  "@errorNothingLost": {
+    "description": "The sentence the error screen exists to say. Everything else on it is detail; this is the reassurance, and it is true — a failed screen never touches the vault."
+  },
+  "errorHideDetails": "Hide the technical details",
+  "errorShowDetails": "Show the technical details",
+  "errorDetailsNote": "This is everything that would be copied. It says what broke and where in the code — it does not contain anything you have written.",
+  "@errorDetailsNote": {
+    "description": "Above the copyable failure report. The last clause is a promise about what the report contains, so it must not be widened: the report carries the exception type and the stack, and deliberately not the message, which is where user content leaks."
+  },
+  "passcodeChangeFailed": "The passcode could not be changed.",
+  "passcodeOldStillWorks": "Your old passcode still works.",
+  "passcodeChanged": "Passcode changed",
+  "passcodeWordsUnchanged": "Your twelve words have not changed, and you do not need new ones. They open your vault and your backup files exactly as they did before.",
+  "@passcodeWordsUnchanged": {
+    "description": "After a passcode change. The twelve recovery words are derived separately and genuinely do not change — this is the reassurance somebody needs before they go looking for a new phrase that does not exist."
+  },
+  "passcodeOldBackups": "Backups you already have still open with your old passcode. A new one, made now, will use the new passcode.",
+  "@passcodeOldBackups": {
+    "description": "The one consequence of changing a passcode that somebody could be caught out by: a backup made before the change still needs the old one."
+  },
+  "passcodeMakeBackup": "Make a backup now",
+  "passcodeCurrent": "Current passcode",
+  "passcodeNewAgain": "New passcode again",
+  "passcodeOldBackupsNote": "Backup files you have already made will still open with your old passcode.",
+  "passcodeWordsNote": "Your twelve recovery words do not change and keep working.",
+  "licencesFonts": "Every typeface here is under the SIL Open Font License. Nothing is downloaded — they are in the app.",
+  "licencesSource": "Lamplight itself is GPL-3.0 with an app-store exception. The source is the licence: anybody can read it and check that the app does what this screen says.",
+  "licencesUnreadable": "That licence file could not be read.",
+  "appearanceSample": "Rain all afternoon. Made tea, read half a chapter, forgot what I meant to say and wrote this instead.",
+  "@appearanceSample": {
+    "description": "The specimen paragraph in the font picker. Ordinary diary writing rather than a pangram — somebody is choosing how their own words will look, so it should read like something they might have written."
+  },
+  "appearanceChromeNote": "Buttons and labels stay like this",
+  "@appearanceChromeNote": {
+    "description": "Under the specimen. The chosen face applies to writing, not to the app's own buttons and labels, which stay in the platform's face for legibility."
+  },
+  "appearanceSizeNote": "This works on top of your phone’s own text size, so if you have already turned that up, this goes further still.",
+  "@appearanceSizeNote": {
+    "description": "Under the text-size slider. Says that this multiplies the phone's own accessibility setting rather than replacing it."
+  },
+  "voicePause": "Pause",
+  "importIntro": "If you have written a journal somewhere else, Lamplight can read it in — as long as it is text files with the date in the name.",
+  "importHowDates": "It reads plain text files and looks for a date in the name — 2026-08-24, or 24 August 2026 — anywhere in the file name or the folders above it.",
+  "importAmbiguousDates": "Dates like 03-04-2026 are skipped on purpose. That is the third of April in some countries and the fourth of March in others, and guessing wrong would file a year of your life on the wrong days without telling you.",
+  "@importAmbiguousDates": {
+    "description": "Why a whole class of filename is skipped rather than guessed. The refusal is the feature — guessing wrong would file a year of somebody's life on the wrong days and say nothing about it."
+  },
+  "importFormats": "Lamplight reads plain text: .txt, .md, .org, .log and others, including files with no extension at all. If your journal is in another format, export it as text first.",
+  "importAtStartOfDay": "They will sit at the start of each day, because a file name gives the date but not the time. Nothing already in Lamplight is changed or removed, and running this twice will not make copies.",
+  "@importAtStartOfDay": {
+    "description": "Two reassurances that matter before somebody commits: nothing already in Lamplight is touched, and running the import twice does not duplicate anything."
+  },
+  "importFileDateNote": "Puts them on the day the file was last changed. If the folder has been copied between devices, that may be the day it was copied rather than the day you wrote it.",
+  "importSkippedNote": "These will be skipped. They stay exactly where they are — nothing is moved or deleted from your folder.",
+  "restoreChooseNote": "Choose your backup file. It will be called something like Lamplight-2026-08-18.vault.",
+  "restorePasscodeNote": "Enter the passcode for this file — the one that was set when the backup was made.",
+  "restoreWordsNote": "Type the twelve words, in order, separated by spaces.",
+  "restoreDoNotClose": "Do not close Lamplight until this finishes.",
+  "exportIntro": "This writes everything in Lamplight into a folder you choose, as ordinary files — one text file for each day, and every photo, video, voice note and document under its own name.",
+  "exportNoLamplightNeeded": "Nothing in that folder needs Lamplight to open it. If this app ever stops working, or you stop using it, your notes still open in anything that reads text.",
+  "exportWhichOneBody": "A readable copy is for reading, moving to another app, or keeping something after you stop using Lamplight. It is not protected.\n\nA backup file is for getting Lamplight back exactly as it was — a new phone, or a phone that broke. It is locked with your passcode, so it is safe to keep anywhere, including a cloud drive.\n\nMost people want the backup. Take a readable copy as well if you want to be certain you are never stuck.",
+  "@exportWhichOneBody": {
+    "description": "The whole explanation of backup versus readable copy, in three paragraphs separated by blank lines. Keep the paragraph breaks — it is read by somebody deciding, not skimming."
+  },
+  "exportNotLockedBody": "It has no passcode on it. Anyone who opens that folder can read everything in it. Put it somewhere you are happy with that — and if you only want something safe to keep, use Back up instead.",
+  "@exportNotLockedBody": {
+    "description": "The warning that makes the readable copy honest. It is plain files with no passcode on them; anybody who opens that folder can read everything. It must not be softened, and it points at the safe alternative rather than just alarming."
+  },
+  "backupConfirmNote": "Confirm your passcode. This file can unlock everything, so making one should be something you meant to do.",
+  "backupKeepSafeNote": "Your backup is locked with the passcode you have now. Keep it somewhere you trust — a cloud drive is fine, because the file is unreadable without that passcode. We never see it.",
+  "@backupKeepSafeNote": {
+    "description": "Why a backup is safe to put in a cloud drive: the file is unreadable without the passcode, and we never have it. Both halves are load-bearing."
+  },
+  "backupRestoreWarning": "Opening a backup replaces everything currently in Lamplight. Your current notes are kept aside until the restored ones are proven to open.",
+  "@backupRestoreWarning": {
+    "description": "Before restoring. The second sentence is the safety net and must survive: the current notes are kept aside until the restored ones are proven to open."
+  },
+  "folderWhatItIs": "A folder is a thread that runs through your days — one person, one place, one stretch of time.",
+  "@folderWhatItIs": {
+    "description": "What a folder is for, in the app's own terms — a thread through days rather than a container."
+  },
+  "folderNothingMoves": "Nothing moves into a folder. An entry stays on its own day and shows up here as well.",
+  "@folderNothingMoves": {
+    "description": "The folder model, stated once where somebody meets it. An entry is never moved; it stays on its day and also appears here."
+  },
+  "folderDeleteNote": "The folder goes. Everything in it stays exactly where it is, on its own day.",
+  "folderNoneInHere": "Nothing in here yet. Long-press anything on a day and choose “Add to a folder”.",
+  "passcodeRuleLength": "Eight characters or more.",
+  "passcodeRuleWords": "A few ordinary words you will remember beats a short one with symbols in it.",
+  "@passcodeRuleWords": {
+    "description": "Advice under the passcode field, not a rule. A few ordinary words beating a short cryptic one is true and is what people should hear."
+  },
+  "passcodeNoMatch": "The two do not match yet.",
+  "docCopyInClear": "The copy is written out in the clear, so any app that can read your files can read it. What is kept inside Lamplight stays encrypted either way.",
+  "@docCopyInClear": {
+    "description": "Before saving a copy of a document out of Lamplight. Says exactly what changes and what does not: the copy is readable by anything, what stays inside is still encrypted."
+  },
+  "docPageOf": "{page} of {total}",
+  "transcribeTookTooLong": "That recording took too long to write down, so Lamplight stopped waiting. It will try again later.",
+  "transcribeCouldNotWriteDown": "That recording could not be written down.",
+  "transcribeRecordingIsSafe": "The recording itself is safe. Lamplight will try again.",
+  "voicePositionSpoken": "{at} of {total}",
+  "entryEditedAt": "{time} · edited",
+  "docCouldNotOpen": "That document could not be opened.",
+  "albumThisOne": "This {thing}",
+  "albumThisOneOf": "This {thing} — {index} of {total}",
+  "albumCaptionThese": "Add a caption to these",
+  "albumCaptionThis": "Add a caption",
+  "albumCaptionEdit": "Edit the caption",
+  "albumOthersStay": "The other {count} stay. It goes to the trash for 30 days.",
+  "albumGoesToTrash": "It goes to the trash for 30 days.",
+  "photoCouldNotOpen": "This picture could not be opened.",
+  "photoMayBeDamaged": "It may be damaged.",
+  "docTooBig": "This one is too big to open inside Lamplight. You can save a copy and open it elsewhere.",
+  "docPages": "{count} pages",
+  "docFileEmpty": "This file is empty.",
+  "videoTooBig": "This video is too big for Lamplight to play here — {size}. It will not be written out unprotected to get around that. Save a copy to watch it elsewhere.",
+  "videoNotAvailableHere": "This part of the app is not available on this phone.",
+  "videoCouldNotOpen": "This video could not be opened.",
+  "docGoToPage": "Go to a page",
+  "docGo": "Go",
+  "docPageCouldNotBeDrawn": "This page could not be drawn.",
+  "@docPageOf": {
+    "description": "The page counter in the document reader. {page} and {total} are both numbers.",
+    "placeholders": {
+      "page": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "passcodeRuleStronger": "Another word or two would make it much harder to guess.",
+  "backupAutoFooter": "Automatic backups run when you open Lamplight, if anything changed since the last one. They are locked with your passcode, exactly like one you make yourself.",
+  "aboutHowKeptBody": "No account. No server. Nothing leaves this phone.\n\nYour notes are locked with your passcode, and the key is made from it — so there is no copy of it anywhere, including with us.",
+  "@aboutHowKeptBody": {
+    "description": "The app's central claim, in two paragraphs. Every clause is a fact about the software rather than a reassurance: no account, no server, nothing leaves, and the key is derived from the passcode so no copy of it exists anywhere including with us. It must not become 'your data is safe'."
+  },
+  "aboutFree": "Lamplight is free and always will be. There is nothing to unlock.",
+  "@aboutFree": {
+    "description": "There is no paid tier, no unlock, no trial. Said plainly because people expect the opposite."
+  },
+  "backupOnItsOwn": "On its own",
+  "actionDismiss": "Dismiss",
+  "importRange": "From {from} to {to}.",
+  "@importRange": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "sizeOneCopy": "Lamplight keeps one copy. Whatever you choose here is what you will have.",
+  "sizeAddAlways": "Add, and do not ask again",
+  "trashNothingHere": "Nothing here.",
+  "appearanceAaQuiet": "Aa\nquiet",
+  "lockWarnSeconds": "{count, plural, one{Locking in about one second.} other{Locking in about {count} seconds.}}",
+  "@lockWarnSeconds": {
+    "description": "The countdown before the idle lock. It buys no extra time — the warning exists so that locking reads as the app being deliberate rather than falling over.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "lockWarnChange": "Change this in Locking and security.",
+  "openingLabel": "Lamplight is opening",
+  "recordingNoMic": "Lamplight cannot use the microphone. You can turn it on in the phone’s settings, under Apps.",
+  "@recordingNoMic": {
+    "description": "The microphone permission was refused. Says where to change it without pretending the app can do it."
+  },
+  "recordingPaused": "Paused. Nothing is being heard.",
+  "@recordingPaused": {
+    "description": "While a recording is paused. The second sentence is the point: nothing is being listened to right now."
+  },
+  "videoOpening": "Opening the video…",
+  "albumRemoveThis": "Remove this {thing}",
+  "@albumRemoveThis": {
+    "placeholders": {
+      "thing": {
+        "type": "String"
+      }
+    }
+  },
+  "revisionsNote": "What this said before you changed it. Nothing here is a button — you can select the words and copy them.",
+  "@revisionsNote": {
+    "description": "Above the list of earlier versions of an entry. The second half sets the expectation — this sheet reads and does not restore, and the words can be selected and copied."
+  },
+  "composerSemantic": "Write an entry for this day",
+  "@composerSemantic": {
+    "description": "Read aloud for the writing box. An invitation, like the visible placeholder."
+  },
+  "importStripAdding": "Adding {name}",
+  "@importStripAdding": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "passcodeAtLeast": "At least {count} characters",
+  "@passcodeAtLeast": {
+    "description": "The length rule under the passcode field. {count} is the minimum number of characters.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "searchKindAll": "Everything",
+  "@searchKindAll": {
+    "description": "Search filter chips. One word each — they sit in a row and must stay short."
+  },
+  "searchKindWords": "Words",
+  "searchKindVoice": "Voice",
+  "searchKindPhotos": "Photos",
+  "searchKindFiles": "Files",
+  "passcodeAtLeastShort": "{count, plural, one{At least 1 character} other{At least {count} characters}}",
+  "@passcodeAtLeastShort": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "trashDaysLeft": "{count, plural, one{1 day left} other{{count} days left}}",
+  "@trashDaysLeft": {
+    "description": "How long an entry has left in the trash before it goes for good. {count} is whole days.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "trashGoneToday": "Goes today",
+  "@trashGoneToday": {
+    "description": "Shown instead of trashDaysLeft on the last day, when 'in 0 days' would be wrong."
+  },
+  "restoreMadeOn": "Made on {date}",
+  "@restoreMadeOn": {
+    "description": "When the chosen backup file was made. {date} is already formatted for the reader's language by LampDates.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "restoreDone": "Restored {entries} across {days}. Welcome back.",
+  "@restoreDone": {
+    "description": "After a restore finishes. {entries} and {days} are counts. 'Welcome back' is the whole tone of the screen and should survive as a greeting rather than a status.",
+    "placeholders": {
+      "entries": {
+        "type": "String"
+      },
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "importFoundUndated": "{count, plural, one{1 with no date Lamplight can read} other{{count} with no date Lamplight can read}}",
+  "@importFoundUndated": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "entrySemantic": "Entry at {time}. Tap to edit.",
+  "@entrySemantic": {
+    "description": "Read aloud for one entry in the day. {time} is when it was written.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "entrySemanticEdited": "Entry at {time}, edited. Tap to edit.",
+  "@entrySemanticEdited": {
+    "description": "The same, for an entry that has been changed since.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "onThisDaySemantic": "{when}. {body}. Tap to go to that day.",
+  "@onThisDaySemantic": {
+    "description": "Read aloud for an entry from a previous year. {when} is the date, {body} the first words of it.",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      },
+      "body": {
+        "type": "String"
+      }
+    }
+  },
+  "attachmentSemantic": "{what} at {time}. Double tap to open them.",
+  "@attachmentSemantic": {
+    "description": "Read aloud for a group of attachments. {what} describes them — photographs, files — and {time} is when they were added.",
+    "placeholders": {
+      "what": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dayHeaderToday": "{date}, today",
+  "@dayHeaderToday": {
+    "description": "Read aloud for the date at the top of the day. {date} is the full date; the second part marks today.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "yearGridNothing": "Nothing on this day",
+  "calendarNothing": "Nothing on this day",
+  "importStripCounted": "Adding {name}{counted}",
+  "@importStripCounted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "counted": {
+        "type": "String"
+      }
+    }
+  },
+  "aboutFingerprintBody": "Every build carries a signature only its author can make. This is the one on the copy you are holding. Compare it with the fingerprint published alongside the source — if they match, this is the app that source builds.",
+  "@aboutFingerprintBody": {
+    "description": "Explains the signing fingerprint shown below it. The point is that it is checkable by the reader against a published value, not that they should trust it."
+  },
+  "searchKindVideo": "Video",
+  "semanticOn": "on",
+  "@semanticOn": {
+    "description": "Read aloud after a filter chip that is switched on, as in \"Photos, on\". One word."
+  },
+  "andMore": "and {count} more",
+  "@andMore": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "entriesCount": "{count, plural, zero{nothing} one{1 entry} other{{count} entries}}",
+  "@entriesCount": {
+    "description": "How much is on a day, read aloud. The zero form is a word rather than \"0 entries\" — colour is never the only channel in the year grid, and this sentence is what carries the meaning.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "checkDone": "Done",
+  "@checkDone": {
+    "description": "Read aloud before a passcode rule that is satisfied, as in \"Done: at least 8 characters\"."
+  },
+  "checkNotYet": "Not yet",
+  "daysCount": "{count, plural, one{1 day} other{{count} days}}",
+  "@daysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "lockUseYourPasscode": "Use your passcode.",
+  "@lockUseYourPasscode": {
+    "description": "Follows a fingerprint failure on the lock screen. An offer of the way in that still works, never a reprimand — see the tone note in l10n/README.md."
+  },
+  "searchWordsExample": "anything you have written",
+  "@searchWordsExample": {
+    "description": "Example beside the 'Words' row on the empty search screen."
+  },
+  "searchAFile": "A file",
+  "@searchAFile": {
+    "description": "Heading of the 'a file' example row on the empty search screen."
+  },
+  "searchFileExample": "scan.pdf · IMG_2831",
+  "@searchFileExample": {
+    "description": "Example filenames. Deliberately not translated — they are literal filenames, and a translated example would not match anything on the phone."
+  },
+  "searchAFolder": "A folder",
+  "@searchAFolder": {
+    "description": "Heading of the 'a folder' example row on the empty search screen."
+  },
+  "searchFolderExample": "the name you gave it",
+  "@searchFolderExample": {
+    "description": "Example beside the 'A folder' row on the empty search screen."
+  },
+  "searchByFileName": "by file name",
+  "@searchByFileName": {
+    "description": "Why a result matched: the words were in the filename rather than in anything written. Sits beside 'said out loud'."
+  },
+  "searchARecording": "A recording",
+  "@searchARecording": {
+    "description": "Stands in for a voice note in a search result that has no words of its own. Never 'no transcript' — the app cannot tell a quiet room from an engine that failed."
+  },
+  "searchAnEntry": "An entry",
+  "@searchAnEntry": {
+    "description": "Stands in for an entry of any other kind in a search result with no words of its own."
+  },
+  "sizeThisOne": "this one",
+  "@sizeThisOne": {
+    "description": "Stands in for a mixed batch of one photo and video in 'How big should {what} be kept?'. Deliberately not the word 'media' — that is a name for a category and nobody has ever picked one."
+  },
+  "sizeTheseOnes": "these",
+  "@sizeTheseOnes": {
+    "description": "Stands in for a mixed batch of photos and videos in 'How big should {what} be kept?'."
+  },
+  "passcodeOneMoreCharacter": "One more character.",
+  "@passcodeOneMoreCharacter": {
+    "description": "Passcode is one character short of the minimum. Says what to do, never what is wrong."
+  },
+  "passcodeMoreCharacters": "{count, plural, one{1 more character — {minimum} is the minimum.} other{{count} more characters — {minimum} is the minimum.}}",
+  "@passcodeMoreCharacters": {
+    "description": "Passcode is short by {count}. Actionable, not a complexity-policy refusal.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "minimum": {
+        "type": "int"
+      }
+    }
+  },
+  "passcodeTooObvious": "That is one of the first things anyone would try. Pick something else.",
+  "@passcodeTooObvious": {
+    "description": "The passcode is in the common-passwords list. Names the actual risk rather than saying 'too common', which is vague."
+  },
+  "passcodeSameCharacter": "That is the same character repeated.",
+  "@passcodeSameCharacter": {
+    "description": "The passcode is one character over and over."
+  },
+  "passcodeStraightRun": "That is a straight run of characters.",
+  "@passcodeStraightRun": {
+    "description": "The passcode is a sequence like 12345678 or abcdefgh."
+  },
+  "attachmentLoading": "Attachment at {time}, loading",
+  "@attachmentLoading": {
+    "description": "Screen-reader label while an attachment is still being decrypted.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "videoSemantic": "Video at {time}, {length}. Double tap to watch.",
+  "@videoSemantic": {
+    "description": "Screen-reader label for a video entry. {length} is either a duration or the 'length unknown' phrase.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "length": {
+        "type": "String"
+      }
+    }
+  },
+  "voiceSemantic": "Voice note at {time}, {length}. Double tap to play.",
+  "@voiceSemantic": {
+    "description": "Screen-reader label for a voice note. {length} is either a duration or the 'length unknown' phrase.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "length": {
+        "type": "String"
+      }
+    }
+  },
+  "fileSemantic": "File at {time}, {name}, {size}. Double tap to open.",
+  "@fileSemantic": {
+    "description": "Screen-reader label for a document entry.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "lengthUnknown": "length unknown",
+  "@lengthUnknown": {
+    "description": "Stands in for a duration the app does not have. Says it does not know rather than showing 0:00, which would be a claim about the recording."
+  },
+  "settingsLockNone": "no auto-lock",
+  "@settingsLockNone": {
+    "description": "Part of the Security row summary when the idle lock is off. Lower case — it is a clause inside a longer sentence."
+  },
+  "settingsLockAfter": "after {duration}",
+  "@settingsLockAfter": {
+    "description": "Part of the Security row summary when the idle lock is on. {duration} is already in the reader's language.",
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsSecuritySummary": "Passcode, fingerprint, {lock}",
+  "@settingsSecuritySummary": {
+    "description": "The Security row's summary line. {lock} is either 'no auto-lock' or 'after 5 minutes'.",
+    "placeholders": {
+      "lock": {
+        "type": "String"
+      }
+    }
+  },
+  "keptNoNetworkTitle": "It never goes anywhere",
+  "@keptNoNetworkTitle": {
+    "description": "Heading of the first claim in 'How your notes are kept'. A statement of fact about the software, not a reassurance."
+  },
+  "keptNoNetworkBody": "Lamplight cannot use the internet. Not \"does not\" — cannot: Android refuses it the permission, and you can check that yourself in the phone’s app settings in about thirty seconds.",
+  "@keptNoNetworkBody": {
+    "description": "The strongest claim the app makes. The 'cannot, not does not' distinction is the whole point and must survive translation — it is the difference between a promise and a verifiable fact. Keep the invitation to check."
+  },
+  "keptPasscodeTitle": "Your passcode is the key",
+  "@keptPasscodeTitle": {
+    "description": "Heading of the second claim in 'How your notes are kept'."
+  },
+  "keptPasscodeBody": "The key that opens your notes is made from your passcode every time you unlock. It is not stored anywhere, so there is no copy of it to find, to lose, or to hand over.",
+  "@keptPasscodeBody": {
+    "description": "Why there is no stored key. 'to find, to lose, or to hand over' names three different adversaries in six words — keep all three."
+  },
+  "keptForgetTitle": "If you forget it",
+  "@keptForgetTitle": {
+    "description": "Heading of the third claim in 'How your notes are kept'."
+  },
+  "keptForgetBody": "Your twelve words are the only other way in. Nobody can reset a passcode here, and that is the same fact as the one above — an app that could let you back in could let somebody else in too.",
+  "@keptForgetBody": {
+    "description": "Says the cost of the design honestly rather than hiding it. The 'same fact as the one above' link is the argument, not decoration."
+  },
+  "keptNothingReadableTitle": "Nothing readable is left lying about",
+  "@keptNothingReadableTitle": {
+    "description": "Heading of the fourth claim in 'How your notes are kept'."
+  },
+  "keptNothingReadableBody": "Photos, recordings and files are encrypted before they touch storage. Nothing is ever written out in the clear, not even briefly while you look at it.",
+  "@keptNothingReadableBody": {
+    "description": "The 'not even briefly' clause is the specific promise — it is what rule 2 of CLAUDE.md is about — and must not be softened to a general one."
+  },
+  "keptLocksItselfTitle": "It locks itself",
+  "@keptLocksItselfTitle": {
+    "description": "Heading of the fifth claim in 'How your notes are kept'."
+  },
+  "keptLocksItselfBody": "The moment Lamplight goes into the background the keys are destroyed. Screenshots are blocked and the app does not appear in the recent apps preview.",
+  "@keptLocksItselfBody": {
+    "description": "Describes lock-on-background, FLAG_SECURE and the recents thumbnail. Note the app ships a switch for screenshots — this text describes the default."
+  },
+  "keptBackUpTitle": "Back it up",
+  "@keptBackUpTitle": {
+    "description": "Heading of the sixth and last item in 'How your notes are kept'. An instruction, not a claim — it is the one thing the app cannot do for the reader."
+  },
+  "keptBackUpBody": "Everything is on this phone and nowhere else, which is the point and is also the risk. A backup is one encrypted file that only your passcode opens. Keep one somewhere.",
+  "@keptBackUpBody": {
+    "description": "Names the cost of the whole design in one sentence — 'which is the point and is also the risk'. Do not soften it; that honesty is the reason the rest is believable."
+  }
+}

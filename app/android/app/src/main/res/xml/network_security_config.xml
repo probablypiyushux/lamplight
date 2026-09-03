@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    A belt to go with the braces.
+
+    The release manifest declares no INTERNET permission, so the app already
+    cannot open a socket — Android refuses it at the kernel boundary and
+    `tool/verify_no_internet.sh` proves it against the built APK before every
+    release. This file adds nothing to that.
+
+    What it adds is a second, independent statement of the same intent, in a
+    place a reviewer looks. If a dependency ever merges INTERNET into the
+    manifest — which is exactly the failure `verify_no_internet.sh` exists to
+    catch, because source review cannot — then this config is what the runtime
+    would consult, and it refuses every cleartext connection and trusts no
+    certificate authority beyond the system's own.
+
+    Two locks on one door is not paranoia when the door is the whole product.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

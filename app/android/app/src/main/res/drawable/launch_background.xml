@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    What the operating system paints between the tap and Flutter's first frame.
+
+    The warm near-black plate, and the mark centred on it — the same mark the
+    launcher icon and the lock screen use, so the app appears to grow out of the
+    icon that was tapped rather than cutting to an unrelated screen.
+-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/lamplight_canvas" />
+    <item>
+        <bitmap
+            android:gravity="center"
+            android:src="@mipmap/ic_launcher_foreground" />
+    </item>
+</layer-list>

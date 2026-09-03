@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Android 11 (API 30) and below.
+
+    android:allowBackup="false" already disables backup on these versions, so
+    strictly this file changes nothing today. It exists as a second lock: if
+    allowBackup is ever flipped to true by accident, by a future merge, or by
+    a library's manifest, this file still refuses to hand anything over.
+
+    Defence in depth on a two-line file is cheap. A leak here would be silent
+    and total.
+-->
+<full-backup-content>
+    <exclude domain="root" />
+    <exclude domain="file" />
+    <exclude domain="database" />
+    <exclude domain="sharedpref" />
+    <exclude domain="external" />
+</full-backup-content>

@@ -1,0 +1,30 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  exclude:
+    - build/**
+    - android/**
+    - ios/**
+    - web/**
+    - windows/**
+    - macos/**
+    - linux/**
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  The one lint this project turns off, and why.
+#
+#  `prefer_initializing_formals` wants `AttachmentStore({required this._sodium})`
+#  instead of `({required SodiumSumo sodium}) : _sodium = sodium`. Obeying it
+#  would put a **private identifier into a public constructor signature** — the
+#  named argument at every call site becomes `_sodium:` — which is worse to read
+#  and worse to document for the sake of one saved line.
+#
+#  It is off rather than ignored case by case because the 22 August audit found
+#  the analyzer sitting at a dozen permanent suggestions, and the lesson of the
+#  permanently red test suite applies here too: a warning list that is never
+#  empty cannot report the thirteenth. Everything else stays on, and the
+#  analyzer is at zero.
+# ─────────────────────────────────────────────────────────────────────────────
+linter:
+  rules:
+    prefer_initializing_formals: false

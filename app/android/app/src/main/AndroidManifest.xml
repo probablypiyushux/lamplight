@@ -1,0 +1,540 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+        ONE PERMISSION, AND ONLY ONE.
+
+        RECORD_AUDIO, for voice notes, requested the first time someone taps
+        record rather than at first launch (UX-FLOWS.md flow 1).
+
+        Note what is NOT here, because it is the interesting part. Photos need
+        no CAMERA permission: the *camera app* takes the picture and we hand it
+        a FileProvider URI to write into. Gallery and document import need no
+        storage permission: the Storage Access Framework is built so that the
+        user choosing a file in the system picker IS the grant. Saving a backup
+        needs none either, for the same reason.
+
+        So the whole of voice, photos, documents and backup costs exactly one
+        line in this file. Everything said below about INTERNET still holds and
+        tool/verify_no_internet.sh still proves it against a built APK.
+    -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <!--
+        These two arrived on their own, and that is why they are written here.
+
+        `androidx.biometric` merges them into the final manifest whether or not
+        anyone asks. `tool/verify_no_internet.sh` reads permissions out of the
+        BUILT APK rather than out of this file precisely so that cannot happen
+        quietly — it failed the build, which is the script doing its job, and
+        the fix is to declare them deliberately rather than to widen the script.
+
+        Both are `protectionLevel="normal"`: granted at install, no runtime
+        prompt, and they do not read a fingerprint — they only permit showing
+        the system's own authentication dialog. The actual protection is that
+        the keystore key is bound to BIOMETRIC_STRONG and the hardware refuses
+        to use it otherwise. See BiometricVault.kt.
+
+        USE_FINGERPRINT is the pre-Android-9 spelling and is deprecated; the
+        library still declares it for older devices.
+    -->
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+
+    <!--
+        THE REMINDER, AND THE TWO PERMISSIONS IT COSTS.
+
+        Both are `protectionLevel="normal"` or a runtime prompt the user answers
+        once, and neither grants access to anything. They are here because the
+        owner asked for an optional daily nudge to write, and because a feature
+        that silently stops working after a reboot is worse than no feature.
+
+          POST_NOTIFICATIONS     Android 13+ runtime permission. Asked for at
+                                 the moment somebody turns the reminder ON, and
+                                 never at launch. Declining it turns the switch
+                                 back off with an explanation; nothing else in
+                                 the app is affected.
+
+          RECEIVE_BOOT_COMPLETED A repeating alarm does not survive a restart.
+                                 Without this the reminder stops the first time
+                                 the phone is turned off, for exactly the person
+                                 who was relying on it. It grants no access to
+                                 anything — it is a wake-up call.
+
+        Deliberately NOT here: SCHEDULE_EXACT_ALARM. The reminder is inexact so
+        Android can batch it, which costs the battery nothing and avoids a
+        permission that Google reviews and that users see in the store listing.
+        Nobody needs a journal prompt at 21:00:00 rather than 21:04.
+
+        The reminder runs in a BroadcastReceiver with no keys, no database and
+        no Flutter engine, so it is *incapable* of saying anything about what is
+        in the vault. See Reminders.kt.
+    -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <!--
+        ONE PERMISSION, AND NO INTERNET. Both halves matter.
+
+        This file said "NO <uses-permission> ENTRIES. NOT ONE." until voice
+        notes were built, and RECORD_AUDIO above is the honest amendment. It is
+        recorded here rather than quietly replaced, because the claim a user can
+        verify has changed and pretending otherwise would be the beginning of
+        the rot this comment exists to prevent.
+
+        What has NOT changed is the claim that actually carries the threat
+        model: **there is no INTERNET permission**, so a release build has no
+        way to open a socket, and a stranger can confirm it in thirty seconds
+        with `aapt dump permissions` on the APK. 02-security/THREAT-MODEL.md
+        adversary #4 is us — the developer — and the answer there is not "we
+        promise not to". A microphone permission on an app that provably cannot
+        reach the network is a microphone that records to your own disk.
+
+        The debug and profile manifests DO declare INTERNET, because the Flutter
+        tool needs it for hot reload and for driving on-device tests. Those
+        variants never ship. `tool/verify_no_internet.*` proves the release
+        artifact stays clean; do not weaken it.
+
+        WHAT IS DELIBERATELY STILL ABSENT, AND HOW:
+
+          CAMERA          — not needed. The *camera app* takes the photograph;
+                            we hand it a FileProvider URI to write into.
+          READ_MEDIA_*    — not needed. Gallery import goes through the Storage
+          READ_EXTERNAL     Access Framework, where the user picking a file in
+          WRITE_EXTERNAL    the system's own picker IS the grant. Saving and
+                            restoring backups work the same way.
+
+        So the whole of photos, documents and backup cost nothing here. That is
+        not a coincidence — SAF was chosen over the usual plugins for exactly
+        this reason. Before adding any permission, re-read THREAT-MODEL.md: one
+        added for a "small" feature costs a claim that took the whole
+        architecture to earn.
+    -->
+
+    <application
+        android:label="${appLabel}"
+        android:name="${applicationName}"
+        android:icon="@mipmap/ic_launcher"
+
+        android:allowBackup="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+
+        android:enableOnBackInvokedCallback="true"
+
+        android:networkSecurityConfig="@xml/network_security_config"
+
+        android:allowClearUserData="true"
+
+        android:hasFragileUserData="true"
+
+        android:memtagMode="async">
+
+        <!--
+            ONE WAY UP. ISSUE 5.
+
+            *"The app has just one mode - portrait mode - it doesn't rotate if
+            the screen is rotated, and also it doesn't rotate even if the phone
+            has auto rotate turned on! Everything stays in one mode."*
+
+            `android:screenOrientation="portrait"` below is the authoritative
+            half of that. The window manager reads it before Flutter exists, so
+            the first frame is upright and so is the recents thumbnail, and it
+            overrules the phone's own auto-rotate switch - which a Dart-side
+            preference alone does not do reliably on every OEM build. The other
+            half is SystemChrome.setPreferredOrientations in main(); see
+            lib/core/platform/orientation.dart for why neither is enough alone.
+
+            "portrait" rather than "userPortrait": userPortrait would still
+            permit upside-down on a handset that allows it, and upside-down is
+            the rotation nobody ever asks for on purpose.
+
+            `configChanges` still lists orientation. It is now unreachable for
+            rotation and is left alone because it also covers density, locale
+            and font scale, which do still change under a running activity.
+
+            ══ ROUND FIFTEEN, ISSUE 12 - AND THIS IS NO LONGER THE WHOLE
+            STORY ═══════════════════════════════════════════════════════
+
+            "When the window is resized - when using split screen or floating
+            screen - I want you to set that the app is responsive then too!"
+
+            Two rules now override `screenOrientation` below, and both of them
+            apply to the tablet this app is judged on:
+
+              * In MULTI-WINDOW mode Android has always ignored an activity's
+                orientation request. Split screen can be short and wide
+                whatever this file asks for.
+
+              * Since ANDROID 16, for an app targeting SDK 36 - which this one
+                does - the system also ignores orientation, resizability and
+                aspect-ratio restrictions on any display whose smallest width
+                is 600dp or more. The Redmi Pad is 686dp.
+
+            So on his own device the app is already fully rotatable and
+            resizable, and nothing that can be written here will bring the
+            round-five behaviour back. `orientation.dart` used to say there was
+            "no moment and no code path where the app is anything but upright";
+            that sentence is corrected there.
+
+            The attribute stays because it is still the truth on a phone, which
+            is where he originally asked for it, and because losing it would
+            change behaviour on every handset for the sake of a device where it
+            is already inert.
+
+            `resizeableActivity` is declared rather than left to its default.
+            The default is true for every targetSdk this app has ever had, so
+            this changes nothing today - it is here so that a future default,
+            or an OEM's own idea of what a journal app wants, cannot quietly
+            letterbox the thing. `test/widget/resizing_test.dart` walks a live
+            window through split screen, a floating window and landscape, and
+            `responsive_test.dart` builds every screen at those sizes.
+        -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:resizeableActivity="true"
+            android:taskAffinity=""
+            android:excludeFromRecents="false"
+            android:theme="@style/LaunchTheme"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize">
+
+            <!-- Specifies an Android theme to apply to this Activity as soon as
+                 the Android process has started. This theme is visible to the user
+                 while the Flutter UI initializes. After that, this theme continues
+                 to determine the Window background behind the Flutter UI. -->
+            <meta-data
+              android:name="io.flutter.embedding.android.NormalTheme"
+              android:resource="@style/NormalTheme"
+              />
+
+            <!--
+                SHARING INTO LAMPLIGHT. ISSUE 13.
+
+                *"A mobile - android, ios, tablet - has other apps: gallery,
+                mail, files, messenger, WhatsApp, telegram, Instagram. These
+                apps has texts, photos, videos and other documents, which can be
+                shared, right? Make it possible that those things are allowed to
+                be shared to Lamplight, so it can be saved there - on that day,
+                that time."*
+
+                THIS IS AN INBOUND DOOR, AND IT IS WORTH BEING PRECISE ABOUT
+                WHAT IT DOES AND DOES NOT OPEN.
+
+                What it does: puts Lamplight in the system share sheet, so the
+                user - and only the user, by tapping Lamplight in that sheet -
+                can hand this app a file or some text. Android then grants us a
+                read permission on that one item, for that one intent.
+
+                What it does NOT do:
+                  - it grants no app the ability to read anything of ours. An
+                    intent filter is a doorway *in*. Nothing here is exported
+                    for reading, and the FileProvider below is still
+                    exported="false".
+                  - it adds no permission. Receiving a content:// URI through a
+                    share is the grant, exactly as the Storage Access Framework
+                    is the grant for the pickers. The manifest gains no
+                    <uses-permission> line for any of this.
+                  - it does not touch INTERNET. tool/verify_no_internet.sh still
+                    passes against the release APK.
+
+                The one real consideration is that another app can *start* this
+                activity. It already could - it carries LAUNCHER through its
+                aliases - and the app opens locked, so what a hostile sender
+                reaches is the passcode screen. The shared item is held
+                unopened until the vault is unlocked; see Sharing.kt.
+
+                mimeType="*/*" on purpose. He listed csv, rtf, pdf, apk, heic,
+                gif, svg, vcf, wav, m4a, mov, mkv, avi, zip, rar, 7z, opus, ogg,
+                epub, html, json, docx, xlsx, pptx, jpg, png and webp in ISSUE
+                12, and enumerating them here would be a list to keep in sync
+                with the one in the code, forever, wrongly. Anything can be
+                *kept*; what can be *opened* is ISSUE 12's question and is
+                answered in document_viewer.dart.
+            -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="*/*" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="*/*" />
+            </intent-filter>
+
+        </activity>
+
+        <!--
+            THE LAUNCHER ICON, IN TWO FLAVOURS.
+
+            MainActivity itself no longer carries the LAUNCHER filter. These two
+            aliases do, one at a time, and swapping which one is enabled is the
+            only way Android lets an app change its own icon. See IconSwitcher.kt
+            for the ordering rule that keeps the home-screen shortcut alive
+            through the swap.
+
+            The Dark one is enabled at install because dark is the app.s default
+            theme. Anybody on light gets the swap the first time they open it.
+        -->
+        <activity-alias
+            android:name="com.probablypiyush.lamplight.Dark"
+            android:targetActivity=".MainActivity"
+            android:exported="true"
+            android:enabled="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="Lamplight">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name="com.probablypiyush.lamplight.Light"
+            android:targetActivity=".MainActivity"
+            android:exported="true"
+            android:enabled="false"
+            android:icon="@mipmap/ic_launcher_light"
+            android:label="Lamplight">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+
+        <!--
+            THE OTHER FIVE ACCENTS. ISSUE 6b.
+
+            *"The request is that the icon's light takes the colour of the
+            chosen accent"* — he showed amber against purple.
+
+            A launcher icon is a manifest attribute, read by the launcher and
+            fixed at install time; there is no runtime tint. So an accent that
+            reaches the home screen has to be its own alias, and six accents in
+            two themes is twelve of them. The two above are Amber, the default,
+            and keep the original drawable names so a phone that has never been
+            near this feature is unaffected.
+
+            All ten below are disabled at install. IconSwitcher.kt enables
+            exactly one, and its ordering rule — enable the new one *before*
+            disabling the others — is what stops the home-screen shortcut
+            vanishing during the swap. That rule matters more with twelve
+            components than it did with two.
+
+            Only the lamp's **light** differs between them. The shade stays the
+            palette's own ink, because the shade is the object and the light is
+            the accent — six marks under six lamps rather than six marks.
+        -->
+
+        <activity-alias
+            android:name="com.probablypiyush.lamplight.Rose"
+            android:targetActivity=".MainActivity"
+            android:exported="true"
+            android:enabled="false"
+            android:icon="@mipmap/ic_launcher_rose"
+            android:label="Lamplight">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name="com.probablypiyush.lamplight.RoseLight"
+            android:targetActivity=".MainActivity"
+            android:exported="true"
+            android:enabled="false"
+            android:icon="@mipmap/ic_launcher_rose_light"
+            android:label="Lamplight">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name="com.probablypiyush.lamplight.Sage"
+            android:targetActivity=".MainActivity"
+            android:exported="true"
+            android:enabled="false"
+            android:icon="@mipmap/ic_launcher_sage"
+            android:label="Lamplight">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name="com.probablypiyush.lamplight.SageLight"
+            android:targetActivity=".MainActivity"
+            android:exported="true"
+            android:enabled="false"
+            android:icon="@mipmap/ic_launcher_sage_light"
+            android:label="Lamplight">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name="com.probablypiyush.lamplight.Slate"
+            android:targetActivity=".MainActivity"
+            android:exported="true"
+            android:enabled="false"
+            android:icon="@mipmap/ic_launcher_slate"
+            android:label="Lamplight">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name="com.probablypiyush.lamplight.SlateLight"
+            android:targetActivity=".MainActivity"
+            android:exported="true"
+            android:enabled="false"
+            android:icon="@mipmap/ic_launcher_slate_light"
+            android:label="Lamplight">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name="com.probablypiyush.lamplight.Plum"
+            android:targetActivity=".MainActivity"
+            android:exported="true"
+            android:enabled="false"
+            android:icon="@mipmap/ic_launcher_plum"
+            android:label="Lamplight">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name="com.probablypiyush.lamplight.PlumLight"
+            android:targetActivity=".MainActivity"
+            android:exported="true"
+            android:enabled="false"
+            android:icon="@mipmap/ic_launcher_plum_light"
+            android:label="Lamplight">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name="com.probablypiyush.lamplight.Ember"
+            android:targetActivity=".MainActivity"
+            android:exported="true"
+            android:enabled="false"
+            android:icon="@mipmap/ic_launcher_ember"
+            android:label="Lamplight">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name="com.probablypiyush.lamplight.EmberLight"
+            android:targetActivity=".MainActivity"
+            android:exported="true"
+            android:enabled="false"
+            android:icon="@mipmap/ic_launcher_ember_light"
+            android:label="Lamplight">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+
+        <!--
+            The camera app writes a photo into our own cache through this, and
+            nothing else uses it. `exported="false"` plus `grantUriPermissions`
+            means no app can reach in on its own — each URI is granted for one
+            write and expires with the intent. See res/xml/file_paths.xml.
+        -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.captures"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <!--
+            THE REMINDER'S TWO RECEIVERS.
+
+            Both `exported="false"`, which is the important attribute on this
+            whole page: an exported receiver is a doorway any app on the phone
+            can knock on. Neither of these needs to be reachable from outside —
+            one is woken by our own alarm, the other by the system's boot
+            broadcast — so neither is.
+
+            The boot receiver is `directBootAware="false"` by design. It should
+            not run before the phone is unlocked for the first time, because
+            there is nothing for it to do until there is a user.
+        -->
+        <receiver
+            android:name=".ReminderReceiver"
+            android:exported="false" />
+
+        <receiver
+            android:name=".BootReceiver"
+            android:exported="false"
+            android:directBootAware="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Don't delete the meta-data below.
+             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
+        <meta-data
+            android:name="flutterEmbedding"
+            android:value="2" />
+    </application>
+
+    <!--
+        Flutter's template puts a <queries> block here declaring PROCESS_TEXT,
+        which lets the engine enumerate other installed apps that can act on
+        selected text, and adds them to the text-selection toolbar.
+
+        Removed on purpose. In a journal, that toolbar would offer to hand a
+        selected sentence to an arbitrary third-party app — one tap, no
+        confirmation, straight out of the vault. It also lets us fingerprint
+        which apps are installed, which is information we have no business
+        having. Losing it costs nothing: copy, paste and share still work.
+
+        ROUND EIGHT, ISSUE 1C - this decision has a consequence, and it was
+        found the expensive way. Package visibility means resolveActivity()
+        returns null for an intent the app is not allowed to see, which is
+        indistinguishable from "nothing can open this". HandOff used to gate
+        "open with" on exactly that call, so the feature reported that the
+        phone had nothing to open a PDF with - on every phone, for every file.
+
+        The fix was to delete the check rather than to add a <queries> block,
+        because the chooser resolves on its own and Android says so itself when
+        nothing can handle a file. See HandOff.kt for the full argument.
+
+        So: still no <queries>. If a later phase genuinely needs an intent
+        query, add it narrowly and say why here - and read HandOff.kt first,
+        because the last thing that appeared to need one did not.
+    -->
+
+</manifest>

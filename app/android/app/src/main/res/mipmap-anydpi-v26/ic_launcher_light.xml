@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    The same lamp on a paper plate.
+
+    ── WHY THERE ARE TWO ICONS ──────────────────────────────────────────────
+
+    Asked for: "when you change theme, I want you to change the app icon too."
+    Right, and it is the one piece of the app that lives *outside* the app — a
+    warm near-black tile in a tray of light ones is the only thing about
+    Lamplight that cannot follow the setting on its own.
+
+    ── AND WHY THE FOREGROUND IS NOT SHARED. ISSUE 6. ───────────────────────
+
+    It was, and that was the bug. This file swapped the *plate* to warm paper
+    and went on pointing at the dark icon's foreground, whose shade is
+    `dark.inkPrimary` — a near-white #F2F0EA. Near-white ink on #FAF9F5 paper is
+    about 1.1:1: a white lamp on a white ground, with nothing to see. Reported
+    in exactly those terms, and correctly.
+
+    The mark is unchanged. What changed is which end of the palette draws it:
+    `light.inkPrimary` for the shade and the light palette's deeper amber for
+    the glow, both of which already existed and are verified in
+    `08-design/CONTRAST-REPORT.md`. The monochrome layer is still shared,
+    because Android throws its colour away and uses only the alpha.
+
+    Switching between them is an activity-alias swap — see AndroidManifest.xml
+    and IconSwitcher.kt, and note the ordering rule there, which is the whole
+    of the risk.
+-->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@drawable/ic_launcher_background_light" />
+    <foreground android:drawable="@mipmap/ic_launcher_foreground_light" />
+    <monochrome android:drawable="@mipmap/ic_launcher_monochrome" />
+</adaptive-icon>
