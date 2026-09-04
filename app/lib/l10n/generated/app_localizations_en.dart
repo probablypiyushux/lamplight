@@ -440,6 +440,10 @@ class LEn extends L {
   String get onboardFingerprintFailed => 'That did not work.';
 
   @override
+  String get onboardFingerprintVaultShut =>
+      'Lamplight closed the vault while you were away. Your passcode still opens it, and you can turn the fingerprint on later in Settings.';
+
+  @override
   String get onboardOneLastThing => 'One last thing';
 
   @override
@@ -735,7 +739,7 @@ class LEn extends L {
   String get appearanceThemeLight => 'Light';
 
   @override
-  String get appearanceThemeAuto => 'Auto';
+  String get appearanceThemeAuto => 'System default';
 
   @override
   String get appearanceThemeAutoNote =>
@@ -2605,4 +2609,36 @@ class LEn extends L {
   @override
   String get keptBackUpBody =>
       'Everything is on this phone and nowhere else, which is the point and is also the risk. A backup is one encrypted file that only your passcode opens. Keep one somewhere.';
+
+  @override
+  String etaSeconds(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'About $count seconds left',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String etaMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'About $count minutes left',
+      one: 'About a minute left',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String youWroteForMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'You wrote for $count minutes.',
+      one: 'You wrote for a minute.',
+    );
+    return '$_temp0';
+  }
 }

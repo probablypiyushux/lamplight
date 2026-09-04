@@ -56,14 +56,39 @@ class AppSettings extends ChangeNotifier {
   /// far worse bug than the one that guard is protecting against.
   static Future<AppSettings> load(File file) async {
     Map<String, Object?> data = {};
+    var existing = false;
     try {
       if (await file.exists()) {
+        existing = true;
         final decoded = jsonDecode(await file.readAsString());
         if (decoded is Map<String, dynamic>) data = decoded;
       }
     } catch (_) {
+      // A file that is there but unreadable is still somebody's install. It
+      // must not be treated as a new one, or the migration rule below would
+      // change the theme under a user whose preferences merely failed to parse.
       data = {};
     }
+    // ── A NEW INSTALL FOLLOWS THE PHONE. AN OLD ONE IS LEFT ALONE ──────────
+    //
+    // > *"where you wrote - Follow my phone ... when starting the app in my
+    // > mobile phone after downloading it via playstore closed testing - This
+    // > doesn't works!"*
+    //
+    // The chip was never broken: `ThemeMode.system` resolves correctly and
+    // `theme_follows_the_phone_test.dart` proves it in both directions. What
+    // he hit is that a fresh install has no `themeMode` at all, and the
+    // fallback was **dark** — so the app opened dark on a phone set to light
+    // and looked like it was ignoring the phone. It was; that was the default.
+    //
+    // Seeded here rather than by changing the getter's fallback, and the
+    // difference is the whole point. The fallback still reads `dark`, so a
+    // vault that has been on this phone since August and never touched the
+    // setting **keeps the dark it has always had**. Only a settings file that
+    // did not exist a moment ago gets the new default. An update is not
+    // allowed to repaint somebody's journal because we changed our minds about
+    // what a stranger should see first.
+    if (!existing) data = {...data, 'themeMode': 'system'};
     return AppSettings._(file, data);
   }
 
@@ -75,8 +100,14 @@ class AppSettings extends ChangeNotifier {
 
   // ── Appearance ─────────────────────────────────────────────────────────────
 
-  /// Dark · Light · Follow system. `DESIGN-SYSTEM.md` specifies all three and
-  /// names dark as the default.
+  /// Dark · Light · Follow system.
+  ///
+  /// **The fallback below is deliberately still `dark`, and it is not the
+  /// default any more.** `DESIGN-SYSTEM.md` §Theme named dark as the default
+  /// until round nineteen and now names *follow system*; the new default is
+  /// seeded in [load] for a settings file that did not previously exist. This
+  /// fallback is what an install made before that change lands on, and
+  /// changing it would silently flip the theme for every existing user.
   /// Which language the **interface** speaks. Null means follow the phone.
   ///
   /// ══ WHAT THIS DOES NOT DO, AND IT IS THE THING PEOPLE ASSUME ═════════════

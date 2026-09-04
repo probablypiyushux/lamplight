@@ -16,7 +16,7 @@ in six months and this is the gate the whole phase was built to pass.
 
 ## Part 1 — write, kill, reopen, unlock, read back
 
-**Performed by the maintainer on the physical device. Result: passed.**
+**Performed by Piyush on the physical device. Result: passed.**
 
 Also confirmed on device: unlock by twelve-word recovery phrase, and lock-on-background.
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../l10n/generated/app_localizations.dart';
 
+import '../../core/progress/time_remaining.dart';
 import '../../core/backup/plain_export.dart';
 import '../../core/db/day_note_repository.dart';
 import '../../core/db/entry_repository.dart';
@@ -9,6 +10,7 @@ import '../../core/plain_words.dart';
 import '../../core/vault/vault.dart';
 import '../../design/components.dart';
 import '../../design/tokens.dart';
+import 'time_left_line.dart';
 
 /// "Export a readable copy" — the way out of Lamplight.
 ///
@@ -46,6 +48,7 @@ class _ExportScreenState extends State<ExportScreen> {
   _Phase _phase = _Phase.idle;
   String _stage = '';
   double _progress = 0;
+  final TimeRemaining _eta = TimeRemaining();
   String? _error;
   String? _savedAs;
   bool _cancelRequested = false;
@@ -136,6 +139,7 @@ class _ExportScreenState extends State<ExportScreen> {
         now: DateTime.now(),
         locale: locale,
         onProgress: (fraction, label) {
+          _eta.update(fraction);
           if (!mounted) return;
           setState(() {
             _progress = fraction;
@@ -237,6 +241,7 @@ class _ExportScreenState extends State<ExportScreen> {
                       minHeight: 6,
                     ),
                   ),
+                  TimeLeftLine(estimate: _eta),
                 ],
               ),
             ),

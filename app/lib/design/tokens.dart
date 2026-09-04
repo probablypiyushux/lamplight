@@ -622,10 +622,24 @@ class LampTypography extends InheritedWidget {
 ///     stands — it is about faking depth, and a drop shadow has an offset, a
 ///     direction and a darker colour. This has no offset, no direction, and it
 ///     is the page's colour. It is a knockout, not a lift.
-///   * **It is invisible where it is not needed.** Page-coloured light on a
-///     page-coloured ground is nothing at all. On Settings, on the lock screen,
-///     on Plain, on Paper, this changes not one pixel — which is why it can be
-///     applied to a whole text theme without auditing every screen.
+///   * **It is invisible where it is not needed — on a page-coloured ground.**
+///     On Settings, on the lock screen, on Plain, on Paper, this changes not
+///     one pixel.
+///
+///     **That sentence used to end "which is why it can be applied to a whole
+///     text theme without auditing every screen", and that was wrong.** It is
+///     only true while the ground under the words *is* the page. The moment
+///     text sits on a ground of its own — a photograph, an accent bubble, a
+///     glass panel — the halo is no longer the colour behind it, and a wash of
+///     cream around white type on a dark thumbnail is not a knockout, it is a
+///     glow. He photographed exactly that twice: the duration on a video poster
+///     and the value bubble on the text-size slider.
+///
+///     So the rule is stated properly now: **the halo belongs to text whose
+///     ground is [LamplightColors.canvas]. Anything that paints its own ground
+///     must take it off again** — see [stripPageHalo] and [OffThePage], which
+///     is what the ground-painting components in `components.dart` now do for
+///     themselves, so that no future island has to remember.
 ///   * **It costs nothing to say honestly.** The app is not claiming the sky
 ///     is dimmer than it is. The sky is exactly as drawn; the words are simply
 ///     nearer.
@@ -638,6 +652,48 @@ List<Shadow> pageHalo(Color canvas) => [
       Shadow(color: canvas.withValues(alpha: 0.92), blurRadius: 2.5),
       Shadow(color: canvas.withValues(alpha: 0.78), blurRadius: 6),
     ];
+
+/// The halo, taken off again, for text that is **not** on the page.
+///
+/// The counterpart to [pageHalo] and the other half of the rule stated there.
+/// Returns [theme] unchanged when there was no halo on it — every surface
+/// except Star Map — so this is free to call and safe to wrap anything in.
+///
+/// `const <Shadow>[]` rather than `null`: `TextStyle.copyWith` treats a null
+/// argument as "leave what is there", which would silently do nothing at all
+/// and is exactly the sort of no-op that looks like a fix in a diff.
+TextTheme stripPageHalo(TextTheme theme) {
+  final marker = theme.bodyLarge?.shadows;
+  if (marker == null || marker.isEmpty) return theme;
+  TextStyle? bare(TextStyle? from) => from?.copyWith(shadows: const <Shadow>[]);
+  return theme.copyWith(
+    displaySmall: bare(theme.displaySmall),
+    titleLarge: bare(theme.titleLarge),
+    bodyLarge: bare(theme.bodyLarge),
+    labelMedium: bare(theme.labelMedium),
+    labelSmall: bare(theme.labelSmall),
+  );
+}
+
+/// Wraps a subtree that paints its own ground, so the page halo stops there.
+///
+/// Use it around anything with a background of its own: a filled button, a
+/// card, a chip, a glass panel, the scrim over a photograph. On any surface but
+/// Star Map it is a no-op and returns [child] untouched, so it costs a
+/// `Theme.of` and nothing else.
+class OffThePage extends StatelessWidget {
+  const OffThePage({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final stripped = stripPageHalo(theme.textTheme);
+    if (identical(stripped, theme.textTheme)) return child;
+    return Theme(data: theme.copyWith(textTheme: stripped), child: child);
+  }
+}
 
 TextTheme lamplightTextTheme(
   Color ink,
@@ -889,11 +945,15 @@ ThemeData _buildLamplightTheme(
         borderRadius: BorderRadius.circular(Radii.md),
         side: BorderSide(color: c.borderHair),
       ),
-      textStyle: text.bodyLarge,
+      // A tooltip is a raised slab of its own. No page halo. **Round 19.**
+      textStyle: text.bodyLarge?.copyWith(shadows: const <Shadow>[]),
     ),
     snackBarTheme: SnackBarThemeData(
       backgroundColor: c.raised,
-      contentTextStyle: text.bodyLarge?.copyWith(color: c.inkPrimary),
+      // `raised`, not `canvas` — so a canvas-coloured halo is a visible wash
+      // here rather than the nothing it is on the page. **Round 19.**
+      contentTextStyle: text.bodyLarge
+          ?.copyWith(color: c.inkPrimary, shadows: const <Shadow>[]),
       actionTextColor: c.accent,
       behavior: SnackBarBehavior.floating,
       elevation: 0,

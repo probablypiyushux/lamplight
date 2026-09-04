@@ -728,8 +728,18 @@ class _VideoState extends State<_Video> {
                   // — the frame underneath can be any colour at all. Taken
                   // from the dark palette's own primary ink rather than
                   // written as a hex code, so rule 8 holds.
-                  style: t.labelMedium
-                      ?.copyWith(color: LamplightColors.dark.inkPrimary),
+                  //
+                  // **And the halo comes off for the same reason. Round 19.**
+                  // He photographed "1:47 · 132.3 MB" glowing on a video
+                  // poster. The ink was corrected here when this was written
+                  // and the shadow was not, so on Star Map the label carried a
+                  // cream wash from `pageHalo` round white letters on a dark
+                  // frame. The ground under these words is a photograph; the
+                  // scrim above is what makes them readable, not the page.
+                  style: t.labelMedium?.copyWith(
+                    color: LamplightColors.dark.inkPrimary,
+                    shadows: const <Shadow>[],
+                  ),
                 ),
               ),
             ],

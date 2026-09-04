@@ -121,6 +121,7 @@
   "onboardFingerprintWaiting": "Esperando tu dedo…",
   "onboardFingerprintUse": "Usar mi huella",
   "onboardFingerprintFailed": "Eso no ha funcionado.",
+  "onboardFingerprintVaultShut": "Lamplight cerró la caja fuerte mientras no estabas. Tu código sigue abriéndola y puedes activar la huella más tarde en Ajustes.",
   "onboardOneLastThing": "Una última cosa",
   "onboardNameBody": "¿Cómo quieres que Lamplight te llame? Se queda en este teléfono, y puedes cambiarlo o dejarlo en blanco.",
   "onboardFingerprintOn": "Tu huella abrirá Lamplight a partir de ahora.",
@@ -211,7 +212,7 @@
   "appearanceTheme": "Tema",
   "appearanceThemeDark": "Oscuro",
   "appearanceThemeLight": "Claro",
-  "appearanceThemeAuto": "Auto",
+  "appearanceThemeAuto": "Del sistema",
   "appearanceThemeAutoNote": "Sigue el ajuste de claro y oscuro de tu teléfono.",
   "appearanceFont": "Letra",
   "appearanceSize": "Tamaño",
@@ -697,5 +698,17 @@
   "keptLocksItselfTitle": "Se bloquea solo",
   "keptLocksItselfBody": "En cuanto Lamplight pasa a segundo plano, las llaves se destruyen. Las capturas de pantalla están bloqueadas y la aplicación no aparece en la vista de aplicaciones recientes.",
   "keptBackUpTitle": "Haz una copia",
-  "keptBackUpBody": "Todo está en este teléfono y en ningún otro sitio: esa es la idea y también el riesgo. Una copia de seguridad es un único archivo cifrado que solo abre tu código. Guarda una en algún sitio."
+  "keptBackUpBody": "Todo está en este teléfono y en ningún otro sitio: esa es la idea y también el riesgo. Una copia de seguridad es un único archivo cifrado que solo abre tu código. Guarda una en algún sitio.",
+  "etaSeconds": "{count, plural, other{Quedan unos {count} segundos}}",
+  "@etaSeconds": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "etaMinutes": "{count, plural, one{Queda un minuto} other{Quedan unos {count} minutos}}",
+  "@etaMinutes": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "youWroteForMinutes": "{count, plural, one{Escribiste durante un minuto.} other{Escribiste durante {count} minutos.}}",
+  "@youWroteForMinutes": {
+    "placeholders": { "count": { "type": "int" } }
+  }
 }

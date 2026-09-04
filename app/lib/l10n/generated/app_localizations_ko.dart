@@ -424,6 +424,10 @@ class LKo extends L {
   String get onboardFingerprintFailed => '잘 되지 않았습니다.';
 
   @override
+  String get onboardFingerprintVaultShut =>
+      '자리를 비운 사이 Lamplight가 보관함을 닫았습니다. 암호는 그대로 사용할 수 있고, 지문은 나중에 설정에서 켤 수 있습니다.';
+
+  @override
   String get onboardOneLastThing => '마지막 하나';
 
   @override
@@ -708,7 +712,7 @@ class LKo extends L {
   String get appearanceThemeLight => '밝게';
 
   @override
-  String get appearanceThemeAuto => '자동';
+  String get appearanceThemeAuto => '시스템 기본값';
 
   @override
   String get appearanceThemeAutoNote => '휴대폰의 밝게·어둡게 설정을 따릅니다.';
@@ -2512,4 +2516,34 @@ class LKo extends L {
   @override
   String get keptBackUpBody =>
       '모든 것이 이 휴대전화에만 있고 다른 어디에도 없습니다. 그것이 이 앱의 핵심이자 동시에 위험입니다. 백업은 당신의 패스코드만 열 수 있는 암호화된 파일 하나입니다. 어딘가에 하나 보관해 두세요.';
+
+  @override
+  String etaSeconds(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '약 $count초 남음',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String etaMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '약 $count분 남음',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String youWroteForMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count분 동안 썼습니다.',
+    );
+    return '$_temp0';
+  }
 }

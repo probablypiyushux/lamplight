@@ -442,6 +442,10 @@ class LEs extends L {
   String get onboardFingerprintFailed => 'Eso no ha funcionado.';
 
   @override
+  String get onboardFingerprintVaultShut =>
+      'Lamplight cerró la caja fuerte mientras no estabas. Tu código sigue abriéndola y puedes activar la huella más tarde en Ajustes.';
+
+  @override
   String get onboardOneLastThing => 'Una última cosa';
 
   @override
@@ -738,7 +742,7 @@ class LEs extends L {
   String get appearanceThemeLight => 'Claro';
 
   @override
-  String get appearanceThemeAuto => 'Auto';
+  String get appearanceThemeAuto => 'Del sistema';
 
   @override
   String get appearanceThemeAutoNote =>
@@ -2616,4 +2620,36 @@ class LEs extends L {
   @override
   String get keptBackUpBody =>
       'Todo está en este teléfono y en ningún otro sitio: esa es la idea y también el riesgo. Una copia de seguridad es un único archivo cifrado que solo abre tu código. Guarda una en algún sitio.';
+
+  @override
+  String etaSeconds(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Quedan unos $count segundos',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String etaMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Quedan unos $count minutos',
+      one: 'Queda un minuto',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String youWroteForMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Escribiste durante $count minutos.',
+      one: 'Escribiste durante un minuto.',
+    );
+    return '$_temp0';
+  }
 }

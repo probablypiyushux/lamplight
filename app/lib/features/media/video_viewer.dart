@@ -227,113 +227,119 @@ class _VideoViewerState extends State<VideoViewer> with WidgetsBindingObserver {
     final c = context.lamplight;
     return Scaffold(
       backgroundColor: c.canvas,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: GestureDetector(
-                onTap: () => setState(() => _chrome = !_chrome),
-                child: Center(child: _stage(context)),
+      // Every word of chrome in here is drawn over the film or over a black
+      // gradient above it, never over the page. **Round 19.** One wrapper
+      // rather than a `shadows: const []` on each of five labels, because the
+      // next control added to this dock should not have to remember.
+      body: OffThePage(
+        child: SafeArea(
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: GestureDetector(
+                  onTap: () => setState(() => _chrome = !_chrome),
+                  child: Center(child: _stage(context)),
+                ),
               ),
-            ),
 
-            // ══ ROUND EIGHT, ISSUE 2B — THE SCRIM ════════════════════
-            //
-            // *"Video player aesthetics lacks! I want you to keep it up! Make
-            // it better!"*
-            //
-            // This is the single largest part of the answer, and it is not
-            // decoration — it is what every video player on earth has and this
-            // one did not. Two soft gradients, one under the top row and one
-            // under the controls, dark at the edge and gone by the middle.
-            //
-            // It does two jobs at once and the second is the important one:
-            //
-            //   * A back arrow and a play button sat directly on the film,
-            //     which means they were legible over a night scene and
-            //     invisible over a snowfield. The scrim makes the ground under
-            //     the chrome **known** rather than whatever frame happens to be
-            //     showing.
-            //   * And because the ground is known, the panel on top of it can
-            //     afford to be glass. Without a scrim, making that panel
-            //     see-through would put grey text on a white film. See
-            //     `_controls`.
-            //
-            // Painted under the chrome and faded with it, so a video with the
-            // controls hidden is the whole frame and nothing else.
-            IgnorePointer(
-              child: AnimatedOpacity(
-                opacity: _chrome ? 1 : 0,
-                duration: Motion.duration(context),
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.black.withValues(alpha: 0.55),
-                        Colors.black.withValues(alpha: 0.0),
-                        Colors.black.withValues(alpha: 0.0),
-                        // 0.78, and the number was measured rather than
-                        // chosen. `video_controls_test.dart` solves for the
-                        // scrim that keeps the panel's quietest label above
-                        // 4.5:1 over a completely white frame; 0.62 came out
-                        // at 4.28 and this is what clears it.
-                        Colors.black.withValues(alpha: 0.78),
-                      ],
-                      stops: const [0.0, 0.22, 0.62, 1.0],
-                    ),
-                  ),
-                  child: const SizedBox.expand(),
-                ),
-              ),
-            ),
-            AnimatedOpacity(
-              opacity: _chrome ? 1 : 0,
-              duration: Motion.duration(context),
-              child: IgnorePointer(
-                ignoring: !_chrome,
-                child: Padding(
-                  padding: const EdgeInsets.all(Space.x2),
-                  child: Align(
-                    alignment: Alignment.topCenter,
-                    child: Row(
-                      children: [
-                        IconButton(
-                          onPressed: () => Navigator.of(context).maybePop(),
-                          icon: const Icon(Icons.arrow_back),
-                          color: c.inkPrimary,
-                          tooltip: L.of(context).searchBack,
-                        ),
-                        const Spacer(),
-                        // ISSUE D. Same sheet as the photo viewer's, from the
-                        // same function, so the two cannot drift apart.
-                        if (widget.onSave != null || widget.onTrash != null)
-                          IconButton(
-                            onPressed: _menu,
-                            icon: const Icon(Icons.more_vert),
-                            color: c.inkPrimary,
-                            tooltip: L.of(context).viewerMore,
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            if (_handle != null && _error == null)
-              Align(
-                alignment: Alignment.bottomCenter,
+              // ══ ROUND EIGHT, ISSUE 2B — THE SCRIM ════════════════════
+              //
+              // *"Video player aesthetics lacks! I want you to keep it up! Make
+              // it better!"*
+              //
+              // This is the single largest part of the answer, and it is not
+              // decoration — it is what every video player on earth has and this
+              // one did not. Two soft gradients, one under the top row and one
+              // under the controls, dark at the edge and gone by the middle.
+              //
+              // It does two jobs at once and the second is the important one:
+              //
+              //   * A back arrow and a play button sat directly on the film,
+              //     which means they were legible over a night scene and
+              //     invisible over a snowfield. The scrim makes the ground under
+              //     the chrome **known** rather than whatever frame happens to be
+              //     showing.
+              //   * And because the ground is known, the panel on top of it can
+              //     afford to be glass. Without a scrim, making that panel
+              //     see-through would put grey text on a white film. See
+              //     `_controls`.
+              //
+              // Painted under the chrome and faded with it, so a video with the
+              // controls hidden is the whole frame and nothing else.
+              IgnorePointer(
                 child: AnimatedOpacity(
                   opacity: _chrome ? 1 : 0,
                   duration: Motion.duration(context),
-                  child: IgnorePointer(
-                    ignoring: !_chrome,
-                    child: _controls(context),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.black.withValues(alpha: 0.55),
+                          Colors.black.withValues(alpha: 0.0),
+                          Colors.black.withValues(alpha: 0.0),
+                          // 0.78, and the number was measured rather than
+                          // chosen. `video_controls_test.dart` solves for the
+                          // scrim that keeps the panel's quietest label above
+                          // 4.5:1 over a completely white frame; 0.62 came out
+                          // at 4.28 and this is what clears it.
+                          Colors.black.withValues(alpha: 0.78),
+                        ],
+                        stops: const [0.0, 0.22, 0.62, 1.0],
+                      ),
+                    ),
+                    child: const SizedBox.expand(),
                   ),
                 ),
               ),
-          ],
+              AnimatedOpacity(
+                opacity: _chrome ? 1 : 0,
+                duration: Motion.duration(context),
+                child: IgnorePointer(
+                  ignoring: !_chrome,
+                  child: Padding(
+                    padding: const EdgeInsets.all(Space.x2),
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: Row(
+                        children: [
+                          IconButton(
+                            onPressed: () => Navigator.of(context).maybePop(),
+                            icon: const Icon(Icons.arrow_back),
+                            color: c.inkPrimary,
+                            tooltip: L.of(context).searchBack,
+                          ),
+                          const Spacer(),
+                          // ISSUE D. Same sheet as the photo viewer's, from the
+                          // same function, so the two cannot drift apart.
+                          if (widget.onSave != null || widget.onTrash != null)
+                            IconButton(
+                              onPressed: _menu,
+                              icon: const Icon(Icons.more_vert),
+                              color: c.inkPrimary,
+                              tooltip: L.of(context).viewerMore,
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              if (_handle != null && _error == null)
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: AnimatedOpacity(
+                    opacity: _chrome ? 1 : 0,
+                    duration: Motion.duration(context),
+                    child: IgnorePointer(
+                      ignoring: !_chrome,
+                      child: _controls(context),
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );

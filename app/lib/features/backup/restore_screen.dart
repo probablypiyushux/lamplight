@@ -5,6 +5,7 @@ import '../../l10n/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:sodium/sodium_sumo.dart' show SecureKey;
 
+import '../../core/progress/time_remaining.dart';
 import '../../core/backup/vault_file.dart';
 import '../../core/crypto/mnemonic.dart';
 import '../../core/platform/document_store.dart';
@@ -12,6 +13,7 @@ import '../../core/plain_words.dart';
 import '../../core/vault/vault.dart';
 import '../../design/components.dart';
 import '../../design/tokens.dart';
+import 'time_left_line.dart';
 
 /// `UX-FLOWS.md` flow 6 — "the moment that earns trust."
 ///
@@ -54,6 +56,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
   BackupInfo? _info;
   String _stage = '';
   double _progress = 0;
+  final TimeRemaining _eta = TimeRemaining();
   String? _error;
   RestoreSummary? _restored;
 
@@ -226,7 +229,10 @@ class _RestoreScreenState extends State<RestoreScreen> {
           passcode: _usingPhrase ? null : passcode,
           recoveryKek: recoveryKek,
           staging: _staging,
-          onProgress: (f) => setState(() => _progress = f * 0.8),
+          onProgress: (f) => setState(() {
+            _progress = f * 0.8;
+            _eta.update(_progress);
+          }),
         );
       } finally {
         recoveryKek?.dispose();
@@ -464,6 +470,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
                       child: LinearProgressIndicator(
                           value: _progress, minHeight: 6),
                     ),
+                    TimeLeftLine(estimate: _eta),
                     const SizedBox(height: Space.x4),
                     Text(
                       L.of(context).restoreDoNotClose,

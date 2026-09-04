@@ -422,6 +422,10 @@ class LJa extends L {
   String get onboardFingerprintFailed => 'うまくいきませんでした。';
 
   @override
+  String get onboardFingerprintVaultShut =>
+      '離れている間に Lamplight が保管庫を閉じました。パスコードは今も使えます。指紋は後で設定から有効にできます。';
+
+  @override
   String get onboardOneLastThing => '最後にひとつ';
 
   @override
@@ -705,7 +709,7 @@ class LJa extends L {
   String get appearanceThemeLight => 'ライト';
 
   @override
-  String get appearanceThemeAuto => '自動';
+  String get appearanceThemeAuto => 'システム設定';
 
   @override
   String get appearanceThemeAutoNote => '端末のライト・ダークの設定にあわせます。';
@@ -2503,4 +2507,34 @@ class LJa extends L {
   @override
   String get keptBackUpBody =>
       'すべてはこの端末の中だけにあり、ほかのどこにもありません。それがこのアプリの狙いであり、同時に危うさでもあります。バックアップは、あなたのパスコードだけが開ける暗号化されたファイル1つです。どこかに1つ置いておいてください。';
+
+  @override
+  String etaSeconds(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '残り約 $count 秒',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String etaMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '残り約 $count 分',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String youWroteForMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 分間書きました。',
+    );
+    return '$_temp0';
+  }
 }

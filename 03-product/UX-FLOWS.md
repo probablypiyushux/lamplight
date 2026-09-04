@@ -74,7 +74,7 @@ Capture bar, always visible at thumb height: **🎙 voice · 📷 photo · 📎 
 **Writing has no button, and that is the change of 23 August 2026.**
 
 This bar used to begin with **✎ text**, whose only job was to put the cursor in a composer
-pinned above the bar. the maintainer's round-five note was *"typing doesn't feel like writing on any
+pinned above the bar. Piyush's round-five note was *"typing doesn't feel like writing on any
 kind of notes app"*, and he was describing the shape rather than the behaviour: a bordered
 field at the bottom of the screen with your words appearing somewhere else is a chat app's
 composer, however well it autosaves.

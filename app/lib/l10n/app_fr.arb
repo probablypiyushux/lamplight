@@ -121,6 +121,7 @@
   "onboardFingerprintWaiting": "En attente de ton doigt…",
   "onboardFingerprintUse": "Utiliser mon empreinte",
   "onboardFingerprintFailed": "Cela n’a pas fonctionné.",
+  "onboardFingerprintVaultShut": "Lamplight a refermé le coffre pendant votre absence. Votre code l’ouvre toujours, et vous pourrez activer l’empreinte plus tard dans les Réglages.",
   "onboardOneLastThing": "Une dernière chose",
   "onboardNameBody": "Comment Lamplight doit-il t’appeler ? Cela reste sur ce téléphone, et tu peux le changer ou le laisser vide.",
   "onboardFingerprintOn": "Ton empreinte ouvrira Lamplight désormais.",
@@ -211,7 +212,7 @@
   "appearanceTheme": "Thème",
   "appearanceThemeDark": "Sombre",
   "appearanceThemeLight": "Clair",
-  "appearanceThemeAuto": "Auto",
+  "appearanceThemeAuto": "Système",
   "appearanceThemeAutoNote": "Suit le réglage clair ou sombre de ton téléphone.",
   "appearanceFont": "Police",
   "appearanceSize": "Taille",
@@ -697,5 +698,17 @@
   "keptLocksItselfTitle": "Il se verrouille tout seul",
   "keptLocksItselfBody": "Dès que Lamplight passe en arrière-plan, les clés sont détruites. Les captures d’écran sont bloquées et l’application n’apparaît pas dans l’aperçu des applications récentes.",
   "keptBackUpTitle": "Fais une sauvegarde",
-  "keptBackUpBody": "Tout est sur ce téléphone et nulle part ailleurs : c’est tout l’intérêt, et c’est aussi le risque. Une sauvegarde est un seul fichier chiffré que seul ton code ouvre. Gardes-en une quelque part."
+  "keptBackUpBody": "Tout est sur ce téléphone et nulle part ailleurs : c’est tout l’intérêt, et c’est aussi le risque. Une sauvegarde est un seul fichier chiffré que seul ton code ouvre. Gardes-en une quelque part.",
+  "etaSeconds": "{count, plural, other{Encore environ {count} secondes}}",
+  "@etaSeconds": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "etaMinutes": "{count, plural, one{Encore une minute environ} other{Encore environ {count} minutes}}",
+  "@etaMinutes": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "youWroteForMinutes": "{count, plural, one{Vous avez écrit pendant une minute.} other{Vous avez écrit pendant {count} minutes.}}",
+  "@youWroteForMinutes": {
+    "placeholders": { "count": { "type": "int" } }
+  }
 }

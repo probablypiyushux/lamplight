@@ -121,6 +121,7 @@
   "onboardFingerprintWaiting": "في انتظار إصبعك…",
   "onboardFingerprintUse": "استخدم بصمتي",
   "onboardFingerprintFailed": "لم ينجح ذلك.",
+  "onboardFingerprintVaultShut": "أغلق Lamplight الخزنة أثناء غيابك. لا يزال رمز المرور يفتحها، ويمكنك تفعيل البصمة لاحقًا من الإعدادات.",
   "onboardOneLastThing": "شيء أخير",
   "onboardNameBody": "بماذا يناديك Lamplight؟ يبقى على هذا الهاتف، ويمكنك تغييره أو تركه فارغًا.",
   "onboardFingerprintOn": "بصمتك ستفتح Lamplight من الآن فصاعدًا.",
@@ -211,7 +212,7 @@
   "appearanceTheme": "السمة",
   "appearanceThemeDark": "داكن",
   "appearanceThemeLight": "فاتح",
-  "appearanceThemeAuto": "تلقائي",
+  "appearanceThemeAuto": "افتراضي النظام",
   "appearanceThemeAutoNote": "يتبع إعداد الفاتح والداكن في هاتفك.",
   "appearanceFont": "الخط",
   "appearanceSize": "الحجم",
@@ -697,5 +698,17 @@
   "keptLocksItselfTitle": "يقفل نفسه تلقائياً",
   "keptLocksItselfBody": "في اللحظة التي ينتقل فيها Lamplight إلى الخلفية تُدمَّر المفاتيح. ولقطات الشاشة محظورة، ولا يظهر التطبيق في معاينة التطبيقات الأخيرة.",
   "keptBackUpTitle": "احتفظ بنسخة احتياطية",
-  "keptBackUpBody": "كل شيء موجود على هذا الهاتف ولا شيء في مكان آخر، وهذا هو المقصود وهو أيضاً الخطر. النسخة الاحتياطية ملف مشفَّر واحد لا يفتحه إلا رمز المرور الخاص بك. احتفظ بنسخة في مكان ما."
+  "keptBackUpBody": "كل شيء موجود على هذا الهاتف ولا شيء في مكان آخر، وهذا هو المقصود وهو أيضاً الخطر. النسخة الاحتياطية ملف مشفَّر واحد لا يفتحه إلا رمز المرور الخاص بك. احتفظ بنسخة في مكان ما.",
+  "etaSeconds": "{count, plural, other{يتبقى {count} ثانية تقريبًا}}",
+  "@etaSeconds": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "etaMinutes": "{count, plural, one{يتبقى دقيقة تقريبًا} other{يتبقى {count} دقيقة تقريبًا}}",
+  "@etaMinutes": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "youWroteForMinutes": "{count, plural, one{كتبت لمدة دقيقة.} other{كتبت لمدة {count} دقيقة.}}",
+  "@youWroteForMinutes": {
+    "placeholders": { "count": { "type": "int" } }
+  }
 }

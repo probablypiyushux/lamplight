@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'l10n/generated/app_localizations.dart';
 
 import 'core/db/entry_repository.dart';
+import 'core/platform/edge_to_edge.dart';
 import 'core/platform/app_icon.dart';
 import 'core/platform/hand_off.dart';
 import 'core/platform/secure_clipboard.dart';
@@ -40,7 +42,8 @@ class LamplightApp extends StatefulWidget {
   State<LamplightApp> createState() => _LamplightAppState();
 }
 
-class _LamplightAppState extends State<LamplightApp> with WidgetsBindingObserver {
+class _LamplightAppState extends State<LamplightApp>
+    with WidgetsBindingObserver {
   /// Held so the app can reach the navigator from outside the widget tree —
   /// specifically, to tear down every open screen the instant the vault locks.
   final _navigator = GlobalKey<NavigatorState>();
@@ -251,7 +254,8 @@ class _LamplightAppState extends State<LamplightApp> with WidgetsBindingObserver
       // listing and one column — and the moment the vault opens is the moment
       // the app most needs to feel instant.
       WidgetsBinding.instance.addPostFrameCallback(
-          (_) => OrphanSweep.run(widget.vault).ignore());
+        (_) => OrphanSweep.run(widget.vault).ignore(),
+      );
 
       // "Silent backup whenever the user logs in." The key was derived by
       // whichever screen took the passcode; this is where it gets used.
@@ -494,8 +498,7 @@ class _LamplightAppState extends State<LamplightApp> with WidgetsBindingObserver
         final osFactor = media.textScaler.scale(probe) / probe;
         return MediaQuery(
           data: media.copyWith(
-            textScaler:
-                TextScaler.linear(osFactor * widget.settings.textScale),
+            textScaler: TextScaler.linear(osFactor * widget.settings.textScale),
           ),
           child: content,
         );
@@ -513,10 +516,10 @@ class _LamplightAppState extends State<LamplightApp> with WidgetsBindingObserver
           // during a build, and cheap to repeat — the platform side no-ops when
           // the right alias is already on.
           final light = Theme.of(context).brightness == Brightness.light;
-          WidgetsBinding.instance.addPostFrameCallback((_) => AppIcon.use(
-                accentId: widget.settings.accent.id,
-                light: light,
-              ));
+          WidgetsBinding.instance.addPostFrameCallback(
+            (_) =>
+                AppIcon.use(accentId: widget.settings.accent.id, light: light),
+          );
           // The lamp coming on, once per cold start, over the top of whatever
           // is about to be shown. Skippable, and skipped entirely under
           // prefers-reduced-motion. See features/launch/opening.dart for why
@@ -530,36 +533,64 @@ class _LamplightAppState extends State<LamplightApp> with WidgetsBindingObserver
           // language changes. See `SilentBackup.words`.
           widget.silentBackup.words = L.of(context);
 
-          if (_opening) {
-            return Opening(onDone: () => setState(() => _opening = false));
-          }
-          // Onboarding first, and it leaves when it says so — see [_onboarding].
-          if (_onboarding) {
-            return OnboardingScreen(
-              vault: widget.vault,
-              settings: widget.settings,
-              onDone: () => setState(() => _onboarding = false),
-            );
-          }
-          return switch (widget.vault.state) {
-            VaultState.uninitialised => OnboardingScreen(
-                vault: widget.vault,
-              settings: widget.settings,
-                onDone: () => setState(() => _onboarding = false),
-              ),
-            VaultState.locked => LockScreen(
-                vault: widget.vault,
-                settings: widget.settings,
-                silentBackup: widget.silentBackup,
-              ),
-            VaultState.unlocked => DayScreen(
-                vault: widget.vault,
-                settings: widget.settings,
-                silentBackup: widget.silentBackup,
-              ),
-          };
+          // ── The system bars are drawn into our window now ──────────────
+          //
+          // Android 15 stopped insetting the window for apps targeting SDK 35
+          // and up, and this one targets 36 — so the clock, the battery and
+          // the gesture pill are composited over whatever the app painted
+          // underneath them. Nothing chooses their contrast by default.
+          //
+          // Here, and not in `main`, for the same reason the launcher icon is
+          // here: the theme can follow the phone, so the only thing that knows
+          // whether the page under the bars is light or dark is the resolved
+          // `Theme.of(context)`. Set in `main` it would be decided once, from
+          // the wrong information, and would then be wrong for everybody on
+          // System default whose phone disagreed with the fallback.
+          //
+          // `AnnotatedRegion` rather than an imperative
+          // `setSystemUIOverlayStyle`, so it is re-applied whenever the theme
+          // changes rather than at one moment during startup.
+          return AnnotatedRegion<SystemUiOverlayStyle>(
+            value: EdgeToEdge.styleFor(Theme.of(context).brightness),
+            child: _screen(context),
+          );
         },
       ),
     );
+  }
+
+  /// Whichever of the four screens is the bottom of the navigator right now.
+  ///
+  /// Split out of the `home:` builder when the overlay style needed to wrap it
+  /// — three `return`s cannot share one wrapper.
+  Widget _screen(BuildContext context) {
+    if (_opening) {
+      return Opening(onDone: () => setState(() => _opening = false));
+    }
+    // Onboarding first, and it leaves when it says so — see [_onboarding].
+    if (_onboarding) {
+      return OnboardingScreen(
+        vault: widget.vault,
+        settings: widget.settings,
+        onDone: () => setState(() => _onboarding = false),
+      );
+    }
+    return switch (widget.vault.state) {
+      VaultState.uninitialised => OnboardingScreen(
+        vault: widget.vault,
+        settings: widget.settings,
+        onDone: () => setState(() => _onboarding = false),
+      ),
+      VaultState.locked => LockScreen(
+        vault: widget.vault,
+        settings: widget.settings,
+        silentBackup: widget.silentBackup,
+      ),
+      VaultState.unlocked => DayScreen(
+        vault: widget.vault,
+        settings: widget.settings,
+        silentBackup: widget.silentBackup,
+      ),
+    };
   }
 }

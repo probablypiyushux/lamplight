@@ -449,6 +449,10 @@ class LAr extends L {
   String get onboardFingerprintFailed => 'لم ينجح ذلك.';
 
   @override
+  String get onboardFingerprintVaultShut =>
+      'أغلق Lamplight الخزنة أثناء غيابك. لا يزال رمز المرور يفتحها، ويمكنك تفعيل البصمة لاحقًا من الإعدادات.';
+
+  @override
   String get onboardOneLastThing => 'شيء أخير';
 
   @override
@@ -743,7 +747,7 @@ class LAr extends L {
   String get appearanceThemeLight => 'فاتح';
 
   @override
-  String get appearanceThemeAuto => 'تلقائي';
+  String get appearanceThemeAuto => 'افتراضي النظام';
 
   @override
   String get appearanceThemeAutoNote => 'يتبع إعداد الفاتح والداكن في هاتفك.';
@@ -2680,4 +2684,36 @@ class LAr extends L {
   @override
   String get keptBackUpBody =>
       'كل شيء موجود على هذا الهاتف ولا شيء في مكان آخر، وهذا هو المقصود وهو أيضاً الخطر. النسخة الاحتياطية ملف مشفَّر واحد لا يفتحه إلا رمز المرور الخاص بك. احتفظ بنسخة في مكان ما.';
+
+  @override
+  String etaSeconds(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'يتبقى $count ثانية تقريبًا',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String etaMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'يتبقى $count دقيقة تقريبًا',
+      one: 'يتبقى دقيقة تقريبًا',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String youWroteForMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'كتبت لمدة $count دقيقة.',
+      one: 'كتبت لمدة دقيقة.',
+    );
+    return '$_temp0';
+  }
 }

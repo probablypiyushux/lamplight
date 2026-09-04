@@ -440,6 +440,10 @@ class LFr extends L {
   String get onboardFingerprintFailed => 'Cela n’a pas fonctionné.';
 
   @override
+  String get onboardFingerprintVaultShut =>
+      'Lamplight a refermé le coffre pendant votre absence. Votre code l’ouvre toujours, et vous pourrez activer l’empreinte plus tard dans les Réglages.';
+
+  @override
   String get onboardOneLastThing => 'Une dernière chose';
 
   @override
@@ -737,7 +741,7 @@ class LFr extends L {
   String get appearanceThemeLight => 'Clair';
 
   @override
-  String get appearanceThemeAuto => 'Auto';
+  String get appearanceThemeAuto => 'Système';
 
   @override
   String get appearanceThemeAutoNote =>
@@ -2623,4 +2627,36 @@ class LFr extends L {
   @override
   String get keptBackUpBody =>
       'Tout est sur ce téléphone et nulle part ailleurs : c’est tout l’intérêt, et c’est aussi le risque. Une sauvegarde est un seul fichier chiffré que seul ton code ouvre. Gardes-en une quelque part.';
+
+  @override
+  String etaSeconds(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Encore environ $count secondes',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String etaMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Encore environ $count minutes',
+      one: 'Encore une minute environ',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String youWroteForMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Vous avez écrit pendant $count minutes.',
+      one: 'Vous avez écrit pendant une minute.',
+    );
+    return '$_temp0';
+  }
 }

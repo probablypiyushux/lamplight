@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../core/progress/writing_session.dart';
 import '../../core/db/database.dart';
 import 'day_pages.dart';
 import 'day_header.dart';
@@ -179,6 +180,11 @@ class _DayScreenState extends State<DayScreen> with WidgetsBindingObserver {
 
   // ── The composer ───────────────────────────────────────────────────────────
   final _composer = TextEditingController();
+
+  /// How long this entry has actually been worked on. Reported once
+  /// when it is saved and then forgotten — see [WritingSession] for
+  /// why it is deliberately not a total, a streak or a target.
+  final _writing = WritingSession();
   final _composerFocus = FocusNode();
   String? _draftEntryId;
   Timer? _debounce;
@@ -462,6 +468,7 @@ class _DayScreenState extends State<DayScreen> with WidgetsBindingObserver {
 
   void _onTyped() {
     widget.vault.touch(); // typing is activity; do not idle-lock mid-sentence
+    _writing.typed();
     _publishComposerState();
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 400), _flush);
@@ -699,6 +706,31 @@ class _DayScreenState extends State<DayScreen> with WidgetsBindingObserver {
     unawaited(HapticFeedback.selectionClick());
 
     await _write(dayKey: dayKey, text: text, draftId: draftId, adopt: false);
+
+    // ── "You wrote for six minutes." Round nineteen. ───────────────────
+    //
+    // Said once, here, about the entry that was just finished — and then
+    // forgotten, because nothing about it is stored. `WritingSession` is
+    // where the boundary is argued: this is an observation about effort
+    // already spent, which is why it can be encouraging without becoming a
+    // target. It is shown *after* the writing, it has nothing to compare
+    // itself to, and it says nothing at all below a minute.
+    //
+    // ETHICAL-DESIGN.md forbids the version of this feature that keeps a
+    // running total. If somebody asks for one later, that document is the
+    // argument and this comment is where it was already had.
+    final spent = _writing.finish();
+    if (spent != null && mounted) {
+      // `announce`, never a hand-built bar. Round eighteen found a `Deleted.`
+      // message that survived backgrounding, a re-lock and an unlock, because
+      // a SnackBar's dismiss timer is armed inside the messenger's build and
+      // nothing tries again if that rebuild does not land. See
+      // `design/announce.dart`. `a_message_goes_away_test.dart` counts the
+      // raw calls and refuses a twenty-sixth — it caught this line when it was
+      // written the other way, which is the ratchet doing its job.
+      announce(context, L.of(context).youWroteForMinutes(spent.inMinutes));
+    }
+
     // The one write that reliably adds an entry rather than editing one, so it
     // is the cheapest place to notice that the vault has grown into something
     // worth protecting.

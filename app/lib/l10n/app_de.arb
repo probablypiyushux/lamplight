@@ -121,6 +121,7 @@
   "onboardFingerprintWaiting": "Warte auf deinen Finger…",
   "onboardFingerprintUse": "Meinen Fingerabdruck benutzen",
   "onboardFingerprintFailed": "Das hat nicht geklappt.",
+  "onboardFingerprintVaultShut": "Lamplight hat den Tresor geschlossen, während du weg warst. Dein Passcode öffnet ihn weiterhin, und den Fingerabdruck kannst du später in den Einstellungen aktivieren.",
   "onboardOneLastThing": "Noch eine letzte Sache",
   "onboardNameBody": "Wie soll Lamplight dich nennen? Es bleibt auf diesem Telefon, und du kannst es ändern oder weglassen.",
   "onboardFingerprintOn": "Dein Fingerabdruck öffnet Lamplight von jetzt an.",
@@ -211,7 +212,7 @@
   "appearanceTheme": "Thema",
   "appearanceThemeDark": "Dunkel",
   "appearanceThemeLight": "Hell",
-  "appearanceThemeAuto": "Auto",
+  "appearanceThemeAuto": "Systemstandard",
   "appearanceThemeAutoNote": "Folgt der Hell-Dunkel-Einstellung deines Telefons.",
   "appearanceFont": "Schrift",
   "appearanceSize": "Größe",
@@ -697,5 +698,17 @@
   "keptLocksItselfTitle": "Es sperrt sich selbst",
   "keptLocksItselfBody": "In dem Moment, in dem Lamplight in den Hintergrund geht, werden die Schlüssel vernichtet. Screenshots sind blockiert, und die App erscheint nicht in der Vorschau der letzten Apps.",
   "keptBackUpTitle": "Sichere es",
-  "keptBackUpBody": "Alles liegt auf diesem Telefon und sonst nirgends — das ist der Sinn der Sache und zugleich das Risiko. Eine Sicherung ist eine einzige verschlüsselte Datei, die nur dein Code öffnet. Bewahre eine irgendwo auf."
+  "keptBackUpBody": "Alles liegt auf diesem Telefon und sonst nirgends — das ist der Sinn der Sache und zugleich das Risiko. Eine Sicherung ist eine einzige verschlüsselte Datei, die nur dein Code öffnet. Bewahre eine irgendwo auf.",
+  "etaSeconds": "{count, plural, other{Noch etwa {count} Sekunden}}",
+  "@etaSeconds": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "etaMinutes": "{count, plural, one{Noch etwa eine Minute} other{Noch etwa {count} Minuten}}",
+  "@etaMinutes": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "youWroteForMinutes": "{count, plural, one{Du hast eine Minute lang geschrieben.} other{Du hast {count} Minuten lang geschrieben.}}",
+  "@youWroteForMinutes": {
+    "placeholders": { "count": { "type": "int" } }
+  }
 }

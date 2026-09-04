@@ -7,6 +7,7 @@ import '../settings/settings_screen.dart' show AutomaticBackupTiles;
 import 'silent_backup.dart';
 import 'package:sodium/sodium_sumo.dart' show SecureKey;
 
+import '../../core/progress/time_remaining.dart';
 import '../../core/backup/vault_file.dart';
 import '../../core/db/entry_repository.dart';
 import '../../core/plain_words.dart';
@@ -16,6 +17,7 @@ import '../../core/vault/vault.dart';
 import '../../design/components.dart';
 import '../../design/tokens.dart';
 import 'restore_screen.dart';
+import 'time_left_line.dart';
 
 /// `UX-FLOWS.md` flow 5 — "the flow that decides whether people lose their
 /// lives' records."
@@ -62,6 +64,9 @@ class _BackupScreenState extends State<BackupScreen> {
   _Phase _phase = _Phase.idle;
   String _stage = '';
   double _progress = 0;
+
+  /// How much longer this has to run. See `TimeLeftLine`.
+  final TimeRemaining _eta = TimeRemaining();
   String? _error;
   bool _cancelRequested = false;
   String? _savedAs;
@@ -105,6 +110,7 @@ class _BackupScreenState extends State<BackupScreen> {
       _phase = _Phase.working;
       _stage = 'Preparing…';
       _progress = 0;
+      _eta.reset();
       _error = null;
       _cancelRequested = false;
     });
@@ -156,7 +162,10 @@ class _BackupScreenState extends State<BackupScreen> {
           'day_count': stats.days,
           'attachment_count': 0,
         },
-        onProgress: (f) => setState(() => _progress = f * 0.7),
+        onProgress: (f) => setState(() {
+          _progress = f * 0.7;
+          _eta.update(_progress);
+        }),
         isCancelled: () => _cancelRequested,
       );
 
@@ -362,6 +371,7 @@ class _BackupScreenState extends State<BackupScreen> {
                       minHeight: 6,
                     ),
                   ),
+                  TimeLeftLine(estimate: _eta),
                 ],
               ),
             ),

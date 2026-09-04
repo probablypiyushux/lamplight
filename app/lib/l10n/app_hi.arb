@@ -121,6 +121,7 @@
   "onboardFingerprintWaiting": "आपकी उंगली का इंतज़ार है…",
   "onboardFingerprintUse": "मेरी फ़िंगरप्रिंट इस्तेमाल करें",
   "onboardFingerprintFailed": "यह काम नहीं कर पाया।",
+  "onboardFingerprintVaultShut": "आप दूर थे, इसलिए Lamplight ने वॉल्ट बंद कर दिया। आपका पासकोड अब भी इसे खोलता है, और आप बाद में सेटिंग्स में फ़िंगरप्रिंट चालू कर सकते हैं।",
   "onboardOneLastThing": "एक आख़िरी बात",
   "onboardNameBody": "Lamplight आपको क्या कहकर बुलाए? यह इसी फ़ोन में रहता है, और आप इसे बदल सकते हैं या खाली छोड़ सकते हैं।",
   "onboardFingerprintOn": "अब से आपकी फ़िंगरप्रिंट Lamplight खोलेगी।",
@@ -211,7 +212,7 @@
   "appearanceTheme": "थीम",
   "appearanceThemeDark": "गहरा",
   "appearanceThemeLight": "हल्का",
-  "appearanceThemeAuto": "अपने आप",
+  "appearanceThemeAuto": "सिस्टम डिफ़ॉल्ट",
   "appearanceThemeAutoNote": "आपके फ़ोन की हल्की-गहरी सेटिंग के हिसाब से।",
   "appearanceFont": "फ़ॉन्ट",
   "appearanceSize": "आकार",
@@ -697,5 +698,17 @@
   "keptLocksItselfTitle": "यह खुद को लॉक कर लेता है",
   "keptLocksItselfBody": "जिस क्षण Lamplight पृष्ठभूमि में जाता है, चाबियाँ नष्ट हो जाती हैं। स्क्रीनशॉट रोक दिए जाते हैं और ऐप हाल के ऐप्स की झलक में दिखाई नहीं देता।",
   "keptBackUpTitle": "इसका बैकअप लें",
-  "keptBackUpBody": "सब कुछ इसी फ़ोन पर है और कहीं नहीं — यही इसका मक़सद है और यही जोखिम भी। बैकअप एक एन्क्रिप्टेड फ़ाइल है जिसे सिर्फ़ आपका पासकोड खोलता है। एक कहीं रख लीजिए।"
+  "keptBackUpBody": "सब कुछ इसी फ़ोन पर है और कहीं नहीं — यही इसका मक़सद है और यही जोखिम भी। बैकअप एक एन्क्रिप्टेड फ़ाइल है जिसे सिर्फ़ आपका पासकोड खोलता है। एक कहीं रख लीजिए।",
+  "etaSeconds": "{count, plural, other{लगभग {count} सेकंड बाकी}}",
+  "@etaSeconds": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "etaMinutes": "{count, plural, one{लगभग एक मिनट बाकी} other{लगभग {count} मिनट बाकी}}",
+  "@etaMinutes": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "youWroteForMinutes": "{count, plural, one{आपने एक मिनट तक लिखा।} other{आपने {count} मिनट तक लिखा।}}",
+  "@youWroteForMinutes": {
+    "placeholders": { "count": { "type": "int" } }
+  }
 }

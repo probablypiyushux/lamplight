@@ -4,6 +4,15 @@ title: Privacy policy
 permalink: /privacy/
 ---
 
+<!-- The four lines above are not decoration and must not be tidied
+     away. Jekyll only renders a Markdown file that carries front
+     matter, and `permalink` is the URL Google's reviewer opens. A
+     sync overwrote this file with a copy that had none on 4
+     September 2026, and the policy URL returned 404 for the ten
+     minutes it took to notice -- which is the single thing that
+     blocks the store listing. It lives here now so a copy in either
+     direction carries it. -->
+
 # Privacy policy
 
 **Lamplight**
@@ -23,7 +32,7 @@ goes nowhere else unless you deliberately move it there yourself.
 
 ## Who this is
 
-Lamplight is made by **the maintainer Jain**, working alone, in India.
+Lamplight is made by **Piyush Jain**, working alone, in India.
 Contact: **piyushjain9486669328@gmail.com**
 
 There is no company, no investor and no third party involved in the app.

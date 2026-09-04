@@ -121,6 +121,7 @@
   "onboardFingerprintWaiting": "指を待っています…",
   "onboardFingerprintUse": "指紋を使う",
   "onboardFingerprintFailed": "うまくいきませんでした。",
+  "onboardFingerprintVaultShut": "離れている間に Lamplight が保管庫を閉じました。パスコードは今も使えます。指紋は後で設定から有効にできます。",
   "onboardOneLastThing": "最後にひとつ",
   "onboardNameBody": "Lamplight はあなたを何と呼べばいいですか？この端末にだけ残り、あとから変えても、空のままでもかまいません。",
   "onboardFingerprintOn": "これからは指紋で Lamplight が開きます。",
@@ -211,7 +212,7 @@
   "appearanceTheme": "テーマ",
   "appearanceThemeDark": "ダーク",
   "appearanceThemeLight": "ライト",
-  "appearanceThemeAuto": "自動",
+  "appearanceThemeAuto": "システム設定",
   "appearanceThemeAutoNote": "端末のライト・ダークの設定にあわせます。",
   "appearanceFont": "書体",
   "appearanceSize": "大きさ",
@@ -697,5 +698,17 @@
   "keptLocksItselfTitle": "自分でロックします",
   "keptLocksItselfBody": "Lamplightがバックグラウンドに移った瞬間に、鍵は破棄されます。スクリーンショットは禁止され、最近使ったアプリのプレビューにも表示されません。",
   "keptBackUpTitle": "バックアップを取ってください",
-  "keptBackUpBody": "すべてはこの端末の中だけにあり、ほかのどこにもありません。それがこのアプリの狙いであり、同時に危うさでもあります。バックアップは、あなたのパスコードだけが開ける暗号化されたファイル1つです。どこかに1つ置いておいてください。"
+  "keptBackUpBody": "すべてはこの端末の中だけにあり、ほかのどこにもありません。それがこのアプリの狙いであり、同時に危うさでもあります。バックアップは、あなたのパスコードだけが開ける暗号化されたファイル1つです。どこかに1つ置いておいてください。",
+  "etaSeconds": "{count, plural, other{残り約 {count} 秒}}",
+  "@etaSeconds": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "etaMinutes": "{count, plural, other{残り約 {count} 分}}",
+  "@etaMinutes": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "youWroteForMinutes": "{count, plural, other{{count} 分間書きました。}}",
+  "@youWroteForMinutes": {
+    "placeholders": { "count": { "type": "int" } }
+  }
 }

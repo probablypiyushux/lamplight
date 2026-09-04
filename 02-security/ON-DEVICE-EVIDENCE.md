@@ -103,7 +103,7 @@ recent-apps switcher — which is the one that matters most, because it is taken
 anybody asking and it survives the app being closed.
 
 The screenshot setting was left **off**, which is its default. `PLAN.md` §0 is right that
-only the maintainer can turn it on: it lives inside the vault's own storage and a release build is
+only Piyush can turn it on: it lives inside the vault's own storage and a release build is
 not debuggable.
 
 ---
@@ -288,7 +288,7 @@ Failure [INSTALL_FAILED_USER_RESTRICTED: Install canceled by user]
 **That is not a build problem, a signing problem, or a Flutter problem.** It is MIUI's
 *Settings → Additional settings → Developer options → **Install via USB***, which is off by
 default, cannot be set from `adb`, and turns itself back off after a while. It succeeded the
-moment the maintainer allowed it on the device.
+moment Piyush allowed it on the device.
 
 **It is also what destroyed the vault**, indirectly: the refusal is what sent Flutter's
 tooling down its cleanup path. See `PLAN.md` §0.

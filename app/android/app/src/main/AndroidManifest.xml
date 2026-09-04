@@ -73,6 +73,25 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <!--
+        NEITHER OF THESE IS A REQUIREMENT, AND ANDROID ASSUMES BOTH ARE.
+
+        RECORD_AUDIO implies a required microphone, and an activity declaring a
+        portrait orientation implies a required portrait screen. Play then hides
+        the app from every device without them — tablets and Chromebooks with no
+        microphone, displays that cannot turn upright. Read out of the built APK
+        on 4 September 2026, both were implied `required`, and the supported
+        device count was 17,833.
+
+        Both are wrong. A journal with no microphone is a journal without voice
+        notes, not a broken one. And the portrait attribute is already ignored by
+        Android 16 on any display 600dp or wider — see orientation.dart, which
+        stopped claiming otherwise in round fifteen. Declaring them optional
+        removes a restriction the app never had.
+    -->
+    <uses-feature android:name="android.hardware.microphone" android:required="false" />
+    <uses-feature android:name="android.hardware.screen.portrait" android:required="false" />
+
+    <!--
         ONE PERMISSION, AND NO INTERNET. Both halves matter.
 
         This file said "NO <uses-permission> ENTRIES. NOT ONE." until voice

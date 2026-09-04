@@ -680,8 +680,11 @@ class MediaAlbum extends StatelessWidget {
                     // the wrong answer — the frame underneath can be any colour
                     // at all. Taken from the dark palette's own primary ink
                     // rather than written as a hex code, so rule 8 holds.
+                    //
+                    // The halo comes off for the same reason. **Round 19.**
                     color: LamplightColors.dark.inkPrimary,
                     fontWeight: FontWeight.w600,
+                    shadows: const <Shadow>[],
                   ),
                 ),
               ),
@@ -700,6 +703,9 @@ class MediaAlbum extends StatelessWidget {
                   style: t.titleLarge?.copyWith(
                     color: LamplightColors.dark.inkPrimary,
                     fontWeight: FontWeight.w600,
+                    // Over a black scrim over a photograph. The page's halo
+                    // has no business here either. **Round 19.**
+                    shadows: const <Shadow>[],
                   ),
                 ),
               ),

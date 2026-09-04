@@ -121,6 +121,7 @@
   "onboardFingerprintWaiting": "Esperando seu dedo…",
   "onboardFingerprintUse": "Usar minha digital",
   "onboardFingerprintFailed": "Isso não funcionou.",
+  "onboardFingerprintVaultShut": "O Lamplight fechou o cofre enquanto estavas ausente. A tua senha continua a abri-lo e podes ativar a impressão digital mais tarde nas Definições.",
   "onboardOneLastThing": "Uma última coisa",
   "onboardNameBody": "Como o Lamplight deve chamar você? Fica neste telefone, e você pode mudar ou deixar em branco.",
   "onboardFingerprintOn": "Sua digital vai abrir o Lamplight de agora em diante.",
@@ -211,7 +212,7 @@
   "appearanceTheme": "Tema",
   "appearanceThemeDark": "Escuro",
   "appearanceThemeLight": "Claro",
-  "appearanceThemeAuto": "Auto",
+  "appearanceThemeAuto": "Do sistema",
   "appearanceThemeAutoNote": "Segue o ajuste de claro e escuro do seu telefone.",
   "appearanceFont": "Fonte",
   "appearanceSize": "Tamanho",
@@ -697,5 +698,17 @@
   "keptLocksItselfTitle": "Bloqueia-se sozinho",
   "keptLocksItselfBody": "No momento em que o Lamplight passa para segundo plano, as chaves são destruídas. As capturas de ecrã são bloqueadas e a aplicação não aparece na pré-visualização de aplicações recentes.",
   "keptBackUpTitle": "Faça uma cópia",
-  "keptBackUpBody": "Está tudo neste telemóvel e em mais lado nenhum, o que é o objetivo e é também o risco. Uma cópia de segurança é um único ficheiro cifrado que só o seu código abre. Guarde uma algures."
+  "keptBackUpBody": "Está tudo neste telemóvel e em mais lado nenhum, o que é o objetivo e é também o risco. Uma cópia de segurança é um único ficheiro cifrado que só o seu código abre. Guarde uma algures.",
+  "etaSeconds": "{count, plural, other{Faltam cerca de {count} segundos}}",
+  "@etaSeconds": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "etaMinutes": "{count, plural, one{Falta cerca de um minuto} other{Faltam cerca de {count} minutos}}",
+  "@etaMinutes": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "youWroteForMinutes": "{count, plural, one{Escreveste durante um minuto.} other{Escreveste durante {count} minutos.}}",
+  "@youWroteForMinutes": {
+    "placeholders": { "count": { "type": "int" } }
+  }
 }

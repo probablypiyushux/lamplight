@@ -1,7 +1,7 @@
 name: lamplight
 description: "A private notebook for your life. Encrypted on device, no account, no server."
 publish_to: 'none'
-version: 0.5.3+25
+version: 0.6.1+27
 environment:
   sdk: ^3.13.0
 

@@ -438,6 +438,10 @@ class LHi extends L {
   String get onboardFingerprintFailed => 'यह काम नहीं कर पाया।';
 
   @override
+  String get onboardFingerprintVaultShut =>
+      'आप दूर थे, इसलिए Lamplight ने वॉल्ट बंद कर दिया। आपका पासकोड अब भी इसे खोलता है, और आप बाद में सेटिंग्स में फ़िंगरप्रिंट चालू कर सकते हैं।';
+
+  @override
   String get onboardOneLastThing => 'एक आख़िरी बात';
 
   @override
@@ -732,7 +736,7 @@ class LHi extends L {
   String get appearanceThemeLight => 'हल्का';
 
   @override
-  String get appearanceThemeAuto => 'अपने आप';
+  String get appearanceThemeAuto => 'सिस्टम डिफ़ॉल्ट';
 
   @override
   String get appearanceThemeAutoNote =>
@@ -2599,4 +2603,36 @@ class LHi extends L {
   @override
   String get keptBackUpBody =>
       'सब कुछ इसी फ़ोन पर है और कहीं नहीं — यही इसका मक़सद है और यही जोखिम भी। बैकअप एक एन्क्रिप्टेड फ़ाइल है जिसे सिर्फ़ आपका पासकोड खोलता है। एक कहीं रख लीजिए।';
+
+  @override
+  String etaSeconds(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'लगभग $count सेकंड बाकी',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String etaMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'लगभग $count मिनट बाकी',
+      one: 'लगभग एक मिनट बाकी',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String youWroteForMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'आपने $count मिनट तक लिखा।',
+      one: 'आपने एक मिनट तक लिखा।',
+    );
+    return '$_temp0';
+  }
 }

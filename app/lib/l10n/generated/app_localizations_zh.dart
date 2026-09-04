@@ -420,6 +420,10 @@ class LZh extends L {
   String get onboardFingerprintFailed => '这没有成功。';
 
   @override
+  String get onboardFingerprintVaultShut =>
+      '你离开时 Lamplight 关闭了保管库。你的密码仍然可以打开它，稍后可以在设置中开启指纹。';
+
+  @override
   String get onboardOneLastThing => '最后一件事';
 
   @override
@@ -702,7 +706,7 @@ class LZh extends L {
   String get appearanceThemeLight => '浅色';
 
   @override
-  String get appearanceThemeAuto => '自动';
+  String get appearanceThemeAuto => '跟随系统';
 
   @override
   String get appearanceThemeAutoNote => '跟随你手机的深浅设置。';
@@ -2476,4 +2480,34 @@ class LZh extends L {
   @override
   String get keptBackUpBody =>
       '一切都只在这部手机上，别无他处——这既是它的用意，也是它的风险。备份是一个加密文件，只有你的密码能打开。请在某处留一份。';
+
+  @override
+  String etaSeconds(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '大约还剩 $count 秒',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String etaMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '大约还剩 $count 分钟',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String youWroteForMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '你写了 $count 分钟。',
+    );
+    return '$_temp0';
+  }
 }

@@ -73,6 +73,10 @@ class Vault extends ChangeNotifier {
   /// Fires a little before [_idleTimer], to raise [aboutToLock]. **ISSUE 21.**
   Timer? _warningTimer;
 
+  /// True while the user is being *set up*, between [beginSetup] and
+  /// [endSetup]. See [beginSetup] for why the idle clock does not run then.
+  bool _inSetup = false;
+
   VaultState _state = VaultState.locked;
   SecureKey? _dek;
   VaultDatabase? _db;
@@ -764,6 +768,62 @@ class Vault extends ChangeNotifier {
   /// way to be told about it and a much better one than a bug report from
   /// someone who had picked the setting that suited them and found the app
   /// unusable.
+  // ── ONBOARDING HOLDS THE IDLE CLOCK. Round nineteen. ──────────────────
+  //
+  // > *"Open it with your fingerprint? Error message is - That did not work!
+  // > when i pressed use my fingerprint! If after that i go in settings and
+  // > then set up manually fingerprint that works!"*
+  //
+  // **The fingerprint was never the broken part**, which is why setting it up
+  // from Settings a minute later worked perfectly. `create()` ends in
+  // `_open()`, `_open()` ends in `touch()`, and `touch()` arms a five-minute
+  // timer that only a *pointer down* resets. The passcode step is where the
+  // vault is made — and everything after it is reading.
+  //
+  // So the clock starts, and then onboarding asks the user to **write down
+  // twelve words by hand**. Doing that carefully is the single most important
+  // thing this app ever asks of anybody, it takes most people longer than five
+  // minutes, and it generates no taps at all. The vault locks while they are
+  // doing exactly what they were told to do. The next thing they touch is "Use
+  // my fingerprint", which reaches `enableBiometricUnlock`, finds no DEK and
+  // throws `StateError` — and the onboarding screen has no branch for that, so
+  // it prints its generic sentence. **The app punished him for following its
+  // own instructions, and then blamed the fingerprint reader.**
+  //
+  // ── WHY SUSPENDING IT IS THE RIGHT TRADE, AND NOT A HOLE ───────────────
+  //
+  // `UX-FLOWS.md` flow 7 calls lock-on-background non-negotiable and it is
+  // untouched: [onBackgrounded] still locks, immediately, and that is the
+  // defence that matters for THREAT-MODEL.md's most likely adversary — the
+  // person who picks up the phone. What is suspended here is only the *idle*
+  // timer, only while the setup screen is in front, and only between these
+  // two calls.
+  //
+  // What that leaves exposed is one screen with the recovery phrase on it, in
+  // a vault that **contains nothing yet**. Weighed against a first run that
+  // breaks for anybody thorough enough to write the words down properly, it is
+  // not close. The vault is empty, the user is demonstrably present — they
+  // typed a passcode a moment ago — and the phrase is on screen precisely
+  // because they are meant to be copying it.
+  //
+  // [endSetup] is called from `dispose` as well as on the way out, so there is
+  // no path that leaves the clock held.
+  void beginSetup() {
+    _inSetup = true;
+    _idleTimer?.cancel();
+    _idleTimer = null;
+    _warningTimer?.cancel();
+    _warningTimer = null;
+    if (aboutToLock.value) aboutToLock.value = false;
+  }
+
+  /// Gives the clock back and starts it running again.
+  void endSetup() {
+    if (!_inSetup) return;
+    _inSetup = false;
+    touch();
+  }
+
   void touch() {
     if (!isUnlocked) return;
     _idleTimer?.cancel();
@@ -772,6 +832,8 @@ class Vault extends ChangeNotifier {
     _warningTimer = null;
     if (aboutToLock.value) aboutToLock.value = false;
     if (_idleTimeout == Duration.zero) return;
+    // Onboarding holds the clock. See [beginSetup].
+    if (_inSetup) return;
     _idleTimer = Timer(_idleTimeout, lock);
 
     // ── ISSUE 21 — "the app auto closes while I am watching at it" ──────────

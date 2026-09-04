@@ -86,6 +86,20 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   void initState() {
     super.initState();
+    // ── The idle clock does not run through onboarding. Round 19. ────────
+    //
+    // `create()` opens the vault, and opening it starts a five-minute timer
+    // that only a tap resets. The next thing this screen does is ask the user
+    // to write down twelve words by hand, which takes longer than that and
+    // involves no tapping — so the vault locked while they were following the
+    // instructions, and the fingerprint step then failed with a sentence that
+    // blamed the fingerprint. See `Vault.beginSetup` for the whole argument
+    // and for why lock-on-background is untouched.
+    //
+    // Held from `initState` rather than from the passcode step, because it
+    // costs nothing before there is a vault and one call is easier to pair
+    // with one release than four are.
+    widget.vault.beginSetup();
     // Asked once, early, so the quiz screen already knows whether there is a
     // fingerprint step after it. Costs one channel call and never blocks
     // anything: an unavailable answer simply means the step is skipped.
@@ -106,6 +120,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   void dispose() {
+    // Paired with `beginSetup` in `initState`. In `dispose` rather than only
+    // on the way out of the last step, so that every path off this screen —
+    // finishing it, a restore replacing the vault underneath it, the process
+    // being torn down — gives the clock back.
+    widget.vault.endSetup();
     _passcode.dispose();
     _confirmPasscode.dispose();
     _name.dispose();
@@ -302,9 +321,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       // frightening sentence: the vault is made, the words are written down,
       // and this was optional.
       if (mounted) {
-        setState(() => _error = e is BiometricFailure
-            ? e.message
-            : L.of(context).onboardFingerprintFailed);
+        setState(() => _error = switch (e) {
+              BiometricFailure(:final message) => message,
+              // The vault having closed under this screen is a different fault
+              // from the reader refusing a finger, and it used to print the
+              // same sentence as one. `beginSetup` should mean this never
+              // happens now; if it does, the honest sentence is the one that
+              // says the passcode still works — because it does, and the
+              // fingerprint can be set up from Settings in ten seconds.
+              StateError() => L.of(context).onboardFingerprintVaultShut,
+              _ => L.of(context).onboardFingerprintFailed,
+            });
       }
     } finally {
       if (mounted) setState(() => _busy = false);

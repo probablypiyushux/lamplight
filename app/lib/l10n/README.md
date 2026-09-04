@@ -132,7 +132,7 @@ five things, and each one is deliberate:
 
 | | |
 |---|---|
-| `© 2026 the maintainer Jain · Lamplight 0.5.x` | A name, a year and a version number. |
+| `© 2026 Piyush Jain · Lamplight 0.5.x` | A name, a year and a version number. |
 | `SIL Open Font License 1.1` | The actual name of a licence. Translating it would name a licence that does not exist. |
 | `Chinese (Simplified)`, `Português (Brasil)` | Language names, in their own language. A person looking for their language needs to find it written the way they write it. |
 | The failure report behind **Copy the details** | A bug report, addressed to whoever can read the stack trace beside it. Translating the word `Failure:` would help nobody and would make two copies of the same report incomparable. The *screen* around it is translated; the report is not. |

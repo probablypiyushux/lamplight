@@ -839,6 +839,12 @@ abstract class L {
   /// **'That did not work.'**
   String get onboardFingerprintFailed;
 
+  /// Shown on the onboarding fingerprint step in the rare case the vault closed underneath it. It must say two things: the passcode still works, and the fingerprint is not lost, only postponed.
+  ///
+  /// In en, this message translates to:
+  /// **'Lamplight closed the vault while you were away. Your passcode still opens it, and you can turn the fingerprint on later in Settings.'**
+  String get onboardFingerprintVaultShut;
+
   /// No description provided for @onboardOneLastThing.
   ///
   /// In en, this message translates to:
@@ -1379,10 +1385,10 @@ abstract class L {
   /// **'Light'**
   String get appearanceThemeLight;
 
-  /// The third theme choice: follow the phone. One word on a small chip beside Dark and Light, so it must stay short — if your language has no short word for this, prefer something like 'System' over a phrase that will not fit.
+  /// The third theme choice, and since round seventeen the DEFAULT for a new install: follow the phone. It sits on a small chip beside Dark and Light and may wrap to two centred lines, so a short phrase is fine and a long sentence is not. Prefer the wording the reader's own phone settings use for this.
   ///
   /// In en, this message translates to:
-  /// **'Auto'**
+  /// **'System default'**
   String get appearanceThemeAuto;
 
   /// Shown under the chips when Auto is chosen. Says what 'Auto' actually follows, because the word alone does not.
@@ -4300,6 +4306,24 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Everything is on this phone and nowhere else, which is the point and is also the risk. A backup is one encrypted file that only your passcode opens. Keep one somewhere.'**
   String get keptBackUpBody;
+
+  /// Time remaining on a long job, in seconds. Deliberately vague - the estimate is rounded to ten seconds, so 'about' is doing real work and must survive translation.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, other{About {count} seconds left}}'**
+  String etaSeconds(int count);
+
+  /// Time remaining on a long job, in minutes. Same vagueness as the seconds form; never render a precise figure here.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{About a minute left} other{About {count} minutes left}}'**
+  String etaMinutes(int count);
+
+  /// Shown once, after an entry is saved, when the person spent more than a minute writing it. An observation about effort already spent - never a target, a total or a streak. Keep it warm and factual; it must not sound like praise for hitting a number, and must not imply that a longer time would have been better.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{You wrote for a minute.} other{You wrote for {count} minutes.}}'**
+  String youWroteForMinutes(int count);
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

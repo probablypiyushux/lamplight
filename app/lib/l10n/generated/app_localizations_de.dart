@@ -443,6 +443,10 @@ class LDe extends L {
   String get onboardFingerprintFailed => 'Das hat nicht geklappt.';
 
   @override
+  String get onboardFingerprintVaultShut =>
+      'Lamplight hat den Tresor geschlossen, während du weg warst. Dein Passcode öffnet ihn weiterhin, und den Fingerabdruck kannst du später in den Einstellungen aktivieren.';
+
+  @override
   String get onboardOneLastThing => 'Noch eine letzte Sache';
 
   @override
@@ -740,7 +744,7 @@ class LDe extends L {
   String get appearanceThemeLight => 'Hell';
 
   @override
-  String get appearanceThemeAuto => 'Auto';
+  String get appearanceThemeAuto => 'Systemstandard';
 
   @override
   String get appearanceThemeAutoNote =>
@@ -2631,4 +2635,36 @@ class LDe extends L {
   @override
   String get keptBackUpBody =>
       'Alles liegt auf diesem Telefon und sonst nirgends — das ist der Sinn der Sache und zugleich das Risiko. Eine Sicherung ist eine einzige verschlüsselte Datei, die nur dein Code öffnet. Bewahre eine irgendwo auf.';
+
+  @override
+  String etaSeconds(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Noch etwa $count Sekunden',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String etaMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Noch etwa $count Minuten',
+      one: 'Noch etwa eine Minute',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String youWroteForMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Du hast $count Minuten lang geschrieben.',
+      one: 'Du hast eine Minute lang geschrieben.',
+    );
+    return '$_temp0';
+  }
 }

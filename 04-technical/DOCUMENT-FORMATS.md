@@ -1,6 +1,6 @@
 # Document formats — what opens inside Lamplight, and what does not
 
-> **ISSUE 12, round five, 23 August 2026.** the maintainer wrote out twenty-eight formats and asked
+> **ISSUE 12, round five, 23 August 2026.** Piyush wrote out twenty-eight formats and asked
 > for two things: *"make a list which can be opened and which can't be opened"*, and for the
 > ones that cannot, *"before opening them, give them a soft warning that this makes it
 > visible to other apps."*
@@ -74,7 +74,7 @@ Three things about it are deliberate:
 **This section used to say the opposite.** It read *"There is no 'open in another app' button"*,
 and explained that a true open-in-place would need a `FileProvider` directory and a read grant, and
 that the plaintext would sit on disk for as long as the other app was reading it — a real exception
-to `CLAUDE.md` rule 2, and the maintainer's to make.
+to `CLAUDE.md` rule 2, and Piyush's to make.
 
 He made it, on 24 August 2026, having been shown the trade. His words: *"a way the user doesn't
 download the file but is able to view this in another app which supports viewing the file format"*,

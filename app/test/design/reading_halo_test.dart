@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lamplight/design/components.dart';
@@ -129,9 +131,16 @@ void main() {
     });
 
     testWidgets('but not a label on a filled pill', (tester) async {
-      // The one place in the app where the ground is not the page. The label
-      // is drawn in `canvas` on the accent, so a canvas-coloured halo would be
-      // the same colour as the letters and the word would just look fatter.
+      // The label is drawn in `canvas` on the accent, so a canvas-coloured
+      // halo would be the same colour as the letters and the word would just
+      // look fatter.
+      //
+      // **This comment used to open "the one place in the app where the ground
+      // is not the page", and that was not true.** It was true of the
+      // *components*; it was never true of the app. Round 17 found four more —
+      // a video poster, an album tile, a `+N` badge and a slider's value
+      // bubble — and the group at the bottom of this file is the rule stated
+      // so that the count stops mattering.
       await tester.pumpWidget(MaterialApp(
         localizationsDelegates: L.localizationsDelegates,
         supportedLocales: L.supportedLocales,
@@ -149,6 +158,125 @@ void main() {
       expect(style.shadows, isEmpty,
           reason: 'a button is its own surface and does not need the page to '
               'help it be read');
+    });
+  });
+
+  // ══ ROUND NINETEEN — the halo on ground that is not the page ═══════════
+  //
+  // Two photographs, sent from a Play Store build: "85%" on the text-size
+  // slider and "1:47 · 132.3 MB" on a video poster, both **glowing**.
+  //
+  // The cause is one sentence of reasoning in `tokens.dart` that was true of
+  // what it described and false of what it was used for: *"page-coloured light
+  // on a page-coloured ground is nothing at all — which is why it can be
+  // applied to a whole text theme without auditing every screen."* The first
+  // half is correct. The second does not follow, because a text theme reaches
+  // text that is **not** on a page-coloured ground: white type on a dark
+  // photograph, dark type on an accent bubble. There the halo is not invisible
+  // and not a knockout. It is a wash of the wrong colour, which reads as a glow.
+  //
+  // So the rule, stated once: **the halo belongs to text whose ground is the
+  // canvas. Anything that paints its own ground takes it off again.**
+  group('round 19 — anything that paints its own ground takes the halo off', () {
+    test('stripPageHalo clears every style the halo was put on', () {
+      final haloed = lamplightTextTheme(
+        LamplightColors.light.inkPrimary,
+        LamplightColors.light.inkSecondary,
+        halo: pageHalo(LamplightColors.light.canvas),
+      );
+      // Precondition: the fixture really is haloed, so a green test below
+      // cannot be the fixture quietly having no shadows to begin with.
+      expect(haloed.bodyLarge!.shadows, isNotEmpty);
+
+      final bare = stripPageHalo(haloed);
+      for (final style in <TextStyle?>[
+        bare.displaySmall,
+        bare.titleLarge,
+        bare.bodyLarge,
+        bare.labelMedium,
+        bare.labelSmall,
+      ]) {
+        expect(style!.shadows, isEmpty);
+      }
+    });
+
+    test('and is the identity on a theme that never had one', () {
+      final plain = lamplightTextTheme(
+        LamplightColors.light.inkPrimary,
+        LamplightColors.light.inkSecondary,
+      );
+      // Same object back, not an equal copy: this runs inside every
+      // `OffThePage` on every surface but Star Map, and it should cost nothing.
+      expect(identical(stripPageHalo(plain), plain), isTrue);
+    });
+
+    testWidgets('OffThePage takes it off for everything beneath it',
+        (tester) async {
+      late TextStyle inside;
+      late TextStyle outside;
+      await tester.pumpWidget(MaterialApp(
+        theme: lamplightTheme(LamplightColors.light,
+            surface: PageSurface.starMap),
+        home: Scaffold(
+          body: Column(
+            children: [
+              Builder(builder: (context) {
+                outside = Theme.of(context).textTheme.labelMedium!;
+                return const SizedBox.shrink();
+              }),
+              OffThePage(
+                child: Builder(builder: (context) {
+                  inside = Theme.of(context).textTheme.labelMedium!;
+                  return const SizedBox.shrink();
+                }),
+              ),
+            ],
+          ),
+        ),
+      ));
+      await tester.pump();
+
+      expect(outside.shadows, isNotEmpty,
+          reason: 'the page itself still carries the halo — ISSUE 9 stands');
+      expect(inside.shadows, isEmpty);
+    });
+
+    // ── The regression guard that does not need a screenshot ──────────────
+    //
+    // Both faults he photographed have the same fingerprint in the source: a
+    // text style that overrides the ink **because the ground is a photograph**,
+    // and then says nothing about the shadow. The ink was corrected at both
+    // sites when they were written; the halo was not, at either.
+    //
+    // So: wherever the source reaches for the dark palette's ink to sit on a
+    // frame of somebody's film, it must also put the shadow out. Reading the
+    // source rather than pumping four widgets is deliberate — this is a rule
+    // about a habit, and the habit is visible in the text.
+    test('every label drawn over a photograph also puts the halo out', () {
+      const overAPhotograph = <String>[
+        'lib/features/capture/attachment_blocks.dart',
+        'lib/features/media/media_album.dart',
+      ];
+      for (final path in overAPhotograph) {
+        final source = File(path).readAsStringSync();
+        // Each `copyWith` that reaches for the dark palette's primary ink is a
+        // declaration that the ground underneath is not the page.
+        final declarations =
+            'color: LamplightColors.dark.inkPrimary'.allMatches(source).length;
+        expect(declarations, greaterThan(0),
+            reason: '$path no longer draws over a photograph — if that is '
+                'deliberate, take it out of this list');
+
+        // Every one of them must be inside a style that also silences the
+        // shadow. Counted rather than parsed: the two must stay in step, and a
+        // new label added without the shadow moves one count and not the other.
+        final silenced = 'shadows: const <Shadow>[]'.allMatches(source).length;
+        expect(silenced, greaterThanOrEqualTo(declarations),
+            reason: '$path draws $declarations labels over a photograph but '
+                'silences the page halo on only $silenced of them. A '
+                'canvas-coloured wash round white type on somebody\'s film is '
+                'the glow he photographed twice.');
+      }
     });
   });
 }

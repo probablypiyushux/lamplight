@@ -6,6 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sodium/sodium_sumo.dart';
 
 import 'app.dart';
+import 'core/platform/edge_to_edge.dart';
 import 'core/platform/orientation.dart';
 import 'core/platform/transcription.dart';
 import 'core/settings/app_settings.dart';
@@ -51,6 +52,15 @@ void main() async {
   // engine asking for a rotation back. See core/platform/orientation.dart for
   // why neither alone is enough.
   await PortraitOnly.apply();
+
+  // ── Under the bars, on every version, deliberately ──────────────────────
+  //
+  // Android 15 imposes this on anything targeting SDK 35+, and this app
+  // targets 36 — so on a new phone it was already happening, unasked and
+  // unhandled. Asked for here so that Android 14 and below behave the same
+  // way, because a layout that is edge-to-edge on one phone and inset on
+  // another is a layout nobody can review. See core/platform/edge_to_edge.dart.
+  await EdgeToEdge.apply();
 
   final sodium = await SodiumSumoInit.init();
   final documents = await getApplicationDocumentsDirectory();

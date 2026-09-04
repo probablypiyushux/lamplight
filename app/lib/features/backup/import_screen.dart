@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../l10n/generated/app_localizations.dart';
 
+import '../../core/progress/time_remaining.dart';
 import '../../core/db/entry_repository.dart';
 import '../../core/platform/document_store.dart';
 import '../../core/plain_words.dart';
@@ -8,6 +9,7 @@ import '../../core/storage/journal_import.dart';
 import '../../core/vault/vault.dart';
 import '../../design/components.dart';
 import '../../design/tokens.dart';
+import 'time_left_line.dart';
 
 /// "Bring in an old journal" — the way in.
 ///
@@ -52,6 +54,7 @@ class _ImportScreenState extends State<ImportScreen> {
   ImportResult? _result;
   String _stage = '';
   double _progress = 0;
+  final TimeRemaining _eta = TimeRemaining();
   String? _error;
   bool _cancelRequested = false;
 
@@ -186,6 +189,7 @@ class _ImportScreenState extends State<ImportScreen> {
         repo: EntryRepository(widget.vault.database),
         newId: widget.vault.newId,
         onProgress: (fraction, label) {
+          _eta.update(fraction);
           if (!mounted) return;
           setState(() {
             _progress = fraction;
@@ -313,6 +317,7 @@ class _ImportScreenState extends State<ImportScreen> {
                     child: LinearProgressIndicator(
                         value: _progress, minHeight: 6),
                   ),
+                  TimeLeftLine(estimate: _eta),
                 ],
               ),
             ),

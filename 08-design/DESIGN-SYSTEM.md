@@ -65,7 +65,27 @@ surface and re-verified.
 
 **Every text token passes WCAG AA (4.5:1) in both modes. Most reach AAA (7:1).**
 
-Three modes in settings: **Dark · Light · Follow system**. Default: dark.
+Three modes in settings: **Dark · Light · Follow system**.
+
+**Default: follow system, changed 5 September 2026.** It read *"Default: dark"* until
+round nineteen, when he reported the app opening dark on a phone set to light after
+installing from Play closed testing — *"where you wrote Follow my phone … this doesn't
+works!"*. The chip was not broken; `ThemeMode.system` resolves correctly and
+`theme_follows_the_phone_test.dart` proves both directions. A fresh install simply had no
+`themeMode` stored and fell back to dark, so the app's first impression was that it
+ignored the phone.
+
+Dark is still what the app is designed in and still what most people will end up on. But
+**the first launch is the one moment the app has said nothing to the user yet**, and the
+honest thing to match there is the phone they already set up, not our preference.
+
+The change applies to new installs only. `AppSettings.load` seeds the new default when
+there was no settings file; the getter's fallback stays `dark` so an install made before
+this keeps the theme it has always had. An update does not get to repaint somebody's
+journal.
+
+The chip is labelled with the reader's own phrase for this — *System default* in English —
+rather than *Auto*, which said nothing about what was being followed.
 
 ---
 

@@ -167,7 +167,7 @@ written here, and this is the biggest dependency in the project, so here it is a
 
 **What it buys, and it is not a nicety.** Android's own on-device recogniser — which the app
 also uses, and which needs nothing at all — takes **one** BCP-47 language tag per session.
-the maintainer's sentence about this is the whole case: *"remember people 99% of the time will speak
+Piyush's sentence about this is the whole case: *"remember people 99% of the time will speak
 multilingually — not just one language!"* He is right, and a Hindi sentence with English words
 in it comes back mangled from a recogniser that has been told to expect Hindi. Whisper detects
 the language itself and handles code-switching. There is no other way to get that on a phone
@@ -199,7 +199,7 @@ read all of the user's notes?* Four answers:
 4. It is **optional twice over**: no native library (a 32-bit phone) and no imported model both
    mean the feature falls back to Android's recogniser, which needs nothing.
 
-**The model is not in the APK.** the maintainer's decision, asked and answered on 27 August: the user
+**The model is not in the APK.** Piyush's decision, asked and answered on 27 August: the user
 downloads one file in a browser and imports it with the ordinary picker. That keeps the APK its
 own size and — the part that actually matters — **Lamplight still cannot download anything**,
 so rule 1 is untouched. See `lib/core/platform/whisper.dart` and

@@ -121,6 +121,7 @@
   "onboardFingerprintWaiting": "等你的手指…",
   "onboardFingerprintUse": "使用我的指纹",
   "onboardFingerprintFailed": "这没有成功。",
+  "onboardFingerprintVaultShut": "你离开时 Lamplight 关闭了保管库。你的密码仍然可以打开它，稍后可以在设置中开启指纹。",
   "onboardOneLastThing": "最后一件事",
   "onboardNameBody": "Lamplight 该怎么称呼你？它留在这部手机里，你可以随时改，也可以不填。",
   "onboardFingerprintOn": "从现在起，你的指纹会打开 Lamplight。",
@@ -211,7 +212,7 @@
   "appearanceTheme": "主题",
   "appearanceThemeDark": "深色",
   "appearanceThemeLight": "浅色",
-  "appearanceThemeAuto": "自动",
+  "appearanceThemeAuto": "跟随系统",
   "appearanceThemeAutoNote": "跟随你手机的深浅设置。",
   "appearanceFont": "字体",
   "appearanceSize": "字号",
@@ -697,5 +698,17 @@
   "keptLocksItselfTitle": "它会自己上锁",
   "keptLocksItselfBody": "Lamplight 一进入后台，密钥就被销毁。截屏被阻止，应用也不会出现在最近任务的预览里。",
   "keptBackUpTitle": "请做个备份",
-  "keptBackUpBody": "一切都只在这部手机上，别无他处——这既是它的用意，也是它的风险。备份是一个加密文件，只有你的密码能打开。请在某处留一份。"
+  "keptBackUpBody": "一切都只在这部手机上，别无他处——这既是它的用意，也是它的风险。备份是一个加密文件，只有你的密码能打开。请在某处留一份。",
+  "etaSeconds": "{count, plural, other{大约还剩 {count} 秒}}",
+  "@etaSeconds": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "etaMinutes": "{count, plural, other{大约还剩 {count} 分钟}}",
+  "@etaMinutes": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "youWroteForMinutes": "{count, plural, other{你写了 {count} 分钟。}}",
+  "@youWroteForMinutes": {
+    "placeholders": { "count": { "type": "int" } }
+  }
 }

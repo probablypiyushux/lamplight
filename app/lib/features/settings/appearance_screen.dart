@@ -383,8 +383,21 @@ class _Choice extends StatelessWidget {
             children: [
               SizedBox(height: 26, child: Center(child: child)),
               const SizedBox(height: Space.x2),
+              // ── Two lines, centred. **Round 19.** ────────────────────
+              //
+              // "Auto" became "System default", which is two words in English
+              // and one long one in German — `Systemstandard` does not fit a
+              // third of a 360-point row on one line, and at 160% text nor
+              // does anything else here. Wrapping is the correct answer and
+              // was already the behaviour; what was missing was the centring
+              // that makes a wrapped chip look deliberate, and a ceiling so a
+              // translation nobody has measured cannot grow the row without
+              // limit. Never measured in characters — ten scripts.
               Text(
                 label,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
                 style: t.labelMedium?.copyWith(
                   color: selected ? c.inkPrimary : c.inkSecondary,
                   fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
@@ -581,6 +594,22 @@ class _SizeSlider extends StatelessWidget {
                     thumbShape:
                         const RoundSliderThumbShape(enabledThumbRadius: 9),
                     tickMarkShape: SliderTickMarkShape.noTickMark,
+                    // ── The bubble is its own ground. **Round 19.** ────────
+                    //
+                    // He photographed "85%" glowing. The value indicator takes
+                    // its text style from the theme, and on Star Map the theme
+                    // carries `pageHalo` — a wash of the *canvas* colour round
+                    // every glyph. On the page that is a knockout; on an
+                    // accent-filled bubble it is a near-black smear round dark
+                    // letters, which is what he saw. Stated, not stripped by a
+                    // wrapper, because the indicator is painted by the slider's
+                    // own overlay layer and never sees an `OffThePage` above it.
+                    valueIndicatorColor: c.accent,
+                    valueIndicatorTextStyle: t.labelMedium?.copyWith(
+                      color: c.canvas,
+                      fontWeight: FontWeight.w600,
+                      shadows: const <Shadow>[],
+                    ),
                   ),
                   child: Slider(
                     value: value,
