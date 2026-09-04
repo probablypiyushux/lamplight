@@ -330,6 +330,9 @@ class LFr extends L {
   String get searchEverythingInstead => 'Chercher dans tout';
 
   @override
+  String get searchNoneOfThese => 'Rien de ce genre pour l\'instant.';
+
+  @override
   String get onboardNoAccount => 'Il n’y a pas de compte.';
 
   @override
@@ -1352,6 +1355,9 @@ class LFr extends L {
   String get restoreChooseFile => 'Choisir un fichier';
 
   @override
+  String get restoreUseLatest => 'Utiliser ma dernière sauvegarde';
+
+  @override
   String get restorePhraseHint => 'souviens histoire industrie…';
 
   @override
@@ -1405,6 +1411,9 @@ class LFr extends L {
 
   @override
   String get exportChooseFolder => 'Choisir un dossier et exporter';
+
+  @override
+  String get exportSave => 'Enregistrer une copie lisible';
 
   @override
   String get exportWritten => 'Ta copie est écrite.';
@@ -2253,6 +2262,17 @@ class LFr extends L {
   @override
   String get aboutFree =>
       'Lamplight est gratuit et le restera. Il n’y a rien à débloquer.';
+
+  @override
+  String get aboutContact => 'Quelque chose ne va pas ? Écrivez-moi.';
+
+  @override
+  String get aboutContactSemantic => 'Envoyer un retour par e-mail';
+
+  @override
+  String aboutNoMail(String address) {
+    return 'Aucune application de messagerie sur ce téléphone. L\'adresse est $address.';
+  }
 
   @override
   String get backupOnItsOwn => 'Tout seul';

@@ -181,6 +181,7 @@
   },
   "searchNothingFound": "Nothing matched that.",
   "searchEverythingInstead": "Search everything instead",
+  "searchNoneOfThese": "Nothing of that kind yet.",
   "onboardNoAccount": "There is no account.",
   "@onboardNoAccount": {
     "description": "The first thing a stranger ever reads in this app. A statement of fact about the software, not a boast. The ABSENCE of a signup screen is the pitch, so this must not be softened into a welcome."
@@ -789,6 +790,7 @@
   },
   "restoreTitle": "Restore",
   "restoreChooseFile": "Choose a file",
+  "restoreUseLatest": "Use my latest backup",
   "restorePhraseHint": "remember story industry…",
   "@restorePhraseHint": {
     "description": "Placeholder in the recovery-phrase box. Three words of an example phrase — keep them as example words in your language, or leave the English ones if your language has no wordlist. They are only a shape."
@@ -827,6 +829,7 @@
     }
   },
   "exportChooseFolder": "Choose a folder and export",
+  "exportSave": "Save a readable copy",
   "exportWritten": "Your copy is written.",
   "exportAgain": "Export again",
   "exportWhichOne": "Which one do I want?",
@@ -1285,6 +1288,10 @@
     "description": "The app's central claim, in two paragraphs. Every clause is a fact about the software rather than a reassurance: no account, no server, nothing leaves, and the key is derived from the passcode so no copy of it exists anywhere including with us. It must not become 'your data is safe'."
   },
   "aboutFree": "Lamplight is free and always will be. There is nothing to unlock.",
+  "aboutContact": "Something not right? Tell me.",
+  "aboutContactSemantic": "Send feedback by email",
+  "aboutNoMail": "No email app on this phone. The address is {address}.",
+  "@aboutNoMail": { "placeholders": { "address": { "type": "String" } } },
   "@aboutFree": {
     "description": "There is no paid tier, no unlock, no trial. Said plainly because people expect the opposite."
   },

@@ -331,6 +331,9 @@ class LEn extends L {
   String get searchEverythingInstead => 'Search everything instead';
 
   @override
+  String get searchNoneOfThese => 'Nothing of that kind yet.';
+
+  @override
   String get onboardNoAccount => 'There is no account.';
 
   @override
@@ -1345,6 +1348,9 @@ class LEn extends L {
   String get restoreChooseFile => 'Choose a file';
 
   @override
+  String get restoreUseLatest => 'Use my latest backup';
+
+  @override
   String get restorePhraseHint => 'remember story industry…';
 
   @override
@@ -1397,6 +1403,9 @@ class LEn extends L {
 
   @override
   String get exportChooseFolder => 'Choose a folder and export';
+
+  @override
+  String get exportSave => 'Save a readable copy';
 
   @override
   String get exportWritten => 'Your copy is written.';
@@ -2236,6 +2245,17 @@ class LEn extends L {
   @override
   String get aboutFree =>
       'Lamplight is free and always will be. There is nothing to unlock.';
+
+  @override
+  String get aboutContact => 'Something not right? Tell me.';
+
+  @override
+  String get aboutContactSemantic => 'Send feedback by email';
+
+  @override
+  String aboutNoMail(String address) {
+    return 'No email app on this phone. The address is $address.';
+  }
 
   @override
   String get backupOnItsOwn => 'On its own';

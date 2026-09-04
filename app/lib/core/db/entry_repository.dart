@@ -3,6 +3,7 @@ import 'package:drift/drift.dart';
 import '../storage/attachment_store.dart';
 import '../../l10n/generated/app_localizations.dart';
 import 'database.dart';
+import 'vault_changed.dart';
 
 /// Every query the app makes about entries, in one place.
 ///
@@ -332,6 +333,8 @@ class EntryRepository {
             dayKey: dayKey,
           ),
         );
+    // The vault changed, so a backup is owed. See `vault_changed.dart`.
+    VaultChanged.mark();
   }
 
   /// A text entry that belongs to a past day, for the import.
@@ -380,6 +383,8 @@ class EntryRepository {
             dayKey: dayKey,
           ),
         );
+    // The vault changed, so a backup is owed. See `vault_changed.dart`.
+    VaultChanged.mark();
   }
 
   /// Replaces the body of an existing entry, keeping the old one.
@@ -427,6 +432,8 @@ class EntryRepository {
         EntriesCompanion(body: Value(body), updatedAt: Value(now)),
       );
     });
+    // The vault changed, so a backup is owed. See `vault_changed.dart`.
+    VaultChanged.mark();
   }
 
   static const Duration _revisionCoalesce = Duration(minutes: 5);
@@ -473,6 +480,8 @@ class EntryRepository {
     await (_db.update(_db.entries)..where((t) => t.id.equals(id))).write(
       EntriesCompanion(marker: Value(marker)),
     );
+    // The vault changed, so a backup is owed. See `vault_changed.dart`.
+    VaultChanged.mark();
   }
 
   /// Everything marked, newest day first.
@@ -505,12 +514,16 @@ class EntryRepository {
     await (_db.update(_db.entries)..where((t) => t.id.equals(id))).write(
       EntriesCompanion(deletedAt: Value(DateTime.now().millisecondsSinceEpoch)),
     );
+    // The vault changed, so a backup is owed. See `vault_changed.dart`.
+    VaultChanged.mark();
   }
 
   Future<void> restore(String id) async {
     await (_db.update(_db.entries)..where((t) => t.id.equals(id))).write(
       const EntriesCompanion(deletedAt: Value(null)),
     );
+    // The vault changed, so a backup is owed. See `vault_changed.dart`.
+    VaultChanged.mark();
   }
 
   /// Removes an entry and its history for good.
@@ -558,6 +571,8 @@ class EntryRepository {
       if (gone == null) continue;
       await _attachments?.delete(gone).catchError((_) {});
     }
+    // The vault changed, so a backup is owed. See `vault_changed.dart`.
+    VaultChanged.mark();
   }
 
   /// Empties everything whose 30 days are up.
@@ -574,6 +589,10 @@ class EntryRepository {
     for (final e in doomed) {
       await purge(e.id);
     }
+    // `purge` above already marks, once per row. Marked again here so the
+    // method is correct on its own terms rather than by what it happens to
+    // call, and because a sweep that purged nothing must not claim a change.
+    if (doomed.isNotEmpty) VaultChanged.mark();
     return doomed.length;
   }
 
@@ -584,6 +603,8 @@ class EntryRepository {
   /// occupy the trash either.
   Future<void> discardDraft(String id) async {
     await (_db.delete(_db.entries)..where((t) => t.id.equals(id))).go();
+    // The vault changed, so a backup is owed. See `vault_changed.dart`.
+    VaultChanged.mark();
   }
 }
 

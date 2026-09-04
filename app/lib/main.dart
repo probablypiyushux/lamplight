@@ -10,6 +10,7 @@ import 'core/platform/orientation.dart';
 import 'core/platform/transcription.dart';
 import 'core/settings/app_settings.dart';
 import 'core/platform/system_excursion.dart';
+import 'core/db/vault_changed.dart';
 import 'core/vault/vault.dart';
 import 'features/backup/silent_backup.dart';
 import 'features/error/error_surface.dart';
@@ -81,6 +82,19 @@ void main() async {
   SystemExcursion.onReturn = vault.endSystemReturn;
 
   final silentBackup = SilentBackup(vault: vault, settings: settings);
+
+  // ── Every write, not just the ones the day screen makes ─────────────────
+  //
+  // `SilentBackup` only runs when the vault is known to have changed, and until
+  // 3 September that was decided by `markDirty()` calls scattered through
+  // `day_screen.dart` -- **the only file in the app that had any**. Importing a
+  // journal, restoring from the trash, emptying it, and every folder operation
+  // changed the vault and told the backup nothing, so it declined to run and
+  // the switch went on saying ON.
+  //
+  // The repositories are the things that write, so they are the things that
+  // say so. Wired once, here, exactly like SystemExcursion above.
+  VaultChanged.onWrite = silentBackup.markDirty;
 
   // ── ISSUE 15, and it no longer blocks the first frame ────────────────────
   //

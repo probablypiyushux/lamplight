@@ -50,6 +50,28 @@ class _ExportScreenState extends State<ExportScreen> {
   String? _savedAs;
   bool _cancelRequested = false;
 
+  /// The export that asks for nothing. **The ordinary way now.**
+  ///
+  /// > *"it shows zero files in my redmi tab!"*
+  ///
+  /// The folder picker lists only directories and hides the ones Android will
+  /// not grant, so at the root of internal storage it draws *"Can't use this
+  /// folder"* over an empty list. Reproduced on his tablet on 4 September. So
+  /// this writes to `Documents/Lamplight/<name>` the way automatic backup
+  /// already does -- no permission, no picker, and a folder any file manager
+  /// can open.
+  Future<void> _runDefault() async {
+    setState(() {
+      _error = null;
+      _cancelRequested = false;
+      _phase = _Phase.working;
+      _stage = L.of(context).exportStarting;
+      _progress = 0;
+    });
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    await _export(const DefaultFolderSink(), locale);
+  }
+
   Future<void> _run() async {
     setState(() {
       _error = null;
@@ -100,9 +122,14 @@ class _ExportScreenState extends State<ExportScreen> {
     // `PlainExport` runs off the tree by design and cannot look this up itself.
     final locale = Localizations.localeOf(context).toLanguageTag();
 
+    await _export(DocumentStoreSink(tree), locale);
+  }
+
+  /// Everything after the destination is decided, shared by both doors.
+  Future<void> _export(ExportSink sink, String locale) async {
     try {
       final name = await PlainExport.run(
-        sink: DocumentStoreSink(tree),
+        sink: sink,
         repo: EntryRepository(widget.vault.database),
         dayNotes: DayNoteRepository(widget.vault.database),
         attachments: widget.vault.attachments,
@@ -175,8 +202,22 @@ class _ExportScreenState extends State<ExportScreen> {
               LampError(message: _error!),
               const SizedBox(height: Space.x5),
             ],
+            // ── The default first, the picker second ────────────────────
+            //
+            // Reversed on 4 September. Choosing a folder used to be the only
+            // way, and on his tablet it drew "Can't use this folder" over an
+            // empty list -- *"it shows zero files in my redmi tab"*. The
+            // picker still works and is still here, for an SD card or a folder
+            // somebody wants for their own reasons; it is simply no longer the
+            // thing standing between a person and their own writing.
             LampButton(
-              label: L.of(context).exportChooseFolder, onPressed: _run),
+              label: L.of(context).exportSave, onPressed: _runDefault),
+            const SizedBox(height: Space.x3),
+            TextButton(
+              onPressed: _run,
+              child: Text(L.of(context).exportChooseFolder,
+                  style: TextStyle(color: c.inkSecondary)),
+            ),
           ],
 
           if (_phase == _Phase.working) ...[

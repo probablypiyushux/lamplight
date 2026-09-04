@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import java.io.File
+import java.io.FileOutputStream
 
 /**
  * Where an automatic backup goes when nobody has chosen anywhere.
@@ -68,11 +69,39 @@ import java.io.File
  */
 object BackupFolder {
 
-    /** The folder shown to the user, and the one they will look in. */
-    const val RELATIVE = "Documents/Lamplight"
+    /**
+     * The folder shown to the user, and the one they will look in.
+     *
+     * ── WHY THIS IS NOT A CONSTANT ──────────────────────────────────────────
+     *
+     * It was, and that was very nearly expensive. `Documents/Lamplight` was
+     * hard-coded, and so is the file inside it -- one folder, one name,
+     * replaced on every backup, which is the right design for one app.
+     *
+     * The sandbox build is a *second* app: same code, different application
+     * id, its own empty vault, installed side by side so that deleting and
+     * restoring can be exercised without anybody's real journal in the way. It
+     * inherited this constant. So the moment automatic backup ran in the
+     * sandbox it would have written `Lamplight.vault.part`, then **deleted the
+     * real `Lamplight.vault`** and swapped a test vault into its place -- and
+     * the real one is the only copy of the journal that survives uninstalling
+     * the app.
+     *
+     * Caught on 4 September 2026 while about to do exactly that, by reading
+     * this file rather than by losing anything. The folder is named after the
+     * application id now, so two installed builds cannot collide, and the real
+     * app's path is unchanged for everybody who already has backups there.
+     */
+    fun relative(context: Context): String =
+        if (context.packageName.endsWith(".sandbox")) {
+            "Documents/Lamplight Sandbox"
+        } else {
+            "Documents/Lamplight"
+        }
 
     /** What Settings says when it has to name the place. */
-    const val LABEL = "Documents/Lamplight"
+    fun label(context: Context): String = relative(context)
+
 
     /**
      * Whether this device can be written to without asking for anything.
@@ -87,6 +116,42 @@ object BackupFolder {
      */
     val available: Boolean
         get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+
+    /**
+     * Copies the backup this app wrote into [destination], if there is one.
+     *
+     * Returns its display name, or null when no backup exists yet.
+     *
+     * ── WHY RESTORE DOES NOT HAVE TO USE A PICKER ───────────────────────────
+     *
+     * *"so man it never shows folders too!"* — and on his tablet the file
+     * picker at the top of internal storage shows literally `No items`. A
+     * folder picker never lists files, and MIUI's provider lists nothing at all
+     * at that root, so somebody trying to get their journal back is looking at
+     * an empty screen with no way forward unless they happen to know to open
+     * the drawer and choose Downloads.
+     *
+     * The backup this app writes is at a path this app already knows. So the
+     * ordinary case -- *"put my journal back from my own backup"* -- needs no
+     * picker at all, which is the same answer automatic backup, the readable
+     * copy and the journal importer each arrived at. The picker stays for a
+     * backup kept somewhere else, on a memory card, or sent from another phone.
+     */
+    fun copyLatestInto(context: Context, destination: String): String? {
+        val name = "Lamplight.vault"
+        val uri = findIn(context, name) ?: return null
+        File(destination).parentFile?.mkdirs()
+        context.contentResolver.openInputStream(uri)?.use { input ->
+            FileOutputStream(File(destination)).use { output ->
+                input.copyTo(output, 64 * 1024)
+            }
+        } ?: return null
+        return name
+    }
+
+    /** Whether [copyLatestInto] has anything to copy. */
+    fun latestExists(context: Context): Boolean =
+        available && findIn(context, "Lamplight.vault") != null
 
     /**
      * Copies [sourcePath] to `Documents/Lamplight/[name]`, replacing whatever
@@ -109,7 +174,7 @@ object BackupFolder {
         // before doing anything else. Identical reasoning to `recoverPart`.
         val strandedPart = findIn(context, partName)
         if (strandedPart != null && findIn(context, name) == null) {
-            if (rename(context, strandedPart, name)) return LABEL
+            if (rename(context, strandedPart, name)) return label(context)
         }
 
         // Any other stale part is a failed write and is worth nothing.
@@ -120,14 +185,14 @@ object BackupFolder {
             ContentValues().apply {
                 put(MediaStore.MediaColumns.DISPLAY_NAME, partName)
                 put(MediaStore.MediaColumns.MIME_TYPE, "application/octet-stream")
-                put(MediaStore.MediaColumns.RELATIVE_PATH, RELATIVE)
+                put(MediaStore.MediaColumns.RELATIVE_PATH, relative(context))
                 // Hides the row from other apps until it is complete, and — the
                 // part that matters here — stops a media scan indexing a
                 // half-written vault.
                 put(MediaStore.MediaColumns.IS_PENDING, 1)
             }
         ) ?: throw IllegalStateException(
-            "Lamplight could not create a backup file in $LABEL."
+            "Lamplight could not create a backup file in ${label(context)}."
         )
 
         try {
@@ -155,9 +220,9 @@ object BackupFolder {
             // Some devices refuse the rename. The backup is safe — it is the
             // part file and it is complete — so leave it rather than deleting a
             // good copy to tidy up a name.
-            return "$LABEL/$partName"
+            return "${label(context)}/$partName"
         }
-        return LABEL
+        return label(context)
     }
 
     /** The row for [name] inside our folder, or null. */
@@ -170,7 +235,7 @@ object BackupFolder {
             arrayOf(MediaStore.MediaColumns._ID),
             "${MediaStore.MediaColumns.DISPLAY_NAME}=? AND " +
                 "${MediaStore.MediaColumns.RELATIVE_PATH}=?",
-            arrayOf(name, "$RELATIVE/"),
+            arrayOf(name, "${relative(context)}/"),
             null
         )?.use { cursor ->
             if (!cursor.moveToFirst()) return null

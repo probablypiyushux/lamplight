@@ -319,6 +319,9 @@ class LKo extends L {
   String get searchEverythingInstead => '전체에서 찾기';
 
   @override
+  String get searchNoneOfThese => '아직 그런 항목이 없습니다.';
+
+  @override
   String get onboardNoAccount => '계정이 없습니다.';
 
   @override
@@ -1298,6 +1301,9 @@ class LKo extends L {
   String get restoreChooseFile => '파일 고르기';
 
   @override
+  String get restoreUseLatest => '최신 백업 사용';
+
+  @override
   String get restorePhraseHint => '기억 이야기 산업…';
 
   @override
@@ -1349,6 +1355,9 @@ class LKo extends L {
 
   @override
   String get exportChooseFolder => '폴더 골라 내보내기';
+
+  @override
+  String get exportSave => '읽을 수 있는 사본 저장';
 
   @override
   String get exportWritten => '사본을 다 썼습니다.';
@@ -2152,6 +2161,17 @@ class LKo extends L {
 
   @override
   String get aboutFree => 'Lamplight는 무료이고 앞으로도 그렇습니다. 풀어야 할 것이 없습니다.';
+
+  @override
+  String get aboutContact => '문제가 있나요? 알려주세요.';
+
+  @override
+  String get aboutContactSemantic => '이메일로 의견 보내기';
+
+  @override
+  String aboutNoMail(String address) {
+    return '이 휴대에 이메일 앱이 없습니다. 주소는 $address 입니다.';
+  }
 
   @override
   String get backupOnItsOwn => '알아서';

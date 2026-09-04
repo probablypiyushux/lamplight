@@ -330,6 +330,9 @@ class LHi extends L {
   String get searchEverythingInstead => 'इसके बजाय सब कुछ खोजिए';
 
   @override
+  String get searchNoneOfThese => 'इस तरह का अभी कुछ नहीं है।';
+
+  @override
   String get onboardNoAccount => 'कोई खाता नहीं है।';
 
   @override
@@ -1342,6 +1345,9 @@ class LHi extends L {
   String get restoreChooseFile => 'एक फ़ाइल चुनिए';
 
   @override
+  String get restoreUseLatest => 'मेरा नवीनतम बैकअप लें';
+
+  @override
   String get restorePhraseHint => 'याद कहानी उद्योग…';
 
   @override
@@ -1394,6 +1400,9 @@ class LHi extends L {
 
   @override
   String get exportChooseFolder => 'फ़ोल्डर चुनकर बाहर लिखिए';
+
+  @override
+  String get exportSave => 'पढ़ने योग्य प्रति सहेजें';
 
   @override
   String get exportWritten => 'आपकी कॉपी लिख दी गई।';
@@ -2230,6 +2239,17 @@ class LHi extends L {
   @override
   String get aboutFree =>
       'Lamplight मुफ़्त है और हमेशा रहेगा। खोलने के लिए कुछ भी नहीं है।';
+
+  @override
+  String get aboutContact => 'कुछ ठीक नहीं लगा? मुझे बताइए।';
+
+  @override
+  String get aboutContactSemantic => 'ईमेल से फ़ीडबैक भेजें';
+
+  @override
+  String aboutNoMail(String address) {
+    return 'इस फ़ोन में ईमेल ऐप नहीं है। पता है $address।';
+  }
 
   @override
   String get backupOnItsOwn => 'अपने आप';

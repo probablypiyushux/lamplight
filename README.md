@@ -6,7 +6,7 @@ internet.**
 [![verify](https://github.com/probablypiyushux/lamplight/actions/workflows/verify.yml/badge.svg)](https://github.com/probablypiyushux/lamplight/actions/workflows/verify.yml)
 [![licence](https://img.shields.io/badge/licence-GPL--3.0%20%2B%20app%20store%20exception-blue)](LICENSE)
 [![platform](https://img.shields.io/badge/platform-Android%208.0%2B-brightgreen)](#building-it-yourself)
-[![tests](https://img.shields.io/badge/tests-1%2C492-brightgreen)](#building-it-yourself)
+[![tests](https://img.shields.io/badge/tests-1%2C512-brightgreen)](#building-it-yourself)
 
 Write down your day — in words, your own voice, photographs, video, or documents. It is
 kept on your phone, encrypted, organised by the day it happened. Nothing is uploaded,
@@ -121,7 +121,7 @@ tool/verify_no_internet.sh
 tool/verify_no_sockets.sh
 ```
 
-**1,492 tests.** They cover the crypto round-trips, the backup format across three reader
+**1,512 tests.** They cover the crypto round-trips, the backup format across three reader
 versions, interrupted writes, database migrations from v1 through v5, and a scan that reads
 the disk after every import path looking for plaintext.
 [`BUILDING.md`](BUILDING.md) has the detail.
@@ -152,7 +152,7 @@ the ones that turned out to be wrong.
 
 ## Status
 
-**Version 0.5.0+19.** Feature-complete, and in preparation for a Google Play closed test.
+**Version 0.5.3.** Feature-complete, and in preparation for a Google Play closed test.
 Not yet on the Play Store.
 
 Bug reports and questions are welcome in

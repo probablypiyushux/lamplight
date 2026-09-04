@@ -1,14 +1,16 @@
 import 'dart:async';
-import '../../l10n/generated/app_localizations.dart';
-import 'dart:typed_data';
 
+import '../../l10n/generated/app_localizations.dart';
+
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 
 import '../../core/db/database.dart' show Attachment;
 import '../../core/platform/document_store.dart';
 import '../../core/platform/video_playback.dart';
-import '../../core/storage/attachment_importer.dart' show humanDuration, humanSize;
+import '../../core/storage/attachment_importer.dart'
+    show humanDuration, humanSize;
 import '../../core/storage/attachment_store.dart';
 import '../../design/components.dart';
 import '../../design/tokens.dart';
@@ -128,14 +130,18 @@ class _VideoViewerState extends State<VideoViewer> with WidgetsBindingObserver {
         // mechanism: the app will not write the clip out in the clear to get
         // around its own limit. Rule 3 of §7.0-C-i — a promise stays, a
         // mechanism goes.
-        setState(() => _error = L
-            .of(context)
-            .videoTooBig(humanSize(widget.attachment.byteSize)));
+        setState(
+          () => _error = L
+              .of(context)
+              .videoTooBig(humanSize(widget.attachment.byteSize)),
+        );
         return;
       }
 
-      final Uint8List bytes = await widget.store
-          .readAllBytesOffThread(widget.attachment.id, widget.attachment.fileKey);
+      final Uint8List bytes = await widget.store.readAllBytesOffThread(
+        widget.attachment.id,
+        widget.attachment.fileKey,
+      );
       if (!mounted) return;
 
       EncryptedVideoPlayer.onFinished(() {
@@ -201,8 +207,7 @@ class _VideoViewerState extends State<VideoViewer> with WidgetsBindingObserver {
     await showViewerMenu(
       context: context,
       kind: viewerKindFor(shown, video: true),
-      onOpenWith:
-          openWith == null ? null : () => openWith(shown),
+      onOpenWith: openWith == null ? null : () => openWith(shown),
       onSave: save == null ? null : () => save(shown),
       onTrash: trash == null
           ? null
@@ -360,7 +365,10 @@ class _VideoViewerState extends State<VideoViewer> with WidgetsBindingObserver {
             // nothing, one politeness removed.
             if (widget.onSaveCopy != null) ...[
               const SizedBox(height: Space.x8),
-              LampButton(label: L.of(context).entrySaveCopy, onPressed: widget.onSaveCopy),
+              LampButton(
+                label: L.of(context).entrySaveCopy,
+                onPressed: widget.onSaveCopy,
+              ),
             ],
           ],
         ),
@@ -440,8 +448,26 @@ class _VideoViewerState extends State<VideoViewer> with WidgetsBindingObserver {
     // control panel over an arbitrary film is the one place in this app where
     // more transparency is not automatically better; the scrim under it is what
     // makes any of this legal and it is doing enough work already.
+    // ── The same dock the day screen has ────────────────────────────────
+    //
+    // > *"No doubt the video controller is so good! but if you keep it end to
+    // > end! then why not make it look better like home screen looks! in home
+    // > screen - Voice Photo and document has the box! make it look same!"*
+    //
+    // It was a floating card: rounded on all four corners, with a margin down
+    // each side. The capture bar on the day screen is a **dock** -- rounded at
+    // the top only, flush to the edges, sitting on the bottom of the screen.
+    // Two panels doing the same job in the same app, drawn as two different
+    // objects, and the video one was neither one thing nor the other: nearly
+    // edge to edge, but not quite.
+    //
+    // It is the dock now, with the capture bar's radius and its `SafeArea`, so
+    // the two read as the same component. **The alphas are unchanged and stay
+    // unchanged**: this panel sits over an arbitrary film, and the paragraph
+    // below is the argument for why more transparency here is not better.
+    // `video_controls_test.dart` checks that number.
     return LampGlass(
-      radius: BorderRadius.circular(Radii.lg),
+      radius: const BorderRadius.vertical(top: Radius.circular(Radii.lg)),
       topAlpha: 0.90,
       bottomAlpha: 0.84,
       // ── ISSUE 6 — ten, not twenty ──────────────────────────────────────
@@ -457,121 +483,135 @@ class _VideoViewerState extends State<VideoViewer> with WidgetsBindingObserver {
       // through was showing through as a single averaged colour. At ten it is
       // recognisably the film. See LampGlass.blur for the arithmetic.
       blur: 10,
-      child: Padding(
-      padding: const EdgeInsets.fromLTRB(
-          Space.x4, Space.x2, Space.x4, Space.x3),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SliderTheme(
-            // ISSUE 2B. Thinner track, smaller thumb, no halo, and the
-            // inactive half drawn in ink rather than in `raised` — a panel
-            // that is now see-through cannot use a *surface* colour for a line
-            // on it, because there is no surface behind it any more.
-            data: SliderThemeData(
-              trackHeight: 2.5,
-              activeTrackColor: c.accent,
-              inactiveTrackColor: c.inkPrimary.withValues(alpha: 0.22),
-              thumbColor: c.accent,
-              overlayColor: c.accent.withValues(alpha: 0.14),
-              overlayShape:
-                  const RoundSliderOverlayShape(overlayRadius: 16),
-              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
-              trackShape: const RoundedRectSliderTrackShape(),
-            ),
-            child: Slider(
-              value: value.clamp(0.0, 1.0),
-              // A real label, so a screen reader says "four minutes twelve"
-              // rather than "point three eight".
-              label: humanDuration(
-                  (value * total).round().clamp(0, 1 << 30)),
-              onChanged: total <= 0
-                  ? null
-                  : (v) => setState(() {
-                        _scrubbing = true;
-                        _scrubTo = v;
-                      }),
-              onChangeEnd: total <= 0
-                  ? null
-                  : (v) async {
-                      await EncryptedVideoPlayer.seek((v * total).round());
-                      if (mounted) setState(() => _scrubbing = false);
-                    },
-            ),
+      // `SafeArea` for the same reason the capture bar has one: the gesture
+      // bar sits under this, and a scrub thumb you cannot reach because the
+      // system took the bottom eighteen points is a control that does not work
+      // on exactly the phones that have one.
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(
+            Space.x4,
+            Space.x2,
+            Space.x4,
+            Space.x3,
           ),
-          Row(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                humanDuration(
-                    (value * total).round().clamp(0, 1 << 30)),
-                // Tabular figures: without them the digits change width as
-                // they tick and the whole row jitters once a second.
-                style: t.labelMedium?.copyWith(
-                  fontFeatures: const [FontFeature.tabularFigures()],
-                ),
-              ),
-              const Spacer(),
-              _RoundControl(
-                icon: Icons.replay_10,
-                label: L.of(context).videoBackTen,
-                onTap: () => _skip(-10),
-              ),
-              const SizedBox(width: Space.x2),
-              _RoundControl(
-                icon: _state.playing
-                    ? Icons.pause_rounded
-                    : Icons.play_arrow_rounded,
-                label: _state.playing ? 'Pause' : 'Play',
-                onTap: _togglePlay,
-                filled: true,
-              ),
-              const SizedBox(width: Space.x2),
-              _RoundControl(
-                icon: Icons.forward_10,
-                label: L.of(context).videoForwardTen,
-                onTap: () => _skip(10),
-              ),
-              const Spacer(),
-              // ISSUE 2B. How much is left, which the panel never said.
-              //
-              // Every player shows both ends and this one showed only where
-              // you are — so "how long is this clip" and "how much is left"
-              // both had to be worked out from a slider. A minus sign in front,
-              // which is the convention for remaining rather than total, and
-              // the same tabular figures so it does not jitter either.
-              Text(
-                '-${humanDuration(((1 - value.clamp(0.0, 1.0)) * total).round().clamp(0, 1 << 30))}',
-                style: t.labelMedium?.copyWith(
-                  // `inkSecondary`, not `inkMuted`. The quietest ink in the
-                  // palette is for a label on a known surface, and this one is
-                  // on glass over arbitrary film — it failed AA on both
-                  // palettes when it was muted, which the test found before
-                  // anybody had to look at it.
-                  color: c.inkSecondary,
-                  fontFeatures: const [FontFeature.tabularFigures()],
-                ),
-              ),
-              const SizedBox(width: Space.x3),
-              // Speed carries its own value as text, so it is never colour or
-              // an icon alone that says what it is set to.
-              TextButton(
-                onPressed: _cycleSpeed,
-                style: TextButton.styleFrom(
-                  minimumSize: const Size(kMinTouchTarget, kMinTouchTarget),
-                  padding: EdgeInsets.zero,
-                ),
-                child: Text(
-                  '${_speed == _speed.roundToDouble() ? _speed.toStringAsFixed(0) : _speed}×',
-                  style: t.labelMedium?.copyWith(
-                    color: _speed == 1.0 ? c.inkSecondary : c.accent,
-                    fontWeight: FontWeight.w700,
+              SliderTheme(
+                // ISSUE 2B. Thinner track, smaller thumb, no halo, and the
+                // inactive half drawn in ink rather than in `raised` — a panel
+                // that is now see-through cannot use a *surface* colour for a line
+                // on it, because there is no surface behind it any more.
+                data: SliderThemeData(
+                  trackHeight: 2.5,
+                  activeTrackColor: c.accent,
+                  inactiveTrackColor: c.inkPrimary.withValues(alpha: 0.22),
+                  thumbColor: c.accent,
+                  overlayColor: c.accent.withValues(alpha: 0.14),
+                  overlayShape: const RoundSliderOverlayShape(
+                    overlayRadius: 16,
                   ),
+                  thumbShape: const RoundSliderThumbShape(
+                    enabledThumbRadius: 6,
+                  ),
+                  trackShape: const RoundedRectSliderTrackShape(),
                 ),
+                child: Slider(
+                  value: value.clamp(0.0, 1.0),
+                  // A real label, so a screen reader says "four minutes twelve"
+                  // rather than "point three eight".
+                  label: humanDuration(
+                    (value * total).round().clamp(0, 1 << 30),
+                  ),
+                  onChanged: total <= 0
+                      ? null
+                      : (v) => setState(() {
+                          _scrubbing = true;
+                          _scrubTo = v;
+                        }),
+                  onChangeEnd: total <= 0
+                      ? null
+                      : (v) async {
+                          await EncryptedVideoPlayer.seek((v * total).round());
+                          if (mounted) setState(() => _scrubbing = false);
+                        },
+                ),
+              ),
+              Row(
+                children: [
+                  Text(
+                    humanDuration((value * total).round().clamp(0, 1 << 30)),
+                    // Tabular figures: without them the digits change width as
+                    // they tick and the whole row jitters once a second.
+                    style: t.labelMedium?.copyWith(
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                    ),
+                  ),
+                  const Spacer(),
+                  _RoundControl(
+                    icon: Icons.replay_10,
+                    label: L.of(context).videoBackTen,
+                    onTap: () => _skip(-10),
+                  ),
+                  const SizedBox(width: Space.x2),
+                  _RoundControl(
+                    icon: _state.playing
+                        ? Icons.pause_rounded
+                        : Icons.play_arrow_rounded,
+                    label: _state.playing ? 'Pause' : 'Play',
+                    onTap: _togglePlay,
+                    filled: true,
+                  ),
+                  const SizedBox(width: Space.x2),
+                  _RoundControl(
+                    icon: Icons.forward_10,
+                    label: L.of(context).videoForwardTen,
+                    onTap: () => _skip(10),
+                  ),
+                  const Spacer(),
+                  // ISSUE 2B. How much is left, which the panel never said.
+                  //
+                  // Every player shows both ends and this one showed only where
+                  // you are — so "how long is this clip" and "how much is left"
+                  // both had to be worked out from a slider. A minus sign in front,
+                  // which is the convention for remaining rather than total, and
+                  // the same tabular figures so it does not jitter either.
+                  Text(
+                    '-${humanDuration(((1 - value.clamp(0.0, 1.0)) * total).round().clamp(0, 1 << 30))}',
+                    style: t.labelMedium?.copyWith(
+                      // `inkSecondary`, not `inkMuted`. The quietest ink in the
+                      // palette is for a label on a known surface, and this one is
+                      // on glass over arbitrary film — it failed AA on both
+                      // palettes when it was muted, which the test found before
+                      // anybody had to look at it.
+                      color: c.inkSecondary,
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                    ),
+                  ),
+                  const SizedBox(width: Space.x3),
+                  // Speed carries its own value as text, so it is never colour or
+                  // an icon alone that says what it is set to.
+                  TextButton(
+                    onPressed: _cycleSpeed,
+                    style: TextButton.styleFrom(
+                      minimumSize: const Size(kMinTouchTarget, kMinTouchTarget),
+                      padding: EdgeInsets.zero,
+                    ),
+                    child: Text(
+                      '${_speed == _speed.roundToDouble() ? _speed.toStringAsFixed(0) : _speed}×',
+                      style: t.labelMedium?.copyWith(
+                        color: _speed == 1.0 ? c.inkSecondary : c.accent,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
-      ),
+        ),
       ),
     );
   }
@@ -620,7 +660,6 @@ class _RoundControl extends StatelessWidget {
     );
   }
 }
-
 
 /// An exception turned into something a person can act on.
 ///

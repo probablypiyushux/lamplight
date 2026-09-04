@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 
 import 'database.dart';
+import 'vault_changed.dart';
 
 /// One line about a whole day. **`PLAN.md` §9.6, and §7.0-E's first item.**
 ///
@@ -139,6 +140,8 @@ class DayNoteRepository {
             body: Value(clean),
           ),
         );
+    // The vault changed, so a backup is owed. See `vault_changed.dart`.
+    VaultChanged.mark();
   }
 
   /// The longest a day's line may be.

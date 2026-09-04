@@ -45,6 +45,30 @@ abstract final class DocumentStore {
   /// Copies a file the user chooses into [destination].
   ///
   /// Returns the name of the file they picked, or null if they backed out.
+  /// Whether this app has a backup of its own to restore from.
+  static Future<bool> latestBackupExists() async =>
+      await _call<bool>('latestBackupExists') ?? false;
+
+  /// Copies this app's own latest backup into [destination], with no picker.
+  ///
+  /// Returns its name, or null when there is no backup yet.
+  ///
+  /// ── WHY RESTORE HAS A DOOR WITHOUT A PICKER ──────────────────────────────
+  ///
+  /// > *"so man it never shows folders too!"*
+  ///
+  /// Reproduced on his tablet: the file picker at the top of internal storage
+  /// shows `No items` and nothing else. A folder picker never lists files, and
+  /// MIUI's provider lists nothing at all at that root -- so somebody trying to
+  /// get their journal back is looking at an empty screen with no way forward
+  /// unless they happen to know to open the drawer and choose Downloads.
+  ///
+  /// The backup this app writes is at a path this app already knows, so the
+  /// ordinary case needs no picker. **No excursion window** either: nothing
+  /// leaves the app, so the vault must not be told to expect a return.
+  static Future<String?> copyLatestBackup({required File destination}) =>
+      _call<String>('copyLatestBackup', {'path': destination.path});
+
   static Future<String?> import({required File destination}) async {
     try {
       return await SystemExcursion.around(
@@ -241,6 +265,37 @@ abstract final class DocumentStore {
   /// Opens one file inside the export folder, creating any folders it names.
   ///
   /// [relativePath] uses forward slashes — `2026/2026-08-24.md`.
+  /// Starts an export into `Documents/Lamplight/[folderName]`, with no picker.
+  ///
+  /// ── WHY THE PICKER IS NO LONGER FIRST ────────────────────────────────────
+  ///
+  /// > *"All the three have an option to choose a folder! that doesn't works!
+  /// > … it shows me nothing!"* — and, on the tablet: *"it shows zero files"*.
+  ///
+  /// Reproduced exactly. `ACTION_OPEN_DOCUMENT_TREE` lists **only
+  /// directories**, and Android 11 and later hide every directory they will not
+  /// grant, so at the root of internal storage the picker draws
+  /// *"Can't use this folder"* over an empty list reading *"No items"*. Both
+  /// refusals are Android's, in Android's own UI, before anything comes back
+  /// here. Nothing on this side can reach them.
+  ///
+  /// So the export stops asking, exactly as automatic backup did on 2
+  /// September. `MediaStore` writes into `Documents/` with no permission and no
+  /// picker, and `RELATIVE_PATH` makes the folders on the way.
+  ///
+  /// Returns the path to show the user. The picker is kept for an SD card or a
+  /// folder of somebody's own choosing; it is simply not the only way through
+  /// any more.
+  static Future<String> exportBeginDefault(String folderName) async =>
+      await _call<String>('exportBeginDefault', {'name': folderName}) ?? '';
+
+  /// Whether this device can be written to without asking for anything.
+  ///
+  /// API 29. Below it `RELATIVE_PATH` does not exist and the picker is the only
+  /// route, which is the same line `BackupFolder.available` draws.
+  static Future<bool> exportDefaultAvailable() async =>
+      await _call<bool>('exportDefaultAvailable') ?? false;
+
   static Future<void> exportOpen({
     required String relativePath,
     required String mime,

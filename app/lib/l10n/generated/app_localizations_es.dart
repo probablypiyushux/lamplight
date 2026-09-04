@@ -332,6 +332,9 @@ class LEs extends L {
   String get searchEverythingInstead => 'Buscar en todo';
 
   @override
+  String get searchNoneOfThese => 'Todavía no hay nada de eso.';
+
+  @override
   String get onboardNoAccount => 'No hay ninguna cuenta.';
 
   @override
@@ -1349,6 +1352,9 @@ class LEs extends L {
   String get restoreChooseFile => 'Elegir un archivo';
 
   @override
+  String get restoreUseLatest => 'Usar mi copia más reciente';
+
+  @override
   String get restorePhraseHint => 'recuerda historia industria…';
 
   @override
@@ -1401,6 +1407,9 @@ class LEs extends L {
 
   @override
   String get exportChooseFolder => 'Elegir una carpeta y exportar';
+
+  @override
+  String get exportSave => 'Guardar una copia legible';
 
   @override
   String get exportWritten => 'Tu copia está escrita.';
@@ -2246,6 +2255,17 @@ class LEs extends L {
   @override
   String get aboutFree =>
       'Lamplight es gratis y siempre lo será. No hay nada que desbloquear.';
+
+  @override
+  String get aboutContact => '¿Algo no va bien? Escríbeme.';
+
+  @override
+  String get aboutContactSemantic => 'Enviar comentarios por correo';
+
+  @override
+  String aboutNoMail(String address) {
+    return 'No hay app de correo en este teléfono. La dirección es $address.';
+  }
 
   @override
   String get backupOnItsOwn => 'Por su cuenta';

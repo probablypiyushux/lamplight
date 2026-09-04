@@ -1624,6 +1624,32 @@ class _DayScreenState extends State<DayScreen> with WidgetsBindingObserver {
                   child: PageView.builder(
                     controller: _pages,
                     onPageChanged: _onPageChanged,
+                    // ── Why the neighbours are built before they are needed ─
+                    //
+                    // > *"you can also slide through pages and see how it
+                    // > jerks! a little! i want you to make it smoother!"*
+                    //
+                    // A `PageView` builds lazily. Without this it keeps only
+                    // the page you are on, so the day either side is
+                    // constructed **during the gesture** -- its query runs, its
+                    // blocks are laid out and its thumbnails are decoded while
+                    // a finger is already moving. The first frames of every
+                    // swipe were paying for a day that did not exist yet, which
+                    // is exactly what a small, repeatable stutter at the start
+                    // of a movement looks like.
+                    //
+                    // `allowImplicitScrolling` gives the viewport a cache
+                    // extent of one page each way, so both neighbours are
+                    // already built and the swipe only has to move them.
+                    //
+                    // **The memory is the thing to watch**, and it was
+                    // measured rather than assumed: three days held instead of
+                    // one. A day is a query and some text; the photographs in
+                    // it are already bounded by `EncryptedImage`'s pixel budget,
+                    // which is the cap that matters and is unchanged. See the
+                    // note in `document_viewer.dart` for what happens when that
+                    // cap is missing.
+                    allowImplicitScrolling: true,
                     itemBuilder: (context, page) {
                       final date = _map.dateFor(page);
                       return DayStream(

@@ -77,7 +77,8 @@ function Write-Utf8([string]$path, [string]$text) {
 }
 
 # ── Read the current version out of pubspec, which is the source of truth ──
-$pubText = Read-Utf8 $pubspec
+$pubText  = Read-Utf8 $pubspec
+$infoText = Read-Utf8 $infoDart
 $m = [regex]::Match($pubText, '(?m)^version:[ \t]*(\d+)\.(\d+)\.(\d+)\+(\d+)[ \t]*$')
 if (-not $m.Success) {
     throw "pubspec.yaml has no `version: X.Y.Z+N` line to raise."
@@ -98,11 +99,41 @@ if ($flags.Count -gt 1) {
     throw "Pass at most one of -Major, -Minor, -Patch."
 }
 
-if     ($Major) { $maj++; $min = 0; $pat = 0 }
-elseif ($Minor) { $min++; $pat = 0 }
-elseif ($Patch) { $pat++ }
+# ── His rule, 4 September 2026 ──────────────────────────────────────────────
+#
+#   "all changes done in a day keeps the version same - and make the 0.5.1 to
+#    0.5.n (not something like build 21). And in another day if changes are
+#    done it's - 0.n+1.n"
+#
+# So the MINOR number is the day, and the PATCH counts the artefacts built on
+# that day. Every build on 4 September is 0.5.something; the first build on the
+# 5th is 0.6.1. A person can look at 0.6.3 and know it is the third thing built
+# on the second day -- which is more than "build 23" ever told anybody.
+#
+# The build counter still climbs, and it has to: Google Play refuses an upload
+# whose versionCode is not higher than the last, and retires a number
+# permanently once used. It is simply not shown any more. See `app_info.dart`.
+#
+# `-Major`, `-Minor` and `-Patch` still force a raise by hand for a real
+# release, and they win over the date.
+$today = (Get-Date).ToString('yyyy-MM-dd')
+$dayMatch = [regex]::Match($infoText, "const String kVersionDay = '(\d{4}-\d{2}-\d{2})';")
+$lastDay = if ($dayMatch.Success) { $dayMatch.Groups[1].Value } else { '' }
 
-# Always. This is the whole point of the script.
+if     ($Major) { $maj++; $min = 0; $pat = 1 }
+elseif ($Minor) { $min++; $pat = 1 }
+elseif ($Patch) { $pat++ }
+elseif ($lastDay -ne $today) {
+    # A new day of work. The minor moves, the patch restarts.
+    $min++
+    $pat = 1
+}
+else {
+    # Same day, another artefact.
+    $pat++
+}
+
+# Always. Play needs it, even though nobody is shown it.
 $build++
 
 $now = "$maj.$min.$pat+$build"
@@ -121,7 +152,6 @@ $pubNew = [regex]::Replace(
     "version: $now")
 Write-Utf8 $pubspec $pubNew
 
-$infoText = Read-Utf8 $infoDart
 $infoNew = [regex]::Replace(
     $infoText,
     "const String kAppVersion = '\d+\.\d+\.\d+';",
@@ -130,6 +160,14 @@ $infoNew = [regex]::Replace(
     $infoNew,
     'const int kAppBuild = \d+;',
     "const int kAppBuild = $build;")
+
+# The day this version belongs to, so the next run knows whether to move the
+# minor. Written down rather than read off a file timestamp, which a checkout
+# or a copy would destroy.
+$infoNew = [regex]::Replace(
+    $infoNew,
+    "const String kVersionDay = '[^']*';",
+    "const String kVersionDay = '$today';")
 
 if ($infoNew -eq $infoText) {
     throw "app_info.dart was not changed - its constants may have been renamed."

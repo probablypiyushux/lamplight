@@ -333,6 +333,9 @@ class LDe extends L {
   String get searchEverythingInstead => 'Stattdessen alles durchsuchen';
 
   @override
+  String get searchNoneOfThese => 'Davon gibt es noch nichts.';
+
+  @override
   String get onboardNoAccount => 'Es gibt kein Konto.';
 
   @override
@@ -1358,6 +1361,9 @@ class LDe extends L {
   String get restoreChooseFile => 'Eine Datei wählen';
 
   @override
+  String get restoreUseLatest => 'Neuestes Backup verwenden';
+
+  @override
   String get restorePhraseHint => 'erinnern Geschichte Industrie…';
 
   @override
@@ -1410,6 +1416,9 @@ class LDe extends L {
 
   @override
   String get exportChooseFolder => 'Ordner wählen und exportieren';
+
+  @override
+  String get exportSave => 'Lesbare Kopie speichern';
 
   @override
   String get exportWritten => 'Deine Kopie ist geschrieben.';
@@ -2261,6 +2270,17 @@ class LDe extends L {
   @override
   String get aboutFree =>
       'Lamplight ist kostenlos und bleibt es. Es gibt nichts freizuschalten.';
+
+  @override
+  String get aboutContact => 'Etwas stimmt nicht? Schreiben Sie mir.';
+
+  @override
+  String get aboutContactSemantic => 'Feedback per E-Mail senden';
+
+  @override
+  String aboutNoMail(String address) {
+    return 'Keine E-Mail-App auf diesem Telefon. Die Adresse lautet $address.';
+  }
 
   @override
   String get backupOnItsOwn => 'Von selbst';

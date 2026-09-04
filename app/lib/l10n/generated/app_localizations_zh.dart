@@ -317,6 +317,9 @@ class LZh extends L {
   String get searchEverythingInstead => '改为搜索全部';
 
   @override
+  String get searchNoneOfThese => '还没有这类内容。';
+
+  @override
   String get onboardNoAccount => '没有账户。';
 
   @override
@@ -1283,6 +1286,9 @@ class LZh extends L {
   String get restoreChooseFile => '选一个文件';
 
   @override
+  String get restoreUseLatest => '使用最新备份';
+
+  @override
   String get restorePhraseHint => '记得 故事 工业…';
 
   @override
@@ -1333,6 +1339,9 @@ class LZh extends L {
 
   @override
   String get exportChooseFolder => '选个文件夹导出';
+
+  @override
+  String get exportSave => '保存可读副本';
 
   @override
   String get exportWritten => '你的副本写好了。';
@@ -2118,6 +2127,17 @@ class LZh extends L {
 
   @override
   String get aboutFree => 'Lamplight 是免费的，而且一直会是。没有什么需要解锁。';
+
+  @override
+  String get aboutContact => '有什么不对吗？告诉我。';
+
+  @override
+  String get aboutContactSemantic => '通过电子邮件发送反馈';
+
+  @override
+  String aboutNoMail(String address) {
+    return '这部手机没有邮件应用。地址是 $address。';
+  }
 
   @override
   String get backupOnItsOwn => '自动进行';

@@ -62,6 +62,9 @@ class _RestoreScreenState extends State<RestoreScreen> {
     crypto: widget.vault.crypto,
   );
 
+  /// Whether this app has a backup of its own, so the picker can be skipped.
+  bool _hasOwnBackup = false;
+
   File get _incoming =>
       File('${widget.vault.root.path}/restore-incoming/backup.vault');
 
@@ -69,10 +72,53 @@ class _RestoreScreenState extends State<RestoreScreen> {
       Directory('${widget.vault.root.path}/restore-staging');
 
   @override
+  void initState() {
+    super.initState();
+    // Asked once, so the button that needs no picker can be offered when there
+    // is something for it to open. A false answer simply leaves the picker as
+    // the only route, which is where this screen started.
+    DocumentStore.latestBackupExists().then((has) {
+      if (mounted) setState(() => _hasOwnBackup = has);
+    }).catchError((_) {});
+  }
+
+  @override
   void dispose() {
     _passcode.dispose();
     _phrase.dispose();
     super.dispose();
+  }
+
+  /// Restore from the backup this app wrote, without opening a picker.
+  ///
+  /// > *"so man it never shows folders too!"* — and on his tablet the file
+  /// picker at the top of internal storage shows `No items`. Everything after
+  /// the file is in place is shared with [_pick]; only how it got there
+  /// differs.
+  Future<void> _useLatest() async {
+    setState(() {
+      _error = null;
+      _stage = L.of(context).restoreCheckingFile;
+    });
+    try {
+      final name = await DocumentStore.copyLatestBackup(destination: _incoming);
+      if (name == null) {
+        setState(() {
+          _stage = '';
+          _hasOwnBackup = false;
+        });
+        return;
+      }
+      await _inspectAndAsk(name);
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _stage = '';
+        _error = plainFailure(e,
+            fallback: L.of(context).restoreCouldNotOpen,
+            words: L.of(context));
+      });
+    }
   }
 
   Future<void> _pick() async {
@@ -87,24 +133,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
         return;
       }
 
-      // Read the header and check the file's integrity **before** asking for a
-      // passcode. Being asked to type a passcode and only then told the file is
-      // damaged is a small cruelty, and it is avoidable — none of these checks
-      // need a key.
-      setState(() => _stage = L.of(context).restoreCheckingFile);
-      final info = await _format.inspect(_incoming);
-
-      setState(() {
-        _picked = _incoming;
-        _pickedName = name;
-        _info = info;
-        // ISSUE 17. Read from the header, so the words are only offered for a
-        // file that actually carries the second wrapper.
-        _fileTakesPhrase = info.hasRecoveryWrapper;
-        _usingPhrase = false;
-        _phase = _Phase.passcode;
-        _stage = '';
-      });
+      await _inspectAndAsk(name);
     } catch (e) {
       await _cleanIncoming();
       setState(() {
@@ -115,6 +144,32 @@ class _RestoreScreenState extends State<RestoreScreen> {
           words: L.of(context));
       });
     }
+  }
+
+  /// Reads the header of whatever is now at [_incoming], and asks for the way in.
+  ///
+  /// Shared by both doors: the picker and `Use my latest backup`. Only how the
+  /// file arrived differs, and nothing downstream should have to know which.
+  Future<void> _inspectAndAsk(String name) async {
+    // Read the header and check the file's integrity **before** asking for a
+    // passcode. Being asked to type a passcode and only then told the file is
+    // damaged is a small cruelty, and it is avoidable — none of these checks
+    // need a key.
+    setState(() => _stage = L.of(context).restoreCheckingFile);
+    final info = await _format.inspect(_incoming);
+    if (!mounted) return;
+
+    setState(() {
+      _picked = _incoming;
+      _pickedName = name;
+      _info = info;
+      // ISSUE 17. Read from the header, so the words are only offered for a
+      // file that actually carries the second wrapper.
+      _fileTakesPhrase = info.hasRecoveryWrapper;
+      _usingPhrase = false;
+      _phase = _Phase.passcode;
+      _stage = '';
+    });
   }
 
   /// Whether the words are being used instead of the passcode. **ISSUE 17.**
@@ -267,11 +322,30 @@ class _RestoreScreenState extends State<RestoreScreen> {
                 Text(_stage, style: t.bodyLarge),
                 const SizedBox(height: Space.x4),
               ],
-              LampButton(
-                label: L.of(context).restoreChooseFile,
-                busy: _stage.isNotEmpty,
-                onPressed: _pick,
-              ),
+              // ── The door that needs no picker, when there is one ───────
+              //
+              // Offered first because it is the ordinary case: putting your own
+              // journal back from your own backup. The picker below is for a
+              // backup kept somewhere else, on a memory card, or sent from
+              // another phone -- and it stays, because those are real.
+              if (_hasOwnBackup) ...[
+                LampButton(
+                  label: L.of(context).restoreUseLatest,
+                  busy: _stage.isNotEmpty,
+                  onPressed: _useLatest,
+                ),
+                const SizedBox(height: Space.x3),
+                TextButton(
+                  onPressed: _stage.isNotEmpty ? null : _pick,
+                  child: Text(L.of(context).restoreChooseFile,
+                      style: TextStyle(color: c.inkSecondary)),
+                ),
+              ] else
+                LampButton(
+                  label: L.of(context).restoreChooseFile,
+                  busy: _stage.isNotEmpty,
+                  onPressed: _pick,
+                ),
             ],
 
             if (_phase == _Phase.passcode) ...[

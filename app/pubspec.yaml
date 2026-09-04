@@ -1,25 +1,24 @@
 name: lamplight
 description: "A private notebook for your life. Encrypted on device, no account, no server."
 publish_to: 'none'
-version: 0.5.0+19
-
+version: 0.5.3+25
 environment:
   sdk: ^3.13.0
 
-# ─────────────────────────────────────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 #  Every package here can read all of the user's notes. 04-technical/TECH-STACK.md
 #  requires a written justification for each one, and treats a short list as a
 #  security property rather than a stylistic preference. Nothing is added to
 #  this file without a corresponding entry in that document.
-# ─────────────────────────────────────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 dependencies:
   flutter:
     sdk: flutter
 
   # libsodium. One audited C library covering Argon2id, XChaCha20-Poly1305,
-  # BLAKE2b and HMAC-SHA256 — see TECH-STACK.md "why libsodium and not
+  # BLAKE2b and HMAC-SHA256 â€” see TECH-STACK.md "why libsodium and not
   # cryptography". v4 builds the native library on demand through build hooks,
-  # so the old `sodium_libs` companion is gone — discontinued and folded in.
+  # so the old `sodium_libs` companion is gone â€” discontinued and folded in.
   sodium: ^4.0.4
 
   # The encrypted database. `sqlite3` 3.x bundles the native library itself and
@@ -29,7 +28,7 @@ dependencies:
   drift: ^2.34.3
 
   # SHA-256, and only SHA-256. libsodium has it but the Dart binding does not
-  # expose it, and BIP-39's checksum is defined in terms of SHA-256 — using
+  # expose it, and BIP-39's checksum is defined in terms of SHA-256 â€” using
   # anything else would produce phrases no other tool could verify. Published
   # by dart.dev (the Dart team), and its only dependency is typed_data.
   crypto: ^3.0.7
@@ -39,10 +38,10 @@ dependencies:
   path_provider: ^2.1.5
   path: ^1.9.1
 
-  # ── Localisation. See TECH-STACK.md "why these two and not a package" ──────
+  # â”€â”€ Localisation. See TECH-STACK.md "why these two and not a package" â”€â”€â”€â”€â”€â”€
   #
   # Both ship with Flutter and the Dart team rather than being third-party, so
-  # rule 4's question — "what can this read, and does it need to exist?" — has
+  # rule 4's question â€” "what can this read, and does it need to exist?" â€” has
   # an easy answer: they read ARB files at build time and a locale at run time,
   # and they never see a note.
   #
@@ -68,49 +67,49 @@ dev_dependencies:
 
 # Deliberately NOT depended upon:
 #
-#   bip39  — unmaintained since 2021, and pulls in pointycastle, hex and crypto:
+#   bip39  â€” unmaintained since 2021, and pulls in pointycastle, hex and crypto:
 #            four packages in the most security-critical path in the app. BIP-39
 #            is a frozen spec and an encoding rather than a cipher, so we
 #            implement it in lib/core/crypto/ and prove it against the official
 #            test vectors instead.
 #
-#   sqlcipher_flutter_libs, sqlite3_flutter_libs — both end-of-life. package:sqlite3
+#   sqlcipher_flutter_libs, sqlite3_flutter_libs â€” both end-of-life. package:sqlite3
 #            carries the binaries now.
 #
-#   any HTTP client, any analytics, any crash reporter — see THREAT-MODEL.md.
+#   any HTTP client, any analytics, any crash reporter â€” see THREAT-MODEL.md.
 
 flutter:
   uses-material-design: true
-  # Turns on the ARB → Dart step. See l10n.yaml for where it reads and writes.
+  # Turns on the ARB â†’ Dart step. See l10n.yaml for where it reads and writes.
   generate: true
 
   # The licence texts for every bundled face, shown in full inside the app at
-  # Settings → About → Fonts and licences. The SIL Open Font License requires
+  # Settings â†’ About â†’ Fonts and licences. The SIL Open Font License requires
   # the licence to travel with the software; shipping the files is how we do it.
   assets:
     - assets/licenses/
-    # ── Buy Me a Coffee's own mark. ROUND EIGHT, ISSUE 9 ──────────────
+    # â”€â”€ Buy Me a Coffee's own mark. ROUND EIGHT, ISSUE 9 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     #
     # `assets/brand/bmc_logo.png`, from their published brand pack. It is a
-    # trademark, so it is used as supplied and never recoloured — which is also
+    # trademark, so it is used as supplied and never recoloured â€” which is also
     # why it is the one thing drawn in this app that does not come from
     # `design/tokens.dart`.
     #
-    # **ROUND NINE, ISSUE 9 — the transparent one.** *"Change the logo and use
+    # **ROUND NINE, ISSUE 9 â€” the transparent one.** *"Change the logo and use
     # one which has no background!"*, and on the screenshot: *"A transparent
-    # logo — no Background."*
+    # logo â€” no Background."*
     #
     # Round eight used `bmc-logo-yellow.png`, the cup on their own yellow
     # ground, and the note here argued the transparent one was unusable because
     # its navy outline vanishes on this app's near-black. Composited against
-    # both palettes and looked at: it fades in dark mode, it does not vanish —
+    # both palettes and looked at: it fades in dark mode, it does not vanish â€”
     # the yellow cup body carries it and the navy reads as a darker silhouette.
     # A hard-edged square of somebody else's yellow, in the quietest corner of
     # the quietest screen, was the more expensive of the two mistakes, and it
     # was visible in both palettes rather than one.
     #
     # The yellow variant is **deleted**, not merely unreferenced. An unused
-    # trademark in the APK is a claim the app is not making — the same reason
+    # trademark in the APK is a claim the app is not making â€” the same reason
     # Ko-fi's went in round eight.
     #
     # Trimmed to its own bounding box and resampled from their 1768-pixel
@@ -123,22 +122,22 @@ flutter:
     # is worth more than that trade for one logo.
     #
     # Ko-fi's mark lived here from round three until round eight and has gone
-    # with it — an unused trademark sitting in the APK is a claim the app is no
+    # with it â€” an unused trademark sitting in the APK is a claim the app is no
     # longer making.
     - assets/brand/
 
-  # ───────────────────────────────────────────────────────────────────────────
+  # â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   #  The twelve faces the user can set their own writing in.
   #
   #  All SIL Open Font License 1.1, which permits bundling without a fee.
   #  Static instances rather than variable files: Flutter's mapping from
   #  `fontWeight` onto a variable font's `wght` axis is not something to bet a
-  #  release on, and two static cuts per family is 4.3 MB — which compresses to
+  #  release on, and two static cuts per family is 4.3 MB â€” which compresses to
   #  well under three in the APK and is loaded lazily, one family at a time,
   #  only when somebody actually selects it.
   #
   #  Nothing here is fetched at runtime. See lib/design/typefaces.dart.
-  # ───────────────────────────────────────────────────────────────────────────
+  # â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   fonts:
     - family: NunitoSans
       fonts:
@@ -187,7 +186,7 @@ flutter:
         - asset: assets/fonts/JetBrainsMono-600.ttf
           weight: 600
 
-# ─────────────────────────────────────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 #  Which native SQLite build gets bundled.
 #
 #  Plain "sqlite3" would give us an UNENCRYPTED database. "sqlcipher" selects
@@ -198,7 +197,7 @@ flutter:
 #  If this line is ever removed or changed to `sqlite3`, the vault silently
 #  stops being encrypted and every test that checks for plaintext on disk must
 #  fail. That is the intended safety net.
-# ─────────────────────────────────────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 hooks:
   user_defines:
     sqlite3:

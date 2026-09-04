@@ -16,7 +16,7 @@ library;
 /// The human version — `major.minor.patch`.
 ///
 /// This is the one written into backup headers and shown in Settings.
-const String kAppVersion = '0.5.0';
+const String kAppVersion = '0.5.3';
 
 /// The build number — `versionCode` on Android, the `+N` in `pubspec.yaml`.
 ///
@@ -46,11 +46,41 @@ const String kAppVersion = '0.5.0';
 /// **The rule: every build that leaves this laptop increments this.** Not every
 /// commit — every artefact. `tool/bump_version.ps1` does both files at once so
 /// they cannot drift, and `05-shipping/RELEASE-CHECKLIST.md` has it as step one.
-const int kAppBuild = 19;
+const int kAppBuild = 25;
+
+/// The day the version above belongs to.
+///
+/// ── HIS RULE, 4 SEPTEMBER 2026 ──────────────────────────────────────────
+///
+/// > *"all changes done in a day keeps the version same — and make the 0.5.1 to
+/// > 0.5.n (not something like build 21). And in another day if changes are
+/// > done it's — 0.n+1.n"*
+///
+/// So the **minor** number is the day and the **patch** counts the artefacts
+/// built on it. Everything built on one day shares a minor; the first build of
+/// the next day moves it and restarts the patch at one. `0.6.3` is the third
+/// thing built on the second day, which is more than `build 23` ever told
+/// anybody.
+///
+/// This constant is what makes that decidable. `tool/bump_version.ps1` compares
+/// it against today's date; written down rather than read off a file timestamp,
+/// because a checkout, a copy or a zip destroys those and would silently start
+/// a new "day" in the middle of an afternoon.
+const String kVersionDay = '2026-09-04';
 
 /// What Settings shows, and what a bug report should quote.
 ///
-/// The build number is the part that identifies an artefact; the version is the
-/// part a person can hold in their head. Both, because either alone loses
-/// something.
-String get kAppVersionLabel => '$kAppVersion (build $kAppBuild)';
+/// ── THE BUILD NUMBER IS NOT SHOWN ANY MORE ──────────────────────────────
+///
+/// > *"and why keep it 0.5.0 (Build 21)"*
+///
+/// A fair question, and the honest answer is that `build 21` was for us and was
+/// being shown to him. The version now carries the information it used to: the
+/// minor is the day and the patch is the build within it, so `0.6.3` already
+/// says which artefact this is.
+///
+/// **`kAppBuild` still exists and still climbs**, because it must: Google Play
+/// refuses an upload whose `versionCode` is not higher than the last, and
+/// retires a number permanently once it has been used. It is simply not a
+/// number a person should have to read.
+String get kAppVersionLabel => kAppVersion;

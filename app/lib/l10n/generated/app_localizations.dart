@@ -647,6 +647,12 @@ abstract class L {
   /// **'Search everything instead'**
   String get searchEverythingInstead;
 
+  /// No description provided for @searchNoneOfThese.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing of that kind yet.'**
+  String get searchNoneOfThese;
+
   /// The first thing a stranger ever reads in this app. A statement of fact about the software, not a boast. The ABSENCE of a signup screen is the pitch, so this must not be softened into a welcome.
   ///
   /// In en, this message translates to:
@@ -2375,6 +2381,12 @@ abstract class L {
   /// **'Choose a file'**
   String get restoreChooseFile;
 
+  /// No description provided for @restoreUseLatest.
+  ///
+  /// In en, this message translates to:
+  /// **'Use my latest backup'**
+  String get restoreUseLatest;
+
   /// Placeholder in the recovery-phrase box. Three words of an example phrase — keep them as example words in your language, or leave the English ones if your language has no wordlist. They are only a shape.
   ///
   /// In en, this message translates to:
@@ -2458,6 +2470,12 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Choose a folder and export'**
   String get exportChooseFolder;
+
+  /// No description provided for @exportSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save a readable copy'**
+  String get exportSave;
 
   /// No description provided for @exportWritten.
   ///
@@ -3778,6 +3796,24 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Lamplight is free and always will be. There is nothing to unlock.'**
   String get aboutFree;
+
+  /// No description provided for @aboutContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Something not right? Tell me.'**
+  String get aboutContact;
+
+  /// No description provided for @aboutContactSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Send feedback by email'**
+  String get aboutContactSemantic;
+
+  /// No description provided for @aboutNoMail.
+  ///
+  /// In en, this message translates to:
+  /// **'No email app on this phone. The address is {address}.'**
+  String aboutNoMail(String address);
 
   /// No description provided for @backupOnItsOwn.
   ///

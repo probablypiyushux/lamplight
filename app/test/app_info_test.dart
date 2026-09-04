@@ -61,12 +61,40 @@ void main() {
     expect(kAppBuild, greaterThanOrEqualTo(1));
   });
 
-  test('the label a person quotes carries both', () {
-    // Settings shows this, and so does the copyable failure report. A report
-    // that names only "0.2.0" cannot distinguish the build that had the bug
-    // from the build that fixed it, which is the entire reason the report has
-    // a version in it.
-    expect(kAppVersionLabel, contains(kAppVersion));
-    expect(kAppVersionLabel, contains('$kAppBuild'));
+  test('the label identifies the artefact on its own', () {
+    // ── This used to require the build number too, and that was right then ──
+    //
+    // The old label was `0.5.0 (build 21)`, and the old comment said a report
+    // naming only "0.5.0" cannot distinguish the build that had the bug from
+    // the build that fixed it. True, because the version moved rarely and the
+    // build number moved every time.
+    //
+    // The scheme changed on 4 September at his request -- *"why keep it 0.5.0
+    // (Build 21)"*. The minor is the day and the patch is the artefact within
+    // it, so the version now moves on every build and carries the information
+    // the build number used to. `0.6.3` is the third thing built on the second
+    // day.
+    //
+    // So the property is unchanged and only its carrier moved: **the label
+    // must name exactly one artefact.** `kAppBuild` still climbs, because Play
+    // demands it; it is simply no longer a number a person is shown.
+    expect(kAppVersionLabel, kAppVersion);
+    expect(kAppVersionLabel, isNot(contains('build')));
+    expect(
+      RegExp(r'^\d+\.\d+\.\d+$').hasMatch(kAppVersion),
+      isTrue,
+      reason: 'The version is what identifies a build now, so it has to be a '
+          'full three-part number rather than a marketing string.',
+    );
+  });
+
+  test('the version knows which day it belongs to', () {
+    // `tool/bump_version.ps1` compares this against today to decide whether to
+    // move the minor. Without it every build would be a new "day".
+    expect(
+      RegExp(r'^\d{4}-\d{2}-\d{2}$').hasMatch(kVersionDay),
+      isTrue,
+      reason: 'kVersionDay must be an ISO date; bump_version.ps1 parses it.',
+    );
   });
 }

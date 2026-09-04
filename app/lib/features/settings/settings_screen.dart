@@ -10,6 +10,7 @@ import '../../core/security/integrity.dart';
 import '../../design/lamp_mark.dart';
 import '../../core/settings/app_settings.dart';
 import '../../core/vault/vault.dart';
+import '../../design/announce.dart';
 import '../../design/components.dart';
 import '../../l10n/generated/app_localizations.dart';
 import 'language_tile.dart';
@@ -1084,6 +1085,36 @@ class _Byline extends StatelessWidget {
   /// page is worse than no donation link.
   static const _coffee = 'https://buymeacoffee.com/probablypiyush';
 
+  /// Where a report or a complaint goes.
+  ///
+  /// ── WHY AN ADDRESS AND NOT A FORM ───────────────────────────────────────
+  ///
+  /// A form needs a server, and there is not one. An address needs nothing: the
+  /// app hands `mailto:` to Android, whichever mail app is installed opens with
+  /// it, and Lamplight never sees the message, the recipient or the fact that
+  /// one was sent. `tool/verify_no_internet.sh` still passes, because nothing
+  /// here opens a socket -- it is the same `ACTION_VIEW` the coffee link uses.
+  ///
+  /// The subject carries the version, because "it does not work" from an
+  /// unknown build is a report nobody can act on. It carries **nothing else**:
+  /// no device details, no logs, and above all nothing from the journal. What
+  /// goes in the message is the sender's to decide.
+  static const _address = 'probablypiyushux@gmail.com';
+
+  /// Opens a mail app with the address and the version already filled in.
+  ///
+  /// If nothing on the phone handles mail, the address is said out loud rather
+  /// than the tap doing nothing -- a control that appears to do nothing is the
+  /// same defect as a crash in better clothes, and somebody who has just found
+  /// a bug is exactly the person not to strand.
+  static Future<void> _write(BuildContext context) async {
+    final subject = Uri.encodeComponent('Lamplight $kAppVersion');
+    final opened = await Capture.openUrl('mailto:$_address?subject=$subject');
+    if (!context.mounted || opened) return;
+    announce(context, L.of(context).aboutNoMail(_address),
+        duration: const Duration(seconds: 6));
+  }
+
   static Future<void> _open(BuildContext context, String url) async {
     final opened = await Capture.openUrl(url);
     if (!context.mounted || opened) return;
@@ -1178,6 +1209,22 @@ class _Byline extends StatelessWidget {
             '© 2026 Piyush Jain · Lamplight $kAppVersion',
             style: t.labelSmall?.copyWith(color: c.inkMuted),
             textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: Space.x5),
+          Semantics(
+            button: true,
+            link: true,
+            label: L.of(context).aboutContactSemantic,
+            excludeSemantics: true,
+            child: TextButton.icon(
+              onPressed: () => _write(context),
+              icon: Icon(Icons.mail_outline_rounded,
+                  size: 18, color: c.accent),
+              label: Text(
+                L.of(context).aboutContact,
+                style: t.labelLarge?.copyWith(color: c.accent),
+              ),
+            ),
           ),
           const SizedBox(height: Space.x6),
           Semantics(

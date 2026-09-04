@@ -341,6 +341,9 @@ class LAr extends L {
   String get searchEverythingInstead => 'ابحث في كل شيء بدلاً من ذلك';
 
   @override
+  String get searchNoneOfThese => 'لا يوجد شيء من هذا النوع بعد.';
+
+  @override
   String get onboardNoAccount => 'لا يوجد حساب.';
 
   @override
@@ -1366,6 +1369,9 @@ class LAr extends L {
   String get restoreChooseFile => 'اختر ملفًا';
 
   @override
+  String get restoreUseLatest => 'استخدام أحدث نسخة احتياطية';
+
+  @override
   String get restorePhraseHint => 'تذكّر حكاية صناعة…';
 
   @override
@@ -1422,6 +1428,9 @@ class LAr extends L {
 
   @override
   String get exportChooseFolder => 'اختر مجلدًا وصدّر';
+
+  @override
+  String get exportSave => 'حفظ نسخة قابلة للقراءة';
 
   @override
   String get exportWritten => 'كُتبت نسختك.';
@@ -2284,6 +2293,17 @@ class LAr extends L {
   @override
   String get aboutFree =>
       'Lamplight مجاني وسيظل كذلك. ليس هناك ما يُفتح بالدفع.';
+
+  @override
+  String get aboutContact => 'هل هناك خطأ؟ أخبرني.';
+
+  @override
+  String get aboutContactSemantic => 'إرسال ملاحظات بالبريد';
+
+  @override
+  String aboutNoMail(String address) {
+    return 'لا يوجد تطبيق بريد على هذا الهاتف. العنوان هو $address.';
+  }
 
   @override
   String get backupOnItsOwn => 'من تلقاء نفسه';

@@ -1,7 +1,10 @@
 package com.probablypiyush.lamplight
 
+import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import androidx.documentfile.provider.DocumentFile
 import java.io.OutputStream
 
@@ -63,6 +66,37 @@ class Export(private val context: Context) {
     private var current: DocumentFile? = null
 
     /**
+     * Set when this export is going to the default place instead of a folder
+     * the user picked. Holds the `Documents/Lamplight/<name>` prefix.
+     *
+     * ── WHY THERE IS A SECOND DESTINATION ───────────────────────────────────
+     *
+     * > *"All the three have an option to choose a folder! that doesn't works!
+     * > … it shows me nothing!"*
+     *
+     * He is describing the folder picker, and "shows me nothing" is literal.
+     * `ACTION_OPEN_DOCUMENT_TREE` lists **only directories**, and Android 11
+     * and later hide every directory they will not grant -- so at the root of
+     * internal storage the picker draws `Can't use this folder` over an empty
+     * list that says `No items`. Two refusals at once, in Android's own UI,
+     * before anything returns to this app. There is nothing to fix on our side
+     * of that.
+     *
+     * So the export does what automatic backup did on 2 September: it stops
+     * asking. `MediaStore` writes into `Documents/` with no permission and no
+     * picker, and `RELATIVE_PATH` creates the folders on the way -- which makes
+     * this the *simpler* of the two paths, not a fallback.
+     *
+     * The picker is kept and still works, for somebody who wants the export on
+     * an SD card or in a folder of their own choosing. It is no longer the only
+     * way through.
+     */
+    private var relativeRoot: String? = null
+
+    /** The rows MediaStore made, so [abort] can take them back. */
+    private val written = mutableListOf<Uri>()
+
+    /**
      * Creates the export folder inside [treeUri] and returns its display name.
      *
      * The name is what Android actually used, not what we asked for. The
@@ -84,6 +118,24 @@ class Export(private val context: Context) {
     }
 
     /**
+     * Starts an export into `Documents/Lamplight/[folderName]`, with no picker.
+     *
+     * Returns the path to show the user. Available from API 29; below that
+     * `RELATIVE_PATH` does not exist and the picker is the only route, which
+     * `BackupFolder.available` already reports to Settings.
+     */
+    fun beginDefault(folderName: String): String {
+        finish()
+        val base = BackupFolder.relative(context)
+        relativeRoot = "$base/$folderName"
+        written.clear()
+        return relativeRoot!!
+    }
+
+    val defaultAvailable: Boolean
+        get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+
+    /**
      * Opens one file for writing, creating any folders named in [relativePath].
      *
      * [relativePath] is `"2026/2026-08-24.md"` or `"media/photo.jpg"` — always
@@ -93,11 +145,46 @@ class Export(private val context: Context) {
      * the depth of the tree.
      */
     fun open(relativePath: String, mime: String) {
-        val base = root ?: throw IllegalStateException("No export is running.")
         closeFile()
 
         val parts = relativePath.split('/').filter { it.isNotEmpty() }
         if (parts.isEmpty()) throw IllegalArgumentException("An empty path cannot be written.")
+
+        // ── The default destination ─────────────────────────────────────────
+        //
+        // No directories to create: `RELATIVE_PATH` names the whole path and
+        // MediaStore makes what is missing. A name already there is deleted
+        // first for the same reason the SAF branch does it -- MediaStore would
+        // otherwise write `photo (1).jpg` and break the link the Markdown
+        // points at.
+        val prefix = relativeRoot
+        if (prefix != null) {
+            val dirs = parts.dropLast(1).joinToString("/")
+            val where = if (dirs.isEmpty()) prefix else "$prefix/$dirs"
+            val name = parts.last()
+
+            context.contentResolver.delete(
+                MediaStore.Files.getContentUri(MediaStore.VOLUME_EXTERNAL),
+                "${MediaStore.MediaColumns.DISPLAY_NAME}=? AND " +
+                    "${MediaStore.MediaColumns.RELATIVE_PATH}=?",
+                arrayOf(name, "$where/"),
+            )
+
+            val values = ContentValues().apply {
+                put(MediaStore.MediaColumns.DISPLAY_NAME, name)
+                put(MediaStore.MediaColumns.MIME_TYPE, mime)
+                put(MediaStore.MediaColumns.RELATIVE_PATH, where)
+            }
+            val uri = context.contentResolver.insert(
+                MediaStore.Files.getContentUri(MediaStore.VOLUME_EXTERNAL), values,
+            ) ?: throw IllegalStateException("Could not create $name in $where.")
+            written += uri
+            sink = context.contentResolver.openOutputStream(uri)
+                ?: throw IllegalStateException("Could not write to $name.")
+            return
+        }
+
+        val base = root ?: throw IllegalStateException("No export is running.")
 
         var dir = base
         for (i in 0 until parts.size - 1) {
@@ -142,6 +229,8 @@ class Export(private val context: Context) {
     fun finish() {
         closeFile()
         root = null
+        relativeRoot = null
+        written.clear()
     }
 
     /**
@@ -159,5 +248,13 @@ class Export(private val context: Context) {
         current = null
         runCatching { root?.delete() }
         root = null
+        // MediaStore has no folder to delete -- the directory is implied by the
+        // rows -- so every row this export made is taken back one at a time.
+        // A cancelled export that leaves some-of-your-life behind is worse than
+        // one that leaves nothing, and that reasoning does not change with the
+        // destination.
+        for (uri in written) runCatching { context.contentResolver.delete(uri, null, null) }
+        written.clear()
+        relativeRoot = null
     }
 }

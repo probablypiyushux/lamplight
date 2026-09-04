@@ -330,6 +330,9 @@ class LPt extends L {
   String get searchEverythingInstead => 'Buscar em tudo';
 
   @override
+  String get searchNoneOfThese => 'Ainda não há nada desse tipo.';
+
+  @override
   String get onboardNoAccount => 'Não existe conta.';
 
   @override
@@ -1347,6 +1350,9 @@ class LPt extends L {
   String get restoreChooseFile => 'Escolher um arquivo';
 
   @override
+  String get restoreUseLatest => 'Usar meu backup mais recente';
+
+  @override
   String get restorePhraseHint => 'lembra história indústria…';
 
   @override
@@ -1399,6 +1405,9 @@ class LPt extends L {
 
   @override
   String get exportChooseFolder => 'Escolher uma pasta e exportar';
+
+  @override
+  String get exportSave => 'Salvar uma cópia legível';
 
   @override
   String get exportWritten => 'Sua cópia está escrita.';
@@ -2239,6 +2248,17 @@ class LPt extends L {
   @override
   String get aboutFree =>
       'O Lamplight é gratuito e sempre será. Não há nada para desbloquear.';
+
+  @override
+  String get aboutContact => 'Algo não está certo? Escreva para mim.';
+
+  @override
+  String get aboutContactSemantic => 'Enviar comentários por e-mail';
+
+  @override
+  String aboutNoMail(String address) {
+    return 'Nenhum app de e-mail neste telefone. O endereço é $address.';
+  }
 
   @override
   String get backupOnItsOwn => 'Sozinho';

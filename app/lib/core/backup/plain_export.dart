@@ -97,6 +97,39 @@ abstract interface class ExportSink {
 }
 
 /// The real one: straight through the channel into the user's chosen folder.
+/// The same export, into `Documents/Lamplight/<name>`, with no picker.
+///
+/// Differs from [DocumentStoreSink] in exactly one method. Everything after
+/// `begin` is identical, because the platform holds the open file either way --
+/// which is what makes this a second door rather than a second implementation.
+///
+/// See `DocumentStore.exportBeginDefault` for why the picker stopped being the
+/// only way through: it lists only directories, hides the ones Android will not
+/// grant, and therefore shows an empty list at the root of internal storage.
+class DefaultFolderSink implements ExportSink {
+  const DefaultFolderSink();
+
+  @override
+  Future<String> begin(String folderName) =>
+      DocumentStore.exportBeginDefault(folderName);
+
+  @override
+  Future<void> open(String relativePath, String mime) =>
+      DocumentStore.exportOpen(relativePath: relativePath, mime: mime);
+
+  @override
+  Future<void> write(Uint8List bytes) => DocumentStore.exportWrite(bytes);
+
+  @override
+  Future<void> closeFile() => DocumentStore.exportCloseFile();
+
+  @override
+  Future<void> finish() => DocumentStore.exportFinish();
+
+  @override
+  Future<void> abort() => DocumentStore.exportAbort();
+}
+
 class DocumentStoreSink implements ExportSink {
   const DocumentStoreSink(this.treeUri);
 

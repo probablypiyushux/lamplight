@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 
 import 'database.dart';
+import 'vault_changed.dart';
 
 /// Threads that accumulate across years of days.
 ///
@@ -145,12 +146,16 @@ class FolderRepository {
       createdAt: now,
     );
     await _db.into(_db.folders).insert(row);
+    // The vault changed, so a backup is owed. See `vault_changed.dart`.
+    VaultChanged.mark();
     return (_db.select(_db.folders)..where((t) => t.id.equals(id))).getSingle();
   }
 
   Future<void> rename(String id, String name) async {
     await (_db.update(_db.folders)..where((t) => t.id.equals(id)))
         .write(FoldersCompanion(name: Value(name.trim())));
+    // The vault changed, so a backup is owed. See `vault_changed.dart`.
+    VaultChanged.mark();
   }
 
   /// Removes the folder and every link into it.
@@ -165,6 +170,8 @@ class FolderRepository {
           .go();
       await (_db.delete(_db.folders)..where((t) => t.id.equals(id))).go();
     });
+    // The vault changed, so a backup is owed. See `vault_changed.dart`.
+    VaultChanged.mark();
   }
 
   Future<void> add(String entryId, String folderId) async {
@@ -175,6 +182,8 @@ class FolderRepository {
             addedAt: DateTime.now().millisecondsSinceEpoch,
           ),
         );
+    // The vault changed, so a backup is owed. See `vault_changed.dart`.
+    VaultChanged.mark();
   }
 
   Future<void> remove(String entryId, String folderId) async {
@@ -182,6 +191,8 @@ class FolderRepository {
           ..where((t) => t.entryId.equals(entryId))
           ..where((t) => t.folderId.equals(folderId)))
         .go();
+    // The vault changed, so a backup is owed. See `vault_changed.dart`.
+    VaultChanged.mark();
   }
 
   /// Sets exactly which folders an entry belongs to, in one transaction.
@@ -204,5 +215,7 @@ class FolderRepository {
             );
       }
     });
+    // The vault changed, so a backup is owed. See `vault_changed.dart`.
+    VaultChanged.mark();
   }
 }

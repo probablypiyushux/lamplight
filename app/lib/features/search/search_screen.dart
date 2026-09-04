@@ -97,6 +97,25 @@ class _SearchScreenState extends State<SearchScreen> {
       _running = query.trim().isNotEmpty;
     });
     if (query.trim().isEmpty) {
+      // ── A chip on its own is a way in, not only a filter ────────────────
+      //
+      // *"when i touch words -- i need you to show me words that lamplight
+      // has, voices -- the voices that lamplight has … like it feels on
+      // whatsapp search!"*
+      //
+      // With nothing typed, a selected chip used to narrow nothing and the
+      // hint stayed on screen, so tapping **Photos** appeared to do nothing at
+      // all. It now lists everything of that kind, newest first.
+      if (_kinds.isNotEmpty) {
+        setState(() => _running = true);
+        final browsed = await _repo.browseByKind(_kinds);
+        if (!mounted || generation != _generation) return;
+        setState(() {
+          _hits = browsed;
+          _running = false;
+        });
+        return;
+      }
       setState(() {
         _hits = SearchHits.empty;
         _running = false;
@@ -182,27 +201,45 @@ class _SearchScreenState extends State<SearchScreen> {
 
             // ── Narrow it down ──────────────────────────────────────────────
             //
-            // **ISSUE 7 — "see how close and ugly it looks".** The row was 44
-            // points tall with a 34-point chip in it, so the hairline below
-            // sat five points off the bottom of every chip and read as
-            // underlining them. Fifty-two, with the extra given to the gap
-            // under the chips rather than around them.
+            // **ISSUE 7 — "see how close and ugly it looks"** — and then, six
+            // rounds later, *"the line below is soo much sticking to Words,
+            // Voice, Photos, Video, Files"*. The same complaint twice, which
+            // means the first fix was at the wrong layer. It was.
+            //
+            // The first attempt made this row 52 points tall for a 34-point
+            // chip and top-aligned the chip, so that the extra eighteen fell
+            // below it as a gap. **That gap never existed**, and the reason is
+            // one line in `_KindChip`: its `Container` sets `alignment`, and a
+            // `Container` with an alignment **expands to fill** bounded
+            // constraints rather than wrapping its child. A horizontal
+            // `ListView` gives its children a *tight* cross-axis height, so
+            // every chip grew to the full 52 and the outer `Align` had nothing
+            // left to position. The hairline then sat against the bottom of
+            // each chip and read as underlining it — which is precisely the
+            // defect the 52 was chosen to remove.
+            //
+            // So the gap is made where it cannot be silently absorbed: as the
+            // list's own bottom padding. Padding is subtracted from the height
+            // the children are offered, so it is a gap no child can grow into,
+            // whatever it does with its constraints. The chips still fill what
+            // is left, which keeps the touch target at the full 48.
             SizedBox(
-              height: 52,
+              height: 52 + Space.x3,
               child: ListView(
                 scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: Space.x6),
+                padding: const EdgeInsets.only(
+                  left: Space.x6,
+                  right: Space.x6,
+                  bottom: Space.x3,
+                ),
                 children: [
                   for (final kind in SearchKind.values)
                     Padding(
                       padding: const EdgeInsets.only(right: Space.x2),
-                        child: Align(
-                        alignment: Alignment.topCenter,
-                        child: _KindChip(
-                          kind: kind,
-                          on: _kinds.contains(kind),
-                          onTap: () => _toggleKind(kind),
-                        ),
+                      child: _KindChip(
+                        kind: kind,
+                        on: _kinds.contains(kind),
+                        onTap: () => _toggleKind(kind),
                       ),
                     ),
                 ],
@@ -218,7 +255,9 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Widget _results(BuildContext context) {
-    if (_query.trim().isEmpty) {
+    // Browsing by chip has no query, but it does have results, so the empty
+    // box alone no longer means "show the hint".
+    if (_query.trim().isEmpty && _kinds.isEmpty) {
       // ── An empty search box is where "what mattered" lives ──────────────
       //
       // FEATURE-RANKING.md 16 describes the marker as *"enables 'read back
@@ -250,8 +289,14 @@ class _SearchScreenState extends State<SearchScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(L.of(context).searchNothingMatches(_query.trim()),
-                style: t.bodyLarge?.copyWith(color: c.inkSecondary)),
+            // Browsing has no query to quote back, so quoting an empty one
+            // would read as "Nothing matches ''".
+            Text(
+              _query.trim().isEmpty
+                  ? L.of(context).searchNoneOfThese
+                  : L.of(context).searchNothingMatches(_query.trim()),
+              style: t.bodyLarge?.copyWith(color: c.inkSecondary),
+            ),
             if (_kinds.isNotEmpty) ...[
               const SizedBox(height: Space.x3),
               // The most common reason a search comes back empty is a filter
@@ -361,26 +406,56 @@ class _KindChip extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(Radii.full),
         child: Container(
-          alignment: Alignment.center,
           padding: const EdgeInsets.symmetric(horizontal: Space.x4),
           decoration: BoxDecoration(
-            // Selected is a fill AND a tick, never colour alone.
-            color: on ? c.accent : Colors.transparent,
+            // ── Selected, and why it is a wash rather than a slab ──────────
+            //
+            // *"chips when selected? how bad do these look bro?"* — and they
+            // did. The fill was the accent at full strength with canvas-black
+            // text on it, which is the loudest thing this app draws, sitting
+            // in a row of quiet outlines. Three of them lit up read as a
+            // different application pasted into this one.
+            //
+            // `DESIGN-SYSTEM.md` requires two channels for a state, never
+            // colour alone, so the tick stays and the fill stays. What changes
+            // is the weight of the fill: a wash of the accent rather than the
+            // accent itself, with the accent kept for the border, the tick and
+            // the word. Still unmistakably on, at a volume that belongs to the
+            // rest of the screen.
+            color: on ? c.accent.withValues(alpha: 0.16) : Colors.transparent,
             borderRadius: BorderRadius.circular(Radii.full),
-            border: Border.all(color: on ? c.accent : c.borderStrong),
+            border: Border.all(
+              color: on ? c.accent : c.borderStrong,
+              width: on ? 1.5 : 1,
+            ),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (on) ...[
-                Icon(Icons.check, size: 14, color: c.canvas),
-                const SizedBox(width: Space.x1),
-              ],
+              // ── The tick's space is reserved, selected or not ────────────
+              //
+              // It used to appear only when on, so every chip grew by
+              // eighteen points at the moment it was tapped and the whole row
+              // reflowed under the finger -- the neighbour you were about to
+              // tap next moved. Same width either way; the tick fades in.
+              SizedBox(
+                width: 14,
+                height: 14,
+                child: AnimatedOpacity(
+                  opacity: on ? 1 : 0,
+                  duration: Motion.duration(context),
+                  curve: Motion.curve,
+                  child: Icon(Icons.check, size: 14, color: c.accent),
+                ),
+              ),
+              const SizedBox(width: Space.x1),
               Text(
                 _kindLabel(context, kind),
                 style: t.labelMedium?.copyWith(
-                  color: on ? c.canvas : c.inkSecondary,
-                  fontWeight: on ? FontWeight.w700 : FontWeight.w500,
+                  color: on ? c.accent : c.inkSecondary,
+                  // The weight no longer changes. Bold is wider than medium,
+                  // so it was a second, subtler source of the same reflow.
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ],

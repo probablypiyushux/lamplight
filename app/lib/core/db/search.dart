@@ -89,6 +89,12 @@ enum HitReason {
 
   /// It was said out loud in a recording. **ISSUE 15.**
   spoken,
+
+  /// Nothing was typed. This is everything of a kind, listed because a chip
+  /// was tapped -- see [VaultSearch.browseByKind]. There is no match to mark,
+  /// so a row drawn for this reason shows what the thing *is* rather than
+  /// where a query hit it.
+  browse,
 }
 
 /// Which kinds of thing to include.
@@ -400,6 +406,73 @@ extension VaultSearch on EntryRepository {
           reason: HitReason.filename,
         ),
     ];
+  }
+
+  /// Everything of a kind, newest first, with nothing typed.
+  ///
+  /// ── WHY A CHIP IS ALSO A WAY IN ─────────────────────────────────────────
+  ///
+  /// *"when i touch words — i need you to show me words that lamplight has,
+  /// voices — the voices that lamplight has … like it feels on whatsapp
+  /// search!"*
+  ///
+  /// He is right that this is what the chips look like they should do. Before
+  /// this, a chip was only a filter: with an empty box it narrowed nothing and
+  /// the screen went on showing the hint, so tapping **Photos** and getting
+  /// the same four suggestions reads as a control that does not work.
+  ///
+  /// A journal is also the one kind of app where browsing by kind is a real
+  /// question rather than a lazy one — *"what have I recorded?"* is asked far
+  /// more often than any particular recording is searched for, and until now
+  /// there was no answer to it anywhere in the app.
+  ///
+  /// Newest first, and capped: the cap is what keeps this a *look* rather than
+  /// a full table scan rendered into a list. Somebody who needs the seven
+  /// hundredth photograph is going to search for it, or go to its day.
+  Future<SearchHits> browseByKind(
+    Set<SearchKind> kinds, {
+    int limit = 200,
+  }) async {
+    if (kinds.isEmpty) return SearchHits.empty;
+
+    final types = kinds.map((k) => "'${k.type}'").join(',');
+    final rows = await db.customSelect(
+      '''
+      SELECT e.*, a.original_name AS attachment_name
+      FROM entries e
+      LEFT JOIN attachments a ON a.id = e.attachment_id
+      WHERE e.deleted_at IS NULL
+        AND e.type IN ($types)
+      ORDER BY e.created_at DESC
+      LIMIT $limit
+      ''',
+      readsFrom: {db.entries, db.attachments},
+    ).get();
+
+    return SearchHits(
+      days: const [],
+      namedDays: const [],
+      entries: [
+        for (final row in rows)
+          SearchHit(
+            entry: db.entries.map(row.data),
+            // No query, so nothing is a "match" -- the snippet is simply what
+            // the thing is. Writing shows its own opening; an attachment shows
+            // the name it arrived with, which is the only handle it has.
+            snippet: _browseSnippet(row),
+            reason: HitReason.browse,
+          ),
+      ],
+      folders: const [],
+    );
+  }
+
+  String _browseSnippet(QueryRow row) {
+    final name = row.data['attachment_name'] as String?;
+    final body = (row.data['body'] as String?)?.trim() ?? '';
+    if (body.isNotEmpty) return body;
+    if (name != null && name.isNotEmpty) return name;
+    return '';
   }
 
   Future<List<Folder>> _searchFolders(String query) async {

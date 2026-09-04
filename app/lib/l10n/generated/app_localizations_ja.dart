@@ -319,6 +319,9 @@ class LJa extends L {
   String get searchEverythingInstead => 'すべてを検索する';
 
   @override
+  String get searchNoneOfThese => 'その種類のものはまだありません。';
+
+  @override
   String get onboardNoAccount => 'アカウントはありません。';
 
   @override
@@ -1294,6 +1297,9 @@ class LJa extends L {
   String get restoreChooseFile => 'ファイルを選ぶ';
 
   @override
+  String get restoreUseLatest => '最新のバックアップを使う';
+
+  @override
   String get restorePhraseHint => 'おぼえる ものがたり さんぎょう…';
 
   @override
@@ -1345,6 +1351,9 @@ class LJa extends L {
 
   @override
   String get exportChooseFolder => 'フォルダを選んで書き出す';
+
+  @override
+  String get exportSave => '読めるコピーを保存';
 
   @override
   String get exportWritten => 'コピーを書き出しました。';
@@ -2145,6 +2154,17 @@ class LJa extends L {
 
   @override
   String get aboutFree => 'Lamplight は無料で、これからもそうです。解除するものはありません。';
+
+  @override
+  String get aboutContact => '何かおかしいですか？ お知らせください。';
+
+  @override
+  String get aboutContactSemantic => 'メールで意見を送る';
+
+  @override
+  String aboutNoMail(String address) {
+    return 'この電話にメールアプリがありません。アドレスは $address です。';
+  }
 
   @override
   String get backupOnItsOwn => 'ひとりでに';

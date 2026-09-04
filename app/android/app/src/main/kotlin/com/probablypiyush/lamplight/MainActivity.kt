@@ -367,6 +367,27 @@ class MainActivity : FlutterFragmentActivity() {
                 startActivityForResult(intent, REQUEST_EXPORT)
             }
 
+            // Restore without a picker. See `BackupFolder.copyLatestInto`.
+            "latestBackupExists" ->
+                result.success(BackupFolder.latestExists(this))
+
+            "copyLatestBackup" -> {
+                val path = call.argument<String>("path")
+                if (path == null) {
+                    result.error("bad_args", "path is required.", null)
+                    return
+                }
+                try {
+                    result.success(BackupFolder.copyLatestInto(this, path))
+                } catch (e: Exception) {
+                    result.error(
+                        "io",
+                        e.message ?: "That backup could not be opened.",
+                        null,
+                    )
+                }
+            }
+
             "importFile" -> {
                 val path = call.argument<String>("path")
                 if (path == null) {
@@ -753,7 +774,7 @@ class MainActivity : FlutterFragmentActivity() {
             // through a picker that is entitled to refuse.
             "defaultBackupFolderAvailable" -> result.success(BackupFolder.available)
 
-            "defaultBackupFolderLabel" -> result.success(BackupFolder.LABEL)
+            "defaultBackupFolderLabel" -> result.success(BackupFolder.label(this))
 
             "writeIntoDefaultFolder" -> {
                 val path = call.argument<String>("path")
@@ -812,6 +833,22 @@ class MainActivity : FlutterFragmentActivity() {
                 }
                 onExport(result) { exporter.begin(tree, name) }
             }
+
+            // The export with no picker in front of it. See `Export.relativeRoot`
+            // for why: the tree picker lists only directories, hides the ones
+            // Android will not grant, and therefore shows an empty list at the
+            // root -- "it shows zero files in my redmi tab".
+            "exportBeginDefault" -> {
+                val name = call.argument<String>("name")
+                if (name == null) {
+                    result.error("bad_args", "name is required.", null)
+                    return
+                }
+                onExport(result) { exporter.beginDefault(name) }
+            }
+
+            "exportDefaultAvailable" ->
+                result.success(exporter.defaultAvailable)
 
             "exportOpen" -> {
                 val path = call.argument<String>("path")
