@@ -71,6 +71,8 @@ class MediaAlbum extends StatelessWidget {
     this.onSaveEntry,
     this.onTrashEntry,
     this.onOpenEntryWith,
+    this.onMarkEntry,
+    this.onFolderEntry,
   });
 
   /// In the order they were captured. Photos and videos, mixed.
@@ -83,6 +85,35 @@ class MediaAlbum extends StatelessWidget {
 
   final AttachmentStore store;
   final VoidCallback onMenu;
+
+  // ── THE TWO ENTRY-LEVEL ACTIONS A PICTURE COULD NOT REACH. Round 20. ────
+  //
+  // > *"if i need to add a single photo to folder it's not possible"* and
+  // > *"this one mattered … works only for videos and audios and texts and
+  // > documents? why not photos?"*
+  //
+  // Both were the same absence. "This one mattered" and "Add to a folder" live
+  // in the day's **entry** menu, and a lone voice note, document or video long
+  // presses straight through to it — which is exactly why he found those three
+  // working and reported the fourth.
+  //
+  // A picture never gets there. Each tile carries its own `onLongPress`, and
+  // the innermost long-press recogniser wins the arena, so a photograph lands
+  // in `_pick` instead — a sheet that offered caption, open-with, save and
+  // remove, and neither of these. The result was that **a photograph had no
+  // route to either action anywhere in the app**, and neither did a video once
+  // it was inside an album grid rather than alone in a block.
+  //
+  // They are per-entry rather than per-album on purpose: every picture in an
+  // album is already its own entry sharing a `groupId`, so marking one and
+  // filing one are the same operations the day menu performs, on the same row.
+  // `_pick`'s own title already says *"This photo, 2 of 6"*, so acting on
+  // anything other than the one pressed would make that sentence a lie.
+  //
+  // Optional, like the three beside them, because the album is also drawn in
+  // places with no day behind it to act on.
+  final void Function(Entry entry)? onMarkEntry;
+  final void Function(Entry entry)? onFolderEntry;
 
   /// Opens the editor on one entry, so an album can be given **one** caption.
   ///
@@ -258,7 +289,11 @@ class MediaAlbum extends StatelessWidget {
     final video = (attachment?.mimeType ?? '').startsWith('video/');
     // Nothing this sheet could offer. Falls back to the whole-album menu rather
     // than doing nothing, which is what a long press did before.
-    if (onTrashEntry == null && onSaveEntry == null && onOpenEntryWith == null) {
+    if (onTrashEntry == null &&
+        onSaveEntry == null &&
+        onOpenEntryWith == null &&
+        onMarkEntry == null &&
+        onFolderEntry == null) {
       onMenu();
       return;
     }
@@ -292,6 +327,34 @@ class MediaAlbum extends StatelessWidget {
                 onTap: () {
                   Navigator.of(sheet).pop();
                   onCaption!(captionEntry);
+                },
+              ),
+            // Same order as the day's entry menu, so the two sheets read as
+            // one app rather than as two lists that happen to overlap.
+            if (onMarkEntry != null)
+              LampTile(
+                title: entry.marker == null
+                    ? L.of(context).entryMattered
+                    : L.of(context).entryNoLongerMarked,
+                subtitle: entry.marker == null
+                    ? L.of(context).entryFindAgain
+                    : null,
+                icon: entry.marker == null
+                    ? Icons.star_border_rounded
+                    : Icons.star_rounded,
+                onTap: () {
+                  Navigator.of(sheet).pop();
+                  onMarkEntry!(entry);
+                },
+              ),
+            if (onFolderEntry != null)
+              LampTile(
+                title: L.of(context).folderAddTo,
+                subtitle: L.of(context).entryStaysOnDay,
+                icon: Icons.folder_outlined,
+                onTap: () {
+                  Navigator.of(sheet).pop();
+                  onFolderEntry!(entry);
                 },
               ),
             if (onOpenEntryWith != null)
@@ -348,6 +411,11 @@ class MediaAlbum extends StatelessWidget {
         onSave: _wrap(onSaveEntry),
         onTrash: _wrap(onTrashEntry),
         onOpenWith: _wrap(onOpenEntryWith),
+        // The pictures past the fourth have no tile, so this is the only place
+        // they can be marked or filed. **Round 20.**
+        onMark: _wrap(onMarkEntry),
+        onFolder: _wrap(onFolderEntry),
+        isMarked: (shown) => _entryFor(shown)?.marker != null,
       ),
     ));
   }

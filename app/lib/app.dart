@@ -6,6 +6,7 @@ import 'l10n/generated/app_localizations.dart';
 
 import 'core/db/entry_repository.dart';
 import 'core/platform/edge_to_edge.dart';
+import 'core/platform/memory.dart';
 import 'core/platform/app_icon.dart';
 import 'core/platform/hand_off.dart';
 import 'core/platform/secure_clipboard.dart';
@@ -265,6 +266,24 @@ class _LamplightAppState extends State<LamplightApp>
     setState(() {});
   }
 
+  // ── ANDROID ASKS, AND UNTIL NOW NOBODY ANSWERED. Round 20. ────────────
+  //
+  // `onTrimMemory` is the system saying it is short and would like something
+  // back. The engine forwards it here, and this override did not exist — so
+  // every one of those requests was dropped on the floor, and the next thing
+  // the system did was take the memory instead, by killing the process.
+  //
+  // `dumpsys activity exit-info` recorded that happening at **rss=338MB with
+  // state=empty**: not while he was using it, but while it sat cached, being
+  // the largest cached process on the phone. See `core/platform/memory.dart`.
+  //
+  // The hard variant, because by the time this arrives the system is already
+  // short and a half-measure buys another request a second later.
+  @override
+  void didHaveMemoryPressure() {
+    LampMemory.trimHard();
+  }
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     // Android reports leaving as three states in a row: `inactive`, then
@@ -322,6 +341,22 @@ class _LamplightAppState extends State<LamplightApp>
         state == AppLifecycleState.hidden ||
         state == AppLifecycleState.detached) {
       widget.vault.onBackgrounded();
+
+      // ── And give the pictures back. Round 20. ────────────────────────
+      //
+      // Locking already clears the image cache, and that is a **security**
+      // measure — decoded photographs must not outlive the keys. It cannot
+      // be relied on to free memory, because it only runs on a *change* of
+      // state: a vault that was already locked when the app is backgrounded
+      // fires nothing, and the process stays fat for as long as it is
+      // cached. `state=empty` is the state the recorded kill happened in.
+      //
+      // So this is unconditional and deliberately separate from the lock.
+      // Nothing is destroyed; every byte released can be read back from the
+      // vault. The cost is a decode on return, which is the cheapest moment
+      // to pay it, and the alternative is being killed and paying for a cold
+      // start instead.
+      LampMemory.trim();
     }
   }
 

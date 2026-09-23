@@ -7,6 +7,7 @@ import 'package:sodium/sodium_sumo.dart';
 
 import 'app.dart';
 import 'core/platform/edge_to_edge.dart';
+import 'core/platform/memory.dart';
 import 'core/platform/orientation.dart';
 import 'core/platform/transcription.dart';
 import 'core/settings/app_settings.dart';
@@ -61,6 +62,13 @@ void main() async {
   // way, because a layout that is edge-to-edge on one phone and inset on
   // another is a layout nobody can review. See core/platform/edge_to_edge.dart.
   await EdgeToEdge.apply();
+
+  // ── The decoded-image budget, before anything can fill it ──────────────
+  //
+  // Flutter's default is 100 MB, which was never a decision anybody took for
+  // this app. See core/platform/memory.dart for the exit-info that prompted
+  // this and for why the number is not smaller.
+  LampMemory.configure();
 
   final sodium = await SodiumSumoInit.init();
   final documents = await getApplicationDocumentsDirectory();

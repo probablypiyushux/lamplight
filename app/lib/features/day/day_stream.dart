@@ -53,6 +53,8 @@ class DayStream extends StatefulWidget {
     required this.onStartWriting,
     required this.onEdit,
     required this.onMenu,
+    required this.onMark,
+    required this.onFolder,
     required this.onOpen,
     required this.onSaveCopy,
     required this.onOpenWith,
@@ -95,6 +97,13 @@ class DayStream extends StatefulWidget {
 
   final void Function(Entry) onEdit;
   final void Function(Entry) onMenu;
+
+  /// **Round 20.** "This one mattered" and "Add to a folder", for a picture.
+  /// They live in the day's entry menu, which a photograph never reaches —
+  /// see `MediaAlbum.onMarkEntry`. Passed down so the album's own sheet can
+  /// offer the same two actions on the same row.
+  final void Function(Entry) onMark;
+  final void Function(Entry) onFolder;
 
   /// Open the attachment in place. Documents only — photos, videos and voice
   /// notes each own their own tap already.
@@ -565,6 +574,8 @@ class DayStreamState extends State<DayStream> {
                     // necessarily the one that was tapped.
                     onSaveEntry: widget.onSaveCopy,
                     onTrashEntry: widget.onTrash,
+                    onMarkEntry: widget.onMark,
+                    onFolderEntry: widget.onFolder,
                   ),
                 ),
               );
@@ -627,6 +638,8 @@ class DayStreamState extends State<DayStream> {
                         // ISSUE D — the viewer's three-dot menu.
                         onSaveEntry: widget.onSaveCopy,
                         onTrashEntry: widget.onTrash,
+                        onMarkEntry: widget.onMark,
+                        onFolderEntry: widget.onFolder,
                         // ISSUE 4, 13 — and "Open with…" in that same menu.
                         onOpenEntryWith: widget.onOpenWith,
                         // `PLAN.md` §9.7. A lone photograph is drawn as an album

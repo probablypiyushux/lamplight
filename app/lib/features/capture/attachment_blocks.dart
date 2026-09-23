@@ -50,6 +50,8 @@ class AttachmentBlock extends StatefulWidget {
     this.onSaveEntry,
     this.onTrashEntry,
     this.onOpenEntryWith,
+    this.onMarkEntry,
+    this.onFolderEntry,
     this.onCaption,
     this.transcripts,
     this.settings,
@@ -73,6 +75,12 @@ class AttachmentBlock extends StatefulWidget {
   /// **ISSUE 4, 13.** Lend this attachment to another app for as long as
   /// somebody is looking at it.
   final void Function(Entry)? onOpenEntryWith;
+
+  /// **Round 20.** The two entry-level actions a picture could not reach —
+  /// see `MediaAlbum.onMarkEntry` for why they were missing and why they are
+  /// per-entry rather than per-album.
+  final void Function(Entry)? onMarkEntry;
+  final void Function(Entry)? onFolderEntry;
 
   /// Opens the editor on the entry that carries an album's caption.
   /// **`PLAN.md` §9.7** — see `MediaAlbum.onCaption`.
@@ -287,6 +295,8 @@ class _AttachmentBlockState extends State<AttachmentBlock> {
             onSaveEntry: widget.onSaveEntry,
             onTrashEntry: widget.onTrashEntry,
             onOpenEntryWith: widget.onOpenEntryWith,
+            onMarkEntry: widget.onMarkEntry,
+            onFolderEntry: widget.onFolderEntry,
           ),
         'voice' => VoiceNotePlayer(
             attachment: attachment,
@@ -298,6 +308,8 @@ class _AttachmentBlockState extends State<AttachmentBlock> {
             attachment: attachment,
             importer: widget.importer,
             onOpenEntryWith: widget.onOpenEntryWith,
+            onMarkEntry: widget.onMarkEntry,
+            onFolderEntry: widget.onFolderEntry,
             onSaveCopy: widget.onSaveCopy,
             entry: widget.entry,
             onSaveEntry: widget.onSaveEntry,
@@ -543,6 +555,8 @@ class _Video extends StatefulWidget {
     this.onSaveEntry,
     this.onTrashEntry,
     this.onOpenEntryWith,
+    this.onMarkEntry,
+    this.onFolderEntry,
   });
 
   final Attachment attachment;
@@ -558,6 +572,12 @@ class _Video extends StatefulWidget {
   /// **ISSUE 4, 13.** Lend this attachment to another app for as long as
   /// somebody is looking at it.
   final void Function(Entry)? onOpenEntryWith;
+
+  /// **Round 20.** The two entry-level actions a picture could not reach —
+  /// see `MediaAlbum.onMarkEntry` for why they were missing and why they are
+  /// per-entry rather than per-album.
+  final void Function(Entry)? onMarkEntry;
+  final void Function(Entry)? onFolderEntry;
 
   @override
   State<_Video> createState() => _VideoState();
@@ -822,6 +842,8 @@ class AlbumBlock extends StatefulWidget {
     this.onSaveEntry,
     this.onTrashEntry,
     this.onOpenEntryWith,
+    this.onMarkEntry,
+    this.onFolderEntry,
   });
 
   final List<Entry> entries;
@@ -840,6 +862,12 @@ class AlbumBlock extends StatefulWidget {
   /// **ISSUE 4, 13.** Lend this attachment to another app for as long as
   /// somebody is looking at it.
   final void Function(Entry)? onOpenEntryWith;
+
+  /// **Round 20.** The two entry-level actions a picture could not reach —
+  /// see `MediaAlbum.onMarkEntry` for why they were missing and why they are
+  /// per-entry rather than per-album.
+  final void Function(Entry)? onMarkEntry;
+  final void Function(Entry)? onFolderEntry;
 
   @override
   State<AlbumBlock> createState() => _AlbumBlockState();
@@ -969,6 +997,8 @@ class _AlbumBlockState extends State<AlbumBlock> {
                     onSaveEntry: widget.onSaveEntry,
                     onTrashEntry: widget.onTrashEntry,
                     onOpenEntryWith: widget.onOpenEntryWith,
+            onMarkEntry: widget.onMarkEntry,
+            onFolderEntry: widget.onFolderEntry,
                   ),
                   if (words.isNotEmpty) ...[
                     const SizedBox(height: Space.x2),

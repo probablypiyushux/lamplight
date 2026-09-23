@@ -139,6 +139,9 @@ class PhotoViewer extends StatefulWidget {
     this.onSave,
     this.onTrash,
     this.onOpenWith,
+    this.onMark,
+    this.onFolder,
+    this.isMarked,
   });
 
   /// Everything in the album, in the order it was captured — photographs and
@@ -166,6 +169,15 @@ class PhotoViewer extends StatefulWidget {
   /// is looking at it. *"I want it on every file type/format"* — a photograph
   /// is a file type.
   final void Function(Attachment)? onOpenWith;
+
+  /// **Round 20.** The two entry-level actions, for the pictures that have no
+  /// tile to long-press — an album of nine draws four. See `showViewerMenu`.
+  final void Function(Attachment)? onMark;
+  final void Function(Attachment)? onFolder;
+
+  /// Whether the picture on screen is already marked, so the row can say which
+  /// way it will go. Resolved per page by the album, which owns the entries.
+  final bool Function(Attachment)? isMarked;
 
   @override
   State<PhotoViewer> createState() => _PhotoViewerState();
@@ -208,6 +220,10 @@ class _PhotoViewerState extends State<PhotoViewer> {
       kind: viewerKindFor(shown, video: item.isVideo),
       onOpenWith: openWith == null ? null : () => openWith(shown),
       onSave: save == null ? null : () => save(shown),
+      onMark: widget.onMark == null ? null : () => widget.onMark!(shown),
+      isMarked: widget.isMarked?.call(shown) ?? false,
+      onFolder:
+          widget.onFolder == null ? null : () => widget.onFolder!(shown),
       onTrash: trash == null
           ? null
           : () {

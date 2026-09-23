@@ -30,8 +30,32 @@ Future<void> showViewerMenu({
   VoidCallback? onSave,
   VoidCallback? onTrash,
   VoidCallback? onOpenWith,
+
+  // ── The two the viewer was also missing. Round 20. ─────────────────────
+  //
+  // The album grid draws at most four tiles, the fourth carrying `+N`. So for
+  // an album of nine, **five pictures have no tile at all** and the viewer is
+  // the only place they can be reached — `_itemsAround` walks every entry, so
+  // swiping to the ninth works and always did.
+  //
+  // What did not work was doing anything to it once you got there. Between
+  // them, the missing tile and the missing rows are why *"from the grid i can
+  // only select till 1 to 4th"* and *"this one mattered … why not photos?"*
+  // are the same report twice.
+  //
+  // [isMarked] rather than a second callback, because the row has to say
+  // which way it will go before it is tapped.
+  VoidCallback? onMark,
+  bool isMarked = false,
+  VoidCallback? onFolder,
 }) async {
-  if (onSave == null && onTrash == null && onOpenWith == null) return;
+  if (onSave == null &&
+      onTrash == null &&
+      onOpenWith == null &&
+      onMark == null &&
+      onFolder == null) {
+    return;
+  }
   await showLampSheet<void>(
     context: context,
     builder: (sheet) => Column(
@@ -47,6 +71,32 @@ Future<void> showViewerMenu({
           // and has to remember; this lends one that is destroyed again a
           // minute later. When two rows do nearly the same thing, the one that
           // leaves less behind should be the one under the thumb.
+          // Same order as the day's entry menu and the album's sheet, so all
+          // three read as one app.
+          if (onMark != null)
+            LampTile(
+              title: isMarked
+                  ? L.of(context).entryNoLongerMarked
+                  : L.of(context).entryMattered,
+              subtitle: isMarked ? null : L.of(context).entryFindAgain,
+              icon: isMarked
+                  ? Icons.star_rounded
+                  : Icons.star_border_rounded,
+              onTap: () {
+                Navigator.of(sheet).pop();
+                onMark();
+              },
+            ),
+          if (onFolder != null)
+            LampTile(
+              title: L.of(context).folderAddTo,
+              subtitle: L.of(context).entryStaysOnDay,
+              icon: Icons.folder_outlined,
+              onTap: () {
+                Navigator.of(sheet).pop();
+                onFolder();
+              },
+            ),
           if (onOpenWith != null)
             LampTile(
               title: L.of(context).docOpenWith,

@@ -843,6 +843,30 @@ class _DayScreenState extends State<DayScreen> with WidgetsBindingObserver {
   ///
   /// A sheet rather than a context menu, because it has to be reachable
   /// without a long-press for anyone who cannot hold one.
+  /// Put one entry in a folder. **Round 20.**
+  ///
+  /// Extracted from `_entryMenu` when the album's own sheet needed the same
+  /// thing. It was the only route into folders in the whole app, and a
+  /// photograph could not reach it — each album tile carries its own long
+  /// press, so a picture landed in `MediaAlbum._pick` instead, a sheet that
+  /// offered neither this nor the marker. *"if i need to add a single photo to
+  /// folder it's not possible"*, and it was not.
+  ///
+  /// One method rather than the call copied into the album, because the two
+  /// sheets are meant to be the same app and the `dayLabel` sentence below is
+  /// exactly the sort of detail that drifts when it exists twice.
+  Future<void> _fileIntoFolder(Entry entry) => showFolderPicker(
+        context: context,
+        vault: widget.vault,
+        entryId: entry.id,
+        settings: widget.settings,
+        // `PLAN.md` §9.1's sentence names the actual day, because "Still on
+        // 4 March" is about the thing in front of the person and "an entry can
+        // be in several places" is not.
+        dayLabel: _dayInWords(context, entry.dayKey),
+        onChanged: widget.silentBackup.markDirty,
+      );
+
   Future<void> _entryMenu(Entry entry) async {
     final hasAttachment = entry.attachmentId != null;
     final hasWords = (entry.body ?? '').trim().isNotEmpty;
@@ -932,17 +956,7 @@ class _DayScreenState extends State<DayScreen> with WidgetsBindingObserver {
               icon: Icons.folder_outlined,
               onTap: () {
                 Navigator.of(sheet).pop();
-                showFolderPicker(
-                  context: context,
-                  vault: widget.vault,
-                  entryId: entry.id,
-                  settings: widget.settings,
-                  // `PLAN.md` §9.1's sentence names the actual day, because
-                  // "Still on 4 March" is about the thing in front of the
-                  // person and "an entry can be in several places" is not.
-                  dayLabel: _dayInWords(context, entry.dayKey),
-                  onChanged: widget.silentBackup.markDirty,
-                );
+                _fileIntoFolder(entry);
               },
             ),
             if (hasAttachment) ...[
@@ -1730,6 +1744,8 @@ class _DayScreenState extends State<DayScreen> with WidgetsBindingObserver {
                         onStartWriting: _startWriting,
                         onEdit: _startEditing,
                         onMenu: _entryMenu,
+                        onMark: _toggleMarker,
+                        onFolder: _fileIntoFolder,
                         onOpen: _openAttachment,
                         onSaveCopy: _exportAttachment,
                         onOpenWith: _openAttachmentElsewhere,
