@@ -11,18 +11,49 @@
 #  proguard file that has stopped doing its job.
 # ─────────────────────────────────────────────────────────────────────────────
 
-# ── Flutter's own engine ─────────────────────────────────────────────────────
+# ── Flutter's own engine, and the seven rules that used to be here ──────────
 #
-# The engine looks up embedding classes reflectively from C++. Flutter ships
-# these rules itself, but stating them here means a change to the plugin's
-# defaults cannot quietly break a release build.
--keep class io.flutter.app.** { *; }
--keep class io.flutter.plugin.**  { *; }
--keep class io.flutter.embedding.** { *; }
--keep class io.flutter.util.** { *; }
--keep class io.flutter.view.** { *; }
--keep class io.flutter.** { *; }
--keep class io.flutter.plugins.** { *; }
+# **Removed 23 September 2026, and this is the reasoning, because the deleted
+# rules looked like the careful option.**
+#
+# They were:
+#
+#     -keep class io.flutter.app.** { *; }
+#     -keep class io.flutter.plugin.** { *; }
+#     -keep class io.flutter.embedding.** { *; }
+#     -keep class io.flutter.util.** { *; }
+#     -keep class io.flutter.view.** { *; }
+#     -keep class io.flutter.** { *; }          <- subsumes all of the above
+#     -keep class io.flutter.plugins.** { *; }
+#
+# with the note *"Flutter ships these rules itself, but stating them here means
+# a change to the plugin's defaults cannot quietly break a release build."*
+# That sentence is careful and its conclusion was wrong, in a way worth keeping
+# a record of: **it asserted what Flutter's rules are without reading them.**
+#
+# They are in `packages/flutter_tools/gradle/flutter_proguard_rules.pro`, the
+# Flutter Gradle plugin adds them to every release build automatically
+# (`FlutterPlugin.kt`, beside `proguard-android-optimize.txt` and this file),
+# and in full they are two `-dontwarn`s and this:
+#
+#     -if class * implements io.flutter.embedding.engine.plugins.FlutterPlugin
+#     -keep,allowshrinking,allowobfuscation class <1>
+#
+# **`allowshrinking, allowobfuscation`.** Flutter does not ask for its embedding
+# to be kept whole; it asks for plugin implementations to survive by *identity*
+# while still being renamed and trimmed. The blanket rules above were not
+# restating Flutter's defaults — they were overriding them with something far
+# broader, and `{ *; }` keeps every member of every class in the engine's Java
+# embedding under its original name.
+#
+# The cost was on the Play Console, which reported the DEX at **46% optimized,
+# 48% obfuscated, 47% shrunk** — roughly half the bytecode in the app untouched,
+# and the half an attacker with the APK would read first.
+#
+# Nothing replaces them. Flutter's own rules are applied automatically and are
+# correct; `MainActivity` and the two receivers are kept below because the
+# *manifest* names them as strings, which is a real reference R8 cannot see and
+# is the actual version of the problem the deleted rules imagined.
 
 # ── Play Core, which this app deliberately does not have ─────────────────────
 #
@@ -63,18 +94,26 @@
 # Reaches the Keystore through reflection on some vendor forks, and a stripped
 # member there means the fingerprint stops working on one manufacturer's phones
 # and nowhere else — a bug that would never reproduce on the development device.
+# `androidx.biometric` stays whole. It is small, the failure it guards against
+# is a stripped member on one manufacturer's fork — a bug that by definition
+# will not reproduce on the development phone — and the vault's second way in
+# is not the place to be greedy for a percentage.
 -keep class androidx.biometric.** { *; }
--keep class android.security.keystore.** { *; }
--keep class javax.crypto.** { *; }
--keep class java.security.** { *; }
+
+# The three that used to follow it are gone: `android.security.keystore`,
+# `javax.crypto` and `java.security` are **platform** classes, provided by
+# android.jar at runtime and never present in this app's DEX. Keeping them
+# protected nothing, because there was nothing there to strip.
 
 # ── sqlite3 / SQLCipher, and libsodium ───────────────────────────────────────
 #
 # Both are native libraries reached through FFI. The Dart side looks up symbols
-# by name in the shared object, so nothing here is a Java reference R8 can
-# follow — but any Java shim they carry must stay whole.
--keep class org.sqlite.** { *; }
--keep class com.sodium.** { *; }
+# by name in the shared object, so **there is no Java reference here at all** —
+# which is also why the two `-keep`s that used to be here did nothing. They
+# named packages this app does not ship: `sqlite3` and `sodium` are `.so` files
+# read by `dart:ffi`, not Java libraries with a shim. Kept as a `-dontwarn` and
+# a note, so the next person does not add the keeps back looking for safety
+# they never provided.
 -dontwarn org.sqlite.**
 
 # ── What NOT to keep, stated so nobody adds it "to be safe" ──────────────────
