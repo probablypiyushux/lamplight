@@ -493,6 +493,22 @@ abstract final class Motion {
 ///
 /// 48×48dp for anything tappable, always. The *visual* size may be smaller; the
 /// hit area may not.
+/// The wash under a caption that sits on top of a photograph or a video.
+///
+/// It is black rather than a themed colour on purpose: it darkens somebody's
+/// own picture so white type stays readable over it, and the picture is not
+/// part of the theme. Both places that draw it — the attachment block and the
+/// album — held an identical pair of raw hex values until 23 September 2026,
+/// which is two copies of a decision and no name for it.
+abstract final class Scrim {
+  /// Bottom-up fade, opaque enough at the foot to carry text at 4.5:1.
+  static const LinearGradient overMedia = LinearGradient(
+    begin: Alignment.bottomCenter,
+    end: Alignment.topCenter,
+    colors: [Color(0x99000000), Color(0x00000000)],
+  );
+}
+
 const double kMinTouchTarget = 48;
 
 /// The two faces, and why neither of them is a bundled font file.

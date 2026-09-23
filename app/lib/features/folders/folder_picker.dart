@@ -192,31 +192,38 @@ class _FolderPickerState extends State<_FolderPicker> {
                       padding: EdgeInsets.all(Space.x8),
                       child: Center(child: LampBusy()),
                     )
-                  : ListView(
+                  // Lazy for the same reason as the folders screen: a person
+                  // may have made any number of these. Row 0 is always "new
+                  // folder"; after it comes either the one empty-state line or
+                  // the folders themselves, never both.
+                  : ListView.builder(
                       shrinkWrap: true,
-                      children: [
-                        LampTile(
-                          title: L.of(context).folderNew,
-                          icon: Icons.create_new_folder_outlined,
-                          onTap: _newFolder,
-                        ),
-                        if (folders.isEmpty)
-                          Padding(
+                      itemCount: 1 + (folders.isEmpty ? 1 : folders.length),
+                      itemBuilder: (context, i) {
+                        if (i == 0) {
+                          return LampTile(
+                            title: L.of(context).folderNew,
+                            icon: Icons.create_new_folder_outlined,
+                            onTap: _newFolder,
+                          );
+                        }
+                        if (folders.isEmpty) {
+                          return Padding(
                             padding: const EdgeInsets.fromLTRB(
                                 Space.x6, Space.x4, Space.x6, Space.x6),
                             child: Text(
                               L.of(context).folderNoneYet,
-                              style:
-                                  t.bodyLarge?.copyWith(color: c.inkMuted),
+                              style: t.bodyLarge?.copyWith(color: c.inkMuted),
                             ),
-                          ),
-                        for (final f in folders)
-                          _FolderCheck(
-                            folder: f,
-                            checked: _chosen.contains(f.id),
-                            onChanged: (on) => _toggle(f, on),
-                          ),
-                      ],
+                          );
+                        }
+                        final f = folders[i - 1];
+                        return _FolderCheck(
+                          folder: f,
+                          checked: _chosen.contains(f.id),
+                          onChanged: (on) => _toggle(f, on),
+                        );
+                      },
                     ),
             ),
             Padding(

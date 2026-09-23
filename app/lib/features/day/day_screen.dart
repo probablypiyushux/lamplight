@@ -874,7 +874,7 @@ class _DayScreenState extends State<DayScreen> with WidgetsBindingObserver {
     // rather than opening an empty one — an entry written once and never
     // touched has no earlier versions, and offering to show them would be the
     // same defect as silence, one politeness removed.
-    final earlier = hasWords ? await _repo.revisionsFor(entry.id) : const [];
+    final earlier = hasWords ? await _repo.revisionsFor(entry.id) : const <Revision>[];
     if (!mounted) return;
     final kind = switch (entry.type) {
       'photo' => 'photo',

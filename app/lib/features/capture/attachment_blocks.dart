@@ -712,11 +712,7 @@ class _VideoState extends State<_Video> {
                 height: 56,
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.bottomCenter,
-                      end: Alignment.topCenter,
-                      colors: [Color(0x99000000), Color(0x00000000)],
-                    ),
+                    gradient: Scrim.overMedia,
                   ),
                 ),
               ),

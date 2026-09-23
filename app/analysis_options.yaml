@@ -1,6 +1,24 @@
 include: package:flutter_lints/flutter.yaml
 
 analyzer:
+  # ───────────────────────────────────────────────────────────────────────────
+  #  Strict typing, turned on 23 September 2026, and it cost one line.
+  #
+  #  Without these three the analyzer accepts implicit `dynamic` silently: an
+  #  untyped literal in one branch of a ternary degrades the whole expression,
+  #  and every use of the result afterwards goes unchecked. That is how a type
+  #  error becomes an apology screen on somebody's phone instead of a red line
+  #  on this laptop.
+  #
+  #  They were enabled against the whole of `lib/` before being committed and
+  #  the analyzer reported exactly **one** issue — `day_screen.dart`'s
+  #  `const []`, fixed in the same commit. The codebase was already strict; it
+  #  simply was not being checked. That is the whole argument for keeping them.
+  # ───────────────────────────────────────────────────────────────────────────
+  language:
+    strict-casts: true
+    strict-inference: true
+    strict-raw-types: true
   exclude:
     - build/**
     - android/**

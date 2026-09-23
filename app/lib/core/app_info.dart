@@ -16,7 +16,7 @@ library;
 /// The human version — `major.minor.patch`.
 ///
 /// This is the one written into backup headers and shown in Settings.
-const String kAppVersion = '0.6.1';
+const String kAppVersion = '0.7.1';
 
 /// The build number — `versionCode` on Android, the `+N` in `pubspec.yaml`.
 ///
@@ -46,7 +46,7 @@ const String kAppVersion = '0.6.1';
 /// **The rule: every build that leaves this laptop increments this.** Not every
 /// commit — every artefact. `tool/bump_version.ps1` does both files at once so
 /// they cannot drift, and `05-shipping/RELEASE-CHECKLIST.md` has it as step one.
-const int kAppBuild = 27;
+const int kAppBuild = 28;
 
 /// The day the version above belongs to.
 ///
@@ -66,7 +66,7 @@ const int kAppBuild = 27;
 /// it against today's date; written down rather than read off a file timestamp,
 /// because a checkout, a copy or a zip destroys those and would silently start
 /// a new "day" in the middle of an afternoon.
-const String kVersionDay = '2026-09-05';
+const String kVersionDay = '2026-09-23';
 
 /// What Settings shows, and what a bug report should quote.
 ///

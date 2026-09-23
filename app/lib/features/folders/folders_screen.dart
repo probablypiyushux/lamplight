@@ -129,26 +129,33 @@ class _FoldersScreenState extends State<FoldersScreen> {
             );
           }
 
-          return ListView(
+          // Built lazily, because the length of this list is the user's
+          // decision and nothing else in the app's is. `children: [for ...]`
+          // materialises every tile the moment the screen opens; the one
+          // failure this app has actually suffered on hardware is the
+          // low-memory killer, so the list with no ceiling on it is the list
+          // that gets a window.
+          return ListView.builder(
             padding: const EdgeInsets.only(bottom: Space.x10),
-            children: [
-              for (final f in folders)
-                LampTile(
-                  title: f.name,
-                  subtitle: _describe(L.of(context), _counts[f.id] ?? 0),
-                  icon: Icons.folder_outlined,
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (_) => FolderContentsScreen(
-                        vault: widget.vault,
-                        folder: f,
-                        onOpenDay: widget.onOpenDay,
-                        onChanged: _refreshCounts,
-                      ),
+            itemCount: folders.length,
+            itemBuilder: (context, i) {
+              final f = folders[i];
+              return LampTile(
+                title: f.name,
+                subtitle: _describe(L.of(context), _counts[f.id] ?? 0),
+                icon: Icons.folder_outlined,
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => FolderContentsScreen(
+                      vault: widget.vault,
+                      folder: f,
+                      onOpenDay: widget.onOpenDay,
+                      onChanged: _refreshCounts,
                     ),
                   ),
                 ),
-            ],
+              );
+            },
           );
         },
       ),
