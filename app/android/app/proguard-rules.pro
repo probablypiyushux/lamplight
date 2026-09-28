@@ -76,9 +76,19 @@
 # receivers are named there too. The manifest is not compiled, so R8 cannot see
 # the reference — rename the class and Android throws ClassNotFoundException at
 # the moment somebody taps the icon.
--keep class com.probablypiyush.lamplight.MainActivity { *; }
--keep class com.probablypiyush.lamplight.ReminderReceiver { *; }
--keep class com.probablypiyush.lamplight.BootReceiver { *; }
+# **Class names only, not `{ *; }`.** The manifest names these three as
+# strings, so their *names* must survive — that is the whole requirement. The
+# `{ *; }` that used to be here additionally kept every member of each under
+# its original name, and `MainActivity` is the largest Kotlin file in the app.
+#
+# Nothing reflects on their members. The method-channel handlers are reached
+# from Dart by channel name over a binder, never by Java reflection, and the
+# lifecycle methods are overrides of platform classes — which R8 already
+# declines to rename, because the superclass in android.jar cannot be renamed
+# either. Narrowed 28 September 2026.
+-keep class com.probablypiyush.lamplight.MainActivity
+-keep class com.probablypiyush.lamplight.ReminderReceiver
+-keep class com.probablypiyush.lamplight.BootReceiver
 
 # ── MediaDataSource, and why it has to survive ───────────────────────────────
 #
@@ -94,11 +104,30 @@
 # Reaches the Keystore through reflection on some vendor forks, and a stripped
 # member there means the fingerprint stops working on one manufacturer's phones
 # and nowhere else — a bug that would never reproduce on the development device.
-# `androidx.biometric` stays whole. It is small, the failure it guards against
-# is a stripped member on one manufacturer's fork — a bug that by definition
-# will not reproduce on the development phone — and the vault's second way in
-# is not the place to be greedy for a percentage.
--keep class androidx.biometric.** { *; }
+# ── androidx.biometric, and the second rule removed for the same reason ─────
+#
+# This said *"stays whole ... the failure it guards against is a stripped member
+# on one manufacturer's fork"*, on 23 September, when the Flutter keeps went.
+# It was the same mistake twice: a guess about what a library needs, written as
+# though it were a fact about what the library asks for.
+#
+# `biometric-1.1.0.aar` ships `proguard.txt`, which Gradle applies to every
+# build that depends on it, and every rule in it reads:
+#
+#     -keepclassmembernames,allowobfuscation,allowshrinking
+#             class androidx.biometric.BiometricFragment$Api* { <methods>; }
+#
+# **`allowobfuscation, allowshrinking`.** The maintainers are explicit: rename
+# it, shrink it, just do not *inline* the API-level helpers — because those
+# exist to keep `Build.VERSION` branches apart and merging them across API
+# levels is the actual hazard. Nothing there asks to be kept whole, and the
+# fork-reflection worry was never sourced to anything.
+#
+# Removing our rule cost **154 KB of DEX, 12.5% of it**, and took the count of
+# unobfuscated `androidx/biometric/` class descriptors from 83 to 0 — which was
+# the whole of the remaining gap on the Play Console's obfuscation score.
+#
+# The library's own rules still apply. Nothing replaces this.
 
 # The three that used to follow it are gone: `android.security.keystore`,
 # `javax.crypto` and `java.security` are **platform** classes, provided by
