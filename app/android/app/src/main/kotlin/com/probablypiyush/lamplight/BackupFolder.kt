@@ -213,7 +213,10 @@ object BackupFolder {
             throw e
         }
 
-        // The new copy is complete. Only now does the old one go.
+        // ── The new copy is complete. Only now does the old one go ────────
+        //
+        // Best-effort, and it genuinely cannot be relied on — see the block
+        // after the rename, which is where the real check had to go.
         findIn(context, name)?.let { runCatching { resolver.delete(it, null, null) } }
 
         if (!rename(context, part, name)) {
@@ -222,8 +225,60 @@ object BackupFolder {
             // good copy to tidy up a name.
             return "${label(context)}/$partName"
         }
+
+        // ── DID WE ACTUALLY GET THE NAME WE ASKED FOR? 28 September 2026 ──
+        //
+        // > *"automatic backup! that thing doesn't happens!"*
+        //
+        // It happened every time. It could not **replace**, and from the
+        // folder those look identical.
+        //
+        // An app owns the MediaStore rows it creates and **uninstalling
+        // orphans them**. His tablet still held a `Lamplight.vault` from an
+        // install whose uid was 10181; the app is 10278 now. The trap is that
+        // under scoped storage an app cannot even *see* another app's
+        // **non-media** file in MediaStore — so `findIn` above returns null,
+        // the delete has nothing to delete, and everything looks fine.
+        //
+        // Then the rename collides with a file that is invisible to us, and
+        // MediaStore does what it always does with a collision: it appends a
+        // number. `update` still reports one row changed, so `rename` returned
+        // **true** and this function returned success. The backup was written,
+        // whole and correct, to `Lamplight (1).vault` — then `(2)`, then `(3)`,
+        // at sixty megabytes each, while `Lamplight.vault` kept its date from
+        // three weeks earlier and the screen said everything was fine.
+        //
+        // **The first attempt at this fix checked before the write and did
+        // nothing at all**, for exactly the reason above, and the tablet is
+        // what proved it: `Lamplight (2).vault` appeared anyway. Asking the row
+        // what it is actually called is the only question that survives not
+        // being able to see the thing we collided with.
+        val actual = displayName(context, part)
+        if (actual != null && actual != name) {
+            // Ours, and worth nothing under a name nobody will look in.
+            runCatching { resolver.delete(part, null, null) }
+            throw IllegalStateException(
+                "Lamplight could not replace the backup in ${label(context)}. " +
+                    "That file was made by an earlier installation of the app, and " +
+                    "Android does not let a new one change it. Delete " +
+                    "Lamplight.vault from ${label(context)} once, and automatic " +
+                    "backups will work from then on."
+            )
+        }
         return label(context)
     }
+
+    /** What the row at [uri] is actually called now. */
+    private fun displayName(context: Context, uri: Uri): String? =
+        runCatching {
+            context.contentResolver.query(
+                uri,
+                arrayOf(MediaStore.MediaColumns.DISPLAY_NAME),
+                null, null, null
+            )?.use { c ->
+                if (c.moveToFirst()) c.getString(0) else null
+            }
+        }.getOrNull()
 
     /** The row for [name] inside our folder, or null. */
     private fun findIn(context: Context, name: String): Uri? {
